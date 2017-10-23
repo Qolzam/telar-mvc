@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "moduleResolution": "node",
+    "alwaysStrict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "inlineSourceMap": true,
+    "experimentalDecorators": true,
+    "lib": ["es2017"],
+    "types": ["node", "mocha", "reflect-metadata", "chai-subset"]
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

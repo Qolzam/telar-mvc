@@ -1,0 +1,9 @@
+docs/
+node_modules/
+test/
+coverage/
+.nyc_output/
+.idea/
+*.ts
+dts/
+!dts/**/*.d.ts
