@@ -51,20 +51,20 @@ We use a hierarchical structure that starts with the `RootController` and contro
 ```typescript
 // controllers/user-friend
 @path('/:id/friends') // Routes in this controller are accessible through /users/:id/friends
-class UserFriendController extends Controller {
+class UserPostsController extends Controller {
   
 }
 
 // controllers/user
 @path('/users')
-@child(Identifiers.UserFriendController)
-class UserController extends Controller {
+@child(Identifiers.UserPostsController)
+class UsersController extends Controller {
   
 }
 
 // controllers/root
 @oath('/')
-@child(Identifiers.UserController)
+@child(Identifiers.UsersController)
 class RootController extends Controller {
   
 }
@@ -91,12 +91,12 @@ class RootController extends Controller {
 }
 ```
 
-Below we register a middleware that's specific to the UserController.
+Below we register a middleware that's specific to the UsersController.
 
 ```typescript
 @path('/users')
 @before(logMiddleware) // Only /users routes (and descendants) will be affected
-class UserController extends Controller {
+class UsersController extends Controller {
   
 }
 ```
@@ -119,7 +119,7 @@ class RootController extends Controller {
 Route level middlewares are declared the exact same way as controller middlewares.
 
 ```typescript
-class UserController extends Controller {
+class UsersController extends Controller {
   @get('/')
   @before(queryParser())
   @beforeFactory(function() { // Notice the usage of a regular function
@@ -169,7 +169,7 @@ Path parameters have to be declared in your route's path. Additionally, this mod
 ```typescript
 import { object, integer, requireProperties } from '@bluejay/schema'; 
 
-class UserController extends Contoller {
+class UsersController extends Contoller {
   @get('/:id')
   @params(requireProperties(object({ id: integer() }), ['id']))
   public async getById(req: Request, res: Response) {
@@ -184,7 +184,7 @@ All HTTP method decorators also accept a `params` option for ease of use.
 ```typescript
 import { object, integer, requireProperties } from '@bluejay/schema'; 
 
-class UserController extends Contoller {
+class UsersController extends Contoller {
   @get('/:id', {
     params: requireProperties(object({ id: integer() }), ['id'])
   })
@@ -203,7 +203,7 @@ import * as Ajv from 'ajv';
 
 const idParamSchema = object({ id: integer() });
 
-class UserController extends Contoller {
+class UsersController extends Contoller {
   @get('/:id', {
     params: {
       jsonSchema: requireProperties(idParamSchema, ['id']),
@@ -229,7 +229,7 @@ All HTTP method decorators also accept an optional `query` option with the same 
 ```typescript
 import { object, boolean } from '@bluejay/schema';
 
-class UserController extends Controller {
+class UsersController extends Controller {
   @get('/')
   @query(object({ active: boolean() }))
   public async list(req: Request, res: Response) {
@@ -248,7 +248,7 @@ Groups allow you to group properties from the `query` object and are managed by 
 Those come handful if your application exposes complex query parameters to the end user, and you need to pass different properties to different parts of your application. 
 
 ```typescript
-class UserController extends Controller {
+class UsersController extends Controller {
   
   @query({
     jsonSchema: object({ active: boolean(), token: string() }),
@@ -279,7 +279,7 @@ const queryTransformer = (query: object) => {
   return query;
 };
 
-class UserController extends Controller {
+class UsersController extends Controller {
   @query({
     jsonSchema: object({ isActive: boolean() }),
     transform: queryTransformer
@@ -307,7 +307,7 @@ const userSchema = object({
   last_name: string({ nullable: true })
 });
 
-class UserController extends Controller {
+class UsersController extends Controller {
   @post('/')
   @body(requireProperties(userSchema, ['email', 'password']))
   public async add(req: Request, res: Response) {
@@ -321,7 +321,7 @@ A `BadRequest` error will be thrown in case the body doesn't match the described
 #### Other types
 
 ```typescript
-class UserController extends Controller {
+class UsersController extends Controller {
   @put('/:id/picture')
   @body({
     contentType: 'multipart/form-data' // This will be validated automatically
@@ -353,7 +353,7 @@ const userSchema = object({
   last_name: string({ nullable: true })
 });
 
-class UserController extends Controller {
+class UsersController extends Controller {
   @get('/:id')
   @response({
     statusCode: StatusCode.OK,
@@ -376,7 +376,7 @@ An `InternalServerError` error will be thrown in case the response's body doesn'
 #### Other types
 
 ```typescript
-class UserController extends Controller {
+class UsersController extends Controller {
   @get('/:id/picture')
   @response({
     statusCode: StatusCode.OK,
