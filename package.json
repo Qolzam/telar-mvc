@@ -14,7 +14,7 @@
     "url": "git+https://github.com/bluebirds-blue-jay/inversify-controller.git"
   },
   "author": "Sylvain Estevez",
-  "typings": "./dts/src/index.d.ts",
+  "typings": "./dts/index.d.ts",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/bluebirds-blue-jay/inversify-controller/issues"

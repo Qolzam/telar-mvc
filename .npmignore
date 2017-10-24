@@ -5,5 +5,4 @@ coverage/
 .nyc_output/
 .idea/
 *.ts
-dts/
-!dts/src/**/*.d.ts
+!dts/**/*.d.ts
