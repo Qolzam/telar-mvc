@@ -101,29 +101,32 @@ class UsersController extends Controller {
 }
 ```
 
-#### Passing arguments to middlewares
+#### Passing arguments to global middlewares
 
-There are times where you need to inject some properties into a middleware, this module allows you to pass injected properties to your middlewares using factories.
+There are times where you need to inject some properties into a middleware, which properties are accessible in the controller itself. `@beforeFactory` and `@afterFactory` allow you to differ a middleware's creation.
 
 ```typescript
-@beforeFactory(function() { // Notice the usage of a regular function
-  return logMiddlewareFactory(this.logger); // The context here is the controller itself
+@beforeFactory(function(this: RootController) { // Notice the usage of a regular function
+  return logMiddlewareFactory(this.logger);
 })
 class RootController extends Controller {
-  @inject(Identifiers.LoggerService) private logger: ILoggerService;  
+  @inject(Identifiers.LoggerService) public logger: ILoggerService;  
 }
 ```
 
 #### Route level middlewares
 
-Route level middlewares are declared the exact same way as controller middlewares.
+Route level middlewares are declared the exact same way as controller middlewares, using `@before` and `@after`. `@beforeFactory` and `@afterFactory` are not needed since the handler's context is already the controller.
 
 ```typescript
 class UsersController extends Controller {
+  private foo: string = 'bar';
+  
   @get('/')
   @before(queryParser())
-  @beforeFactory(function() { // Notice the usage of a regular function
-    return logMiddlewareFactory(this.logger); // The context here is the controller itself, again
+  @before(function(this: UsersController, req: Request, res: Response, next: NextFunction) {
+    console.log(this.foo); // bar
+    next();
   })
   public async list(req: Request, res: Response) {
     

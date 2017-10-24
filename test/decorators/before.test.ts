@@ -40,9 +40,10 @@ describe('@before()', () => {
 
     @path('/test')
     class TestController extends Controller {
+      private testProperty: string = 'foo';
       @get('/')
-      @before((req: Request, res: Response, next: NextFunction) => {
-        req['testProperty'] = 'foo';
+      @before(function(this: TestController, req: Request, res: Response, next: NextFunction) {
+        req['testProperty'] = this.testProperty;
         next();
       })
       private async test(req: Request, res: Response) {
