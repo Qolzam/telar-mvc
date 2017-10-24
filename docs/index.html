@@ -1,0 +1,562 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>@bluejay/inversify-controller</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">@bluejay/inversify-controller</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1> @bluejay/inversify-controller</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<h1 id="inversify-controller">Inversify Controller</h1>
+				<h2 id="requirements">Requirements</h2>
+				<ul>
+					<li><code>node &gt;= 7.10</code></li>
+					<li><code>typescript &gt;= 2.4</code></li>
+					<li><a href="https://github.com/inversify/InversifyJS#installation">Inversify</a></li>
+				</ul>
+				<h2 id="installation">Installation</h2>
+				<p><code>npm i inversify reflect-metadata @bluejay/inversify-controller</code></p>
+				<h2 id="note-on-json-schemas">Note on JSON schemas</h2>
+				<p>We use <a href="https://github.com/epoberezkin/ajv">AJV</a> internally for schema validation. Decorators that perform schema validation offer you to create your own AJV instance through the <code>ajvFactory</code> option. If you are to create your own instances through this option, we highly recommend to make sure you pass the same options we use along with yours, otherwise some assumptions from this documentation might not be true.</p>
+				<p>Although you can use plain JSON schemas, we recommend the use of Bluejay&#39;s <a href="https://github.com/bluebirds-blue-jay/schema">schema</a> module for easier schema manipulation. The examples below make use of this module, but be aware that you can use plain JSON schemas instead. </p>
+				<h2 id="usage">Usage</h2>
+				<h3 id="creating-a-root-controller">Creating a root controller</h3>
+				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> { Controller, path } <span class="hljs-keyword">from</span> <span class="hljs-string">'@bluejay/inversify-controller'</span>;
+
+<span class="hljs-meta">@path</span>(<span class="hljs-string">'/'</span>)
+<span class="hljs-keyword">class</span> RootController <span class="hljs-keyword">extends</span> Controller {
+
+}
+</code></pre>
+				<h3 id="binding-your-root-controller-to-your-express-application-inversify-container">Binding your root controller to your Express application / Inversify container</h3>
+				<p>The <code>bind()</code> helper correlates your express app, your Inversify container and your root controller.</p>
+				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> { bind } <span class="hljs-keyword">from</span> <span class="hljs-string">'@bluejay/inversify-controller'</span>;
+<span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> express <span class="hljs-keyword">from</span> <span class="hljs-string">'express'</span>;
+<span class="hljs-keyword">import</span> { container } <span class="hljs-keyword">from</span> <span class="hljs-string">'./inversify.config'</span>;
+<span class="hljs-keyword">import</span> { Identifiers } <span class="hljs-keyword">from</span> <span class="hljs-string">'./constants/identifiers'</span>; <span class="hljs-comment">// Inversify identifiers</span>
+
+<span class="hljs-keyword">const</span> app = express();
+
+bind(app, container, Identifiers.RootController); <span class="hljs-comment">// This is required and must happen early in your application, ideally right after your create your app</span>
+</code></pre>
+				<h3 id="nesting-controllers">Nesting controllers</h3>
+				<p>We use a hierarchical structure that starts with the <code>RootController</code> and controllers can declare their children. We use a child relationship - as opposed to a parent relationship - in order to make controllers reusable (ie. declarable on multiple parents).</p>
+				<pre><code class="lang-typescript"><span class="hljs-comment">// controllers/user-posts</span>
+<span class="hljs-meta">@path</span>(<span class="hljs-string">'/:id/friends'</span>) <span class="hljs-comment">// Routes in this controller are accessible through /users/:id/friends</span>
+<span class="hljs-keyword">class</span> UserPostsController <span class="hljs-keyword">extends</span> Controller {
+
+}
+
+<span class="hljs-comment">// controllers/users</span>
+<span class="hljs-meta">@path</span>(<span class="hljs-string">'/users'</span>)
+<span class="hljs-meta">@child</span>(Identifiers.UserPostsController)
+<span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
+
+}
+
+<span class="hljs-comment">// controllers/root</span>
+<span class="hljs-meta">@oath</span>(<span class="hljs-string">'/'</span>)
+<span class="hljs-meta">@child</span>(Identifiers.UsersController)
+<span class="hljs-keyword">class</span> RootController <span class="hljs-keyword">extends</span> Controller {
+
+}
+</code></pre>
+				<h3 id="middlewares">Middlewares</h3>
+				<p>This module encourages you to declare middlewares at the controller level (vs. at the app level).</p>
+				<h4 id="global-middlewares">Global middlewares</h4>
+				<p>Since the middlewares are attached to the root controller, all routes from all children will inherit them. This gives you the same result as if you were using <code>app.use()</code>, but keeps everything in the same place.</p>
+				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> { before, after } <span class="hljs-keyword">from</span> <span class="hljs-string">'@bluejay/inversify-controller'</span>;
+<span class="hljs-keyword">import</span> { bodyParser } <span class="hljs-keyword">from</span> <span class="hljs-string">'body-parser'</span>;
+<span class="hljs-keyword">import</span> { errorHandler } <span class="hljs-keyword">from</span> <span class="hljs-string">''</span>
+
+<span class="hljs-meta">@before</span>(bodyParser.json())
+<span class="hljs-meta">@after</span>(errorHandler())
+<span class="hljs-meta">@path</span>(<span class="hljs-string">'/'</span>)
+<span class="hljs-keyword">class</span> RootController <span class="hljs-keyword">extends</span> Controller {
+
+}
+</code></pre>
+				<p>Below we register a middleware that&#39;s specific to the UsersController.</p>
+				<pre><code class="lang-typescript"><span class="hljs-meta">@path</span>(<span class="hljs-string">'/users'</span>)
+<span class="hljs-meta">@before</span>(logMiddleware) <span class="hljs-comment">// Only /users routes (and descendants) will be affected</span>
+<span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
+
+}
+</code></pre>
+				<h4 id="passing-arguments-to-global-middlewares">Passing arguments to global middlewares</h4>
+				<p>There are times where you need to inject some properties into a middleware, which properties are accessible in the controller itself. <code>@beforeFactory</code> and <code>@afterFactory</code> allow you to differ a middleware&#39;s creation.</p>
+				<pre><code class="lang-typescript"><span class="hljs-meta">@beforeFactory</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"><span class="hljs-keyword">this</span>: RootController</span>) </span>{ <span class="hljs-comment">// Notice the usage of a regular function</span>
+  <span class="hljs-keyword">return</span> logMiddlewareFactory(<span class="hljs-keyword">this</span>.logger);
+})
+<span class="hljs-keyword">class</span> RootController <span class="hljs-keyword">extends</span> Controller {
+  <span class="hljs-meta">@inject</span>(Identifiers.LoggerService) <span class="hljs-keyword">public</span> logger: ILoggerService;  
+}
+</code></pre>
+				<h4 id="route-level-middlewares">Route level middlewares</h4>
+				<p>Route level middlewares are declared the exact same way as controller middlewares, using <code>@before</code> and <code>@after</code>. <code>@beforeFactory</code> and <code>@afterFactory</code> are not needed since the handler&#39;s context is already the controller.</p>
+				<pre><code class="lang-typescript"><span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
+  <span class="hljs-keyword">private</span> foo: <span class="hljs-built_in">string</span> = <span class="hljs-string">'bar'</span>;
+
+  <span class="hljs-meta">@get</span>(<span class="hljs-string">'/'</span>)
+  <span class="hljs-meta">@before</span>(queryParser())
+  <span class="hljs-meta">@before</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"><span class="hljs-keyword">this</span>: UsersController, req: Request, res: Response, next: NextFunction</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">this</span>.foo); <span class="hljs-comment">// bar</span>
+    next();
+  })
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(req: Request, res: Response) {
+
+  }
+}
+</code></pre>
+				<h3 id="declaring-routes">Declaring routes</h3>
+				<p>This module offers http decorators for all HTTP verbs. Check each decorator&#39;s documentation for specific options.</p>
+				<pre><code class="lang-typescript"><span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
+
+  <span class="hljs-meta">@get</span>(<span class="hljs-string">'/'</span>)
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(req: Request, res: Response) {
+
+  }
+
+  <span class="hljs-meta">@get</span>(<span class="hljs-string">'/:id'</span>)
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getById(req: Request, res: Response) {
+
+  }
+
+  <span class="hljs-meta">@post</span>(<span class="hljs-string">'/'</span>)
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> add(req: Request, res: Response) {
+
+  }
+
+  <span class="hljs-meta">@del</span>(<span class="hljs-string">'/:id'</span>)
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> removeById(req: Request, res: Response) {
+
+  }
+
+  <span class="hljs-comment">// ...</span>
+}
+</code></pre>
+				<h3 id="path-parameters-validation">Path parameters validation</h3>
+				<p>Path parameters have to be declared in your route&#39;s path. Additionally, this module offers validation and type coercion through JSON schemas and the <code>@params()</code> decorator.   </p>
+				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> { object, integer, requireProperties } <span class="hljs-keyword">from</span> <span class="hljs-string">'@bluejay/schema'</span>;
+
+<span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Contoller {
+  <span class="hljs-meta">@get</span>(<span class="hljs-string">'/:id'</span>)
+  <span class="hljs-meta">@params</span>(requireProperties(object({ id: integer() }), [<span class="hljs-string">'id'</span>]))
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getById(req: Request, res: Response) {
+    <span class="hljs-keyword">const</span> { id } = req.params;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> id); <span class="hljs-comment">// number, thanks to Ajv's "coerceTypes" option</span>
+  }
+}
+</code></pre>
+				<p>An instance of AJV is created by default, if you want to pass your own, provide a <code>ajvFactory</code> to the options.</p>
+				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> { object, integer, requireProperties } <span class="hljs-keyword">from</span> <span class="hljs-string">'@bluejay/schema'</span>;
+<span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> Ajv <span class="hljs-keyword">from</span> <span class="hljs-string">'ajv'</span>;
+
+<span class="hljs-keyword">const</span> idParamSchema = object({ id: integer() });
+
+<span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Contoller {
+  <span class="hljs-meta">@get</span>(<span class="hljs-string">'/:id'</span>)
+  <span class="hljs-meta">@params</span>({
+    jsonSchema: requireProperties(idParamSchema, [<span class="hljs-string">'id'</span>]),
+    ajvFactory: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-keyword">new</span> Ajv({ coerceTypes: <span class="hljs-literal">true</span> })
+  })
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getById(req: Request, res: Response) {
+    <span class="hljs-keyword">const</span> { id } = req.params;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> id); <span class="hljs-comment">// number</span>
+  }
+}
+</code></pre>
+				<p>If the params don&#39;t match <code>jsonSchema</code>, a <code>BadRequest</code> error will be thrown and be handled by your error middleware, meaning that your handler will never be called.</p>
+				<h5 id="query-parameters-validation">Query parameters validation</h5>
+				<p>Query parameters are validated through JSON schemas using the <code>@query()</code> decorator.</p>
+				<p>All HTTP method decorators also accept an optional <code>query</code> option with the same signature as the decorator.</p>
+				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> { object, <span class="hljs-built_in">boolean</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'@bluejay/schema'</span>;
+
+<span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
+  <span class="hljs-meta">@get</span>(<span class="hljs-string">'/'</span>)
+  <span class="hljs-meta">@query</span>(object({ active: <span class="hljs-built_in">boolean</span>() }))
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(req: Request, res: Response) {
+    <span class="hljs-keyword">const</span> { active } = req.query;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> active); <span class="hljs-comment">// boolean | undefined (since not required)</span>
+  }
+}
+</code></pre>
+				<p>A <code>BadRequest</code> error will be thrown in case the query doesn&#39;t match the described schema, in which case your handler will never be called.</p>
+				<h5 id="grouping-query-parameters">Grouping query parameters</h5>
+				<p>Groups allow you to group properties from the <code>query</code> object and are managed by a <code>groups</code> hash of the form <code>{ [groupName]: groupProperties }</code>.</p>
+				<p>Those come handful if your application exposes complex query parameters to the end user, and you need to pass different properties to different parts of your application. </p>
+				<pre><code class="lang-typescript"><span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
+
+  <span class="hljs-meta">@query</span>({
+    jsonSchema: object({ active: <span class="hljs-built_in">boolean</span>(), token: <span class="hljs-built_in">string</span>() }),
+    groups: { filters: [<span class="hljs-string">'active'</span>] }
+  })
+  <span class="hljs-meta">@get</span>(<span class="hljs-string">'/'</span>)
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(req: Request, res: Response) {
+    <span class="hljs-keyword">const</span> { filters, token } = req.query;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> token); <span class="hljs-comment">// string</span>
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> filters); <span class="hljs-comment">// object</span>
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> filters.active); <span class="hljs-comment">// boolean | undefined (since not required)</span>
+    <span class="hljs-built_in">console</span>.log(req.query.active); <span class="hljs-comment">// undefined (grouped properties are removed from the root query)</span>
+  }
+}
+</code></pre>
+				<h5 id="transforming-query-parameters">Transforming query parameters</h5>
+				<p><code>transform</code> allows you to process and modify the query string before the groups are formed. This is useful if, for example the interface your application offers to its consumers differs from the interface used within the application. </p>
+				<p><em>Note:</em> The <code>transform</code> hook is called before parameters are grouped. Also note that you can use <code>transform</code> without groups.</p>
+				<pre><code class="lang-typescript">
+<span class="hljs-keyword">const</span> queryTransformer = <span class="hljs-function">(<span class="hljs-params">query: object</span>) =&gt;</span> {
+  query.active = query.isActive;
+  <span class="hljs-keyword">delete</span> query.isActive; <span class="hljs-comment">// Clean</span>
+  <span class="hljs-keyword">return</span> query;
+};
+
+<span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
+  <span class="hljs-meta">@query</span>({
+    jsonSchema: object({ isActive: <span class="hljs-built_in">boolean</span>() }),
+    transform: queryTransformer
+  })
+  <span class="hljs-meta">@get</span>(<span class="hljs-string">'/'</span>)
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(req: Request, res: Response) {
+    <span class="hljs-keyword">const</span> { active } = req.query;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> active); <span class="hljs-comment">// boolean</span>
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> req.query.isActive); <span class="hljs-comment">// undefined</span>
+  }
+}
+</code></pre>
+				<h3 id="body-validation">Body validation</h3>
+				<p>We currently only offer validation for JSON body. You can declare bodies of another type, but you will need to handle the validation by yourself. Bodies are managed through the <code>@body()</code> decorator.</p>
+				<h4 id="json-body">JSON body</h4>
+				<pre><code class="lang-typescript"><span class="hljs-keyword">const</span> userSchema = object({
+  email: email(),
+  password: <span class="hljs-built_in">string</span>(),
+  first_name: <span class="hljs-built_in">string</span>({ nullable: <span class="hljs-literal">true</span> }),
+  last_name: <span class="hljs-built_in">string</span>({ nullable: <span class="hljs-literal">true</span> })
+});
+
+<span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
+  <span class="hljs-meta">@post</span>(<span class="hljs-string">'/'</span>)
+  <span class="hljs-meta">@body</span>(requireProperties(userSchema, [<span class="hljs-string">'email'</span>, <span class="hljs-string">'password'</span>]))
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> add(req: Request, res: Response) {
+    <span class="hljs-comment">// req.body is guaranteed to match the described schema</span>
+  }
+}
+</code></pre>
+				<p>A <code>BadRequest</code> error will be thrown in case the body doesn&#39;t match the described schema, in which case your handler will never be called.</p>
+				<h4 id="other-types">Other types</h4>
+				<p>The only validation possible for now is the content type, and this is done via the <code>@is</code> decorator, which validates the content type of the body.</p>
+				<pre><code class="lang-typescript"><span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
+  <span class="hljs-meta">@put</span>(<span class="hljs-string">'/:id/picture'</span>)
+  <span class="hljs-meta">@is</span>(<span class="hljs-string">'image/jpg'</span>)
+  <span class="hljs-meta">@before</span>(multer.single(<span class="hljs-string">'file'</span>)) <span class="hljs-comment">// Just an example, see https://www.npmjs.com/package/multer</span>
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> changePicture(req: Request, res: Response) {
+
+  }
+}
+</code></pre>
+				<h3 id="response-validation">Response validation</h3>
+				<p>Might you want to filter some fields, coerce some types or simply make sure that your responses are up to the documentation you provided to your customers, we help you do so using JSON schemas. It is also possible to describe other types of responses, but only JSON bodies are validated for now.</p>
+				<p><em>Note:</em> Only the &quot;expected&quot; response can be described for now.</p>
+				<h4 id="json-response">JSON response</h4>
+				<p>In the example below and even though we didn&#39;t ask for specific attributes, the &quot;password&quot; field will never be exposed since it&#39;s not part of the schema. In other words, the response only contains the properties described in the schema. </p>
+				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> { object, email, <span class="hljs-built_in">string</span>, omitProperties } <span class="hljs-keyword">from</span> <span class="hljs-string">'@bluejay/schema'</span>;
+
+<span class="hljs-keyword">const</span> userSchema = object({
+  email: email(),
+  password: <span class="hljs-built_in">string</span>(),
+  first_name: <span class="hljs-built_in">string</span>({ nullable: <span class="hljs-literal">true</span> }),
+  last_name: <span class="hljs-built_in">string</span>({ nullable: <span class="hljs-literal">true</span> })
+});
+
+<span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
+  <span class="hljs-meta">@get</span>(<span class="hljs-string">'/:id'</span>)
+  <span class="hljs-meta">@response</span>({
+    statusCode: StatusCode.OK,
+    jsonSchema: omitProperties(userSchema, [<span class="hljs-string">'password'</span>])
+  })
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getById(req: Request, res: Response) {
+    <span class="hljs-keyword">const</span> { id } = req.params;
+    <span class="hljs-keyword">const</span> user = <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.userService.findById(id);
+    <span class="hljs-keyword">if</span> (user) {
+      res.json(user);
+    } <span class="hljs-keyword">else</span> {
+      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> NotFoundRestError(<span class="hljs-string">`No user found for id <span class="hljs-subst">${id}</span>.`</span>)
+    }
+  }
+}
+</code></pre>
+				<p>An <code>InternalServerError</code> error will be thrown in case the response&#39;s body doesn&#39;t match the described schema.</p>
+				<h4 id="other-types">Other types</h4>
+				<pre><code class="lang-typescript"><span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
+  <span class="hljs-meta">@get</span>(<span class="hljs-string">'/:id/picture'</span>)
+  <span class="hljs-meta">@response</span>({
+    statusCode: StatusCode.OK,
+    contentType: <span class="hljs-string">'image/jpg'</span>
+  })
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getPicture(req: Request, res: Response) {
+    getPictureStream(req.params.id).pipe(res);
+  }
+}
+</code></pre>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-enum">
+						<a href="enums/metadatakey.html" class="tsd-kind-icon">Metadata<wbr>Key</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/controller.html" class="tsd-kind-icon">Controller</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/icontroller.html" class="tsd-kind-icon">IController</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#tcommonresponseoptions" class="tsd-kind-icon">TCommon<wbr>Response<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#tcustombodyoptions" class="tsd-kind-icon">TCustom<wbr>Body<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#tcustomresponseoptions" class="tsd-kind-icon">TCustom<wbr>Response<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#tjsonbodyoptions" class="tsd-kind-icon">TJSONBody<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#tjsonresponseoptions" class="tsd-kind-icon">TJSONResponse<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#tparamsoptions" class="tsd-kind-icon">TParams<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#tqueryoptions" class="tsd-kind-icon">TQuery<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#troutedescription" class="tsd-kind-icon">TRoute<wbr>Description</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-is-not-exported">
+						<a href="globals.html#defaultajvinstance" class="tsd-kind-icon">default<wbr>Ajv<wbr>Instance</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#accepts" class="tsd-kind-icon">accepts</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#after" class="tsd-kind-icon">after</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#afterfactory" class="tsd-kind-icon">after<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#before" class="tsd-kind-icon">before</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#beforefactory" class="tsd-kind-icon">before<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#bind" class="tsd-kind-icon">bind</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#body" class="tsd-kind-icon">body</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#child" class="tsd-kind-icon">child</a>
+					</li>
+					<li class=" tsd-kind-function tsd-is-not-exported">
+						<a href="globals.html#defaultajvfactory" class="tsd-kind-icon">default<wbr>Ajv<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#del" class="tsd-kind-icon">del</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#get" class="tsd-kind-icon">get</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#head" class="tsd-kind-icon">head</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#is" class="tsd-kind-icon">is</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#isclassdecorator" class="tsd-kind-icon">is<wbr>Class<wbr>Decorator</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#iscommonresponseoptions" class="tsd-kind-icon">is<wbr>Common<wbr>Response<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#iscustombodyoptions" class="tsd-kind-icon">is<wbr>Custom<wbr>Body<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#isjsonresponseoptions" class="tsd-kind-icon">isJSONResponse<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#isjsonschema" class="tsd-kind-icon">isJSONSchema</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#ispropertydecorator" class="tsd-kind-icon">is<wbr>Property<wbr>Decorator</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#jsonresponse" class="tsd-kind-icon">json<wbr>Response</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#method" class="tsd-kind-icon">method</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#params" class="tsd-kind-icon">params</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#patch" class="tsd-kind-icon">patch</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#path" class="tsd-kind-icon">path</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#post" class="tsd-kind-icon">post</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#put" class="tsd-kind-icon">put</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#query" class="tsd-kind-icon">query</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#response" class="tsd-kind-icon">response</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#translateajverror" class="tsd-kind-icon">translate<wbr>Ajv<wbr>Error</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>

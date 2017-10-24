@@ -373,3 +373,7 @@ class UsersController extends Controller {
   }
 }
 ```
+
+## API Documentation
+
+See [Github Pages](https://bluebirds-blue-jay.github.io/inversify-controller/).
