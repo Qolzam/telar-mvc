@@ -10,21 +10,21 @@ import { before } from '../../src/decorators/before';
 import bodyParser = require('body-parser');
 
 describe('@beforeFactory()', () => {
-  const middlewareFactory = function() {
-    return (req: Request, res: Response, next: NextFunction) => {
-      req['testProperty'] = this.testProperty;
-      next();
-    }
-  };
-
   it('should register middleware', async () => {
+    const middlewareFactory = function(this: TestController) {
+      return (req: Request, res: Response, next: NextFunction) => {
+        req['testProperty'] = this.testProperty;
+        next();
+      }
+    };
+
     const id = Symbol();
 
     @path('/test')
     @beforeFactory(middlewareFactory)
     @before(bodyParser.json())
     class TestController extends Controller {
-      private testProperty: string = 'foo';
+      public testProperty: string = 'foo';
 
       @get('/')
       private async test(req: Request, res: Response) {

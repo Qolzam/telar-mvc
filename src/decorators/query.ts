@@ -23,7 +23,7 @@ export function query(options: TQueryOptions) {
 
       if (validator(query)) {
         if (transform) {
-          query = (await transform(query)) || query; // Fallback to the object is none is returned
+          query = await transform(query);
         }
 
         if (groups) {
