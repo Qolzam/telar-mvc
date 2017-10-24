@@ -7,13 +7,14 @@
     "test": "mocha --require ./node_modules/ts-node/register --require ./test/setup.ts ./test/**/*.test.ts",
     "cov": "./node_modules/.bin/nyc --reporter lcov npm test",
     "docs": "./node_modules/.bin/typedoc --out docs --mode file --excludePrivate --excludeExternals ./src",
-    "prepare": "./node_modules/.bin/tsc"
+    "prepare": "rm -rf dts && tsc && tsc --outDir dts -d"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bluebirds-blue-jay/inversify-controller.git"
   },
   "author": "Sylvain Estevez",
+  "typings": "./dts/src/index.d.ts",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/bluebirds-blue-jay/inversify-controller/issues"

@@ -6,4 +6,4 @@ coverage/
 .idea/
 *.ts
 dts/
-!dts/**/*.d.ts
+!dts/src/**/*.d.ts
