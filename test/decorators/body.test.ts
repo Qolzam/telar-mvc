@@ -13,50 +13,83 @@ import { before } from '../../src/decorators/before';
 import bodyParser = require('body-parser');
 
 describe('@body()', () => {
-  const id = Symbol();
+  function doTest(sandbox: Sandbox) {
+    it('should post successfully', async () => {
+      await supertest(sandbox.getApp())
+        .post('/test')
+        .send({ foo: 'foo' })
+        .expect(StatusCode.CREATED, { foo: 'foo' });
+    });
 
-  @path('/test')
-  @before(bodyParser.json())
-  @after(errorHandler)
-  class TestController extends Controller {
-    @post('/')
-    @body({
-      jsonSchema: requireProperties(object({
+    it('should throw a bad request error', async () => {
+      await supertest(sandbox.getApp())
+        .post('/test')
+        .send({ foo: 'foo', bar: 'foo' })
+        .expect(StatusCode.BAD_REQUEST);
+    });
+
+    it('should coerce type', async () => {
+      await supertest(sandbox.getApp())
+        .post('/test')
+        .send({ foo: 'foo', bar: 'true', baz: [12] })
+        .expect(StatusCode.CREATED, { foo: 'foo', bar: true, baz: ['12'] });
+
+    });
+  }
+
+  describe('Via options', () => {
+    const id = Symbol();
+
+    @path('/test')
+    @before(bodyParser.json())
+    @after(errorHandler)
+    class TestController extends Controller {
+      @post('/')
+      @body({
+        jsonSchema: requireProperties(object({
+          foo: string(),
+          bar: boolean(),
+          baz: tuple([string()])
+        }), ['foo'])
+      })
+      private async test(req: Request, res: Response) {
+        res.status(StatusCode.CREATED).json(req.body);
+      }
+    }
+
+    const sandbox = new Sandbox({
+      controllersMap: new Map([
+        [id, TestController]
+      ])
+    });
+
+    doTest(sandbox);
+  });
+
+  describe('Schema only', () => {
+    const id = Symbol();
+
+    @path('/test')
+    @before(bodyParser.json())
+    @after(errorHandler)
+    class TestController extends Controller {
+      @post('/')
+      @body(requireProperties(object({
         foo: string(),
         bar: boolean(),
         baz: tuple([string()])
-      }), ['foo'])
-    })
-    private async test(req: Request, res: Response) {
-      res.status(StatusCode.CREATED).json(req.body);
+      }), ['foo']))
+      private async test(req: Request, res: Response) {
+        res.status(StatusCode.CREATED).json(req.body);
+      }
     }
-  }
 
-  const sandbox = new Sandbox({
-    controllersMap: new Map([
-      [id, TestController]
-    ])
-  });
+    const sandbox = new Sandbox({
+      controllersMap: new Map([
+        [id, TestController]
+      ])
+    });
 
-  it('should post successfully', async () => {
-    await supertest(sandbox.getApp())
-      .post('/test')
-      .send({ foo: 'foo' })
-      .expect(StatusCode.CREATED, { foo: 'foo' });
-  });
-
-  it('should throw a bad request error', async () => {
-    await supertest(sandbox.getApp())
-      .post('/test')
-      .send({ foo: 'foo', bar: 'foo' })
-      .expect(StatusCode.BAD_REQUEST);
-  });
-
-  it('should coerce type', async () => {
-    await supertest(sandbox.getApp())
-      .post('/test')
-      .send({ foo: 'foo', bar: 'true', baz: [12] })
-      .expect(StatusCode.CREATED, { foo: 'foo', bar: true, baz: ['12'] });
-
+    doTest(sandbox);
   });
 });

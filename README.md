@@ -306,12 +306,12 @@ A `BadRequest` error will be thrown in case the body doesn't match the described
 
 #### Other types
 
+The only validation possible for now is the content type, and this is done via the `@is` decorator, which validates the content type of the body.
+
 ```typescript
 class UsersController extends Controller {
   @put('/:id/picture')
-  @body({
-    contentType: 'multipart/form-data' // This will be validated automatically
-  })
+  @is('image/jpg')
   @before(multer.single('file')) // Just an example, see https://www.npmjs.com/package/multer
   public async changePicture(req: Request, res: Response) {
     
