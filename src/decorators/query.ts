@@ -4,12 +4,17 @@ import { BadRequestRestError } from '@bluejay/rest-errors';
 import { MetadataKey } from '../constants/metadata-key';
 import { TQueryOptions } from '../types/query-options';
 import { translateAjvError } from '../utils/translate-ajv-error';
+import { TJSONSchema } from '@bluejay/schema';
+import { isJSONSchema } from '../utils/is-json-schema';
 
 const defaultAjvInstance = new AJV({ coerceTypes: true, useDefaults: true });
 const defaultAjvFactory = () => defaultAjvInstance;
 
-export function query(options: TQueryOptions) {
-  const { groups, jsonSchema, ajvFactory, transform } = options;
+export function query(options: TQueryOptions | TJSONSchema) {
+  const jsonSchema = isJSONSchema(options) ? options : (<TQueryOptions>options).jsonSchema;
+  const groups =  (<TQueryOptions>options).groups;
+  const transform =  (<TQueryOptions>options).transform;
+  const ajvFactory =  (<TQueryOptions>options).ajvFactory;
   const ajvInstance = (ajvFactory || defaultAjvFactory)();
   const validator = ajvInstance.compile(jsonSchema);
 
