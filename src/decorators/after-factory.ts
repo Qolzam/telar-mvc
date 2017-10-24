@@ -1,5 +1,5 @@
 import { ErrorRequestHandler, Handler } from 'express';
-import { IController } from '../interfaces';
+import { IController } from '../interfaces/controller';
 import { TConstructible } from '@bluejay/utils';
 import { MetadataKey } from '../constants/metadata-key';
 import { isClassDecorator } from '../utils/is-class-decorator';

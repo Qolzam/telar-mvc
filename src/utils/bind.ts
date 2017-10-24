@@ -1,6 +1,6 @@
 import { Application, Router, Request, Response, NextFunction } from 'express';
 import { Container } from 'inversify';
-import { IController } from '../interfaces';
+import { IController } from '../interfaces/controller';
 import { MetadataKey } from '../constants/metadata-key';
 import { ensureLeadingSlash } from '@bluejay/url';
 import { TRouteDescription } from '../types/route-description';

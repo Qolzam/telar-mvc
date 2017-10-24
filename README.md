@@ -49,13 +49,13 @@ bind(app, container, Identifiers.RootController); // This is required and must h
 We use a hierarchical structure that starts with the `RootController` and controllers can declare their children. We use a child relationship - as opposed to a parent relationship - in order to make controllers reusable (ie. declarable on multiple parents).
 
 ```typescript
-// controllers/user-friend
+// controllers/user-posts
 @path('/:id/friends') // Routes in this controller are accessible through /users/:id/friends
 class UserPostsController extends Controller {
   
 }
 
-// controllers/user
+// controllers/users
 @path('/users')
 @child(Identifiers.UserPostsController)
 class UsersController extends Controller {

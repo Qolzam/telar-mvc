@@ -2,7 +2,7 @@ import * as express from 'express';
 import { Container } from 'inversify';
 import { Application } from 'express';
 import { TConstructible } from '@bluejay/utils';
-import { IController } from '../../../src/interfaces';
+import { IController } from '../../../src/interfaces/controller';
 import { bind } from '../../../';
 
 export type TSandboxConstructorOptions = {

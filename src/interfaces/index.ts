@@ -1,1 +1,0 @@
-export { IController } from './controller';

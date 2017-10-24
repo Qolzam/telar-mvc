@@ -1,6 +1,6 @@
 import { HTTPMethod } from '@bluejay/http-method';
 import { MetadataKey } from '../constants/metadata-key';
-import { IController } from '../interfaces';
+import { IController } from '../interfaces/controller';
 import { TRouteDescription } from '../types/route-description';
 
 export function method(method: HTTPMethod, path: string) {

@@ -1,4 +1,4 @@
-import { IController } from '../interfaces';
+import { IController } from '../interfaces/controller';
 import { Router } from 'express';
 import { injectable } from 'inversify';
 

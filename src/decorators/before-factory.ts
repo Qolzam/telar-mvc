@@ -1,7 +1,7 @@
 import { ErrorRequestHandler, Handler } from 'express';
 import { TConstructible } from '@bluejay/utils';
 import { MetadataKey } from '../constants/metadata-key';
-import { IController } from '../interfaces';
+import { IController } from '../interfaces/controller';
 import { isClassDecorator } from '../utils/is-class-decorator';
 
 export function beforeFactory(factory: (...args: any[]) => Handler | ErrorRequestHandler): any {
