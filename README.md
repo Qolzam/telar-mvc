@@ -182,22 +182,6 @@ class UsersController extends Contoller {
 }
 ```
 
-All HTTP method decorators also accept a `params` option for ease of use.
-
-```typescript
-import { object, integer, requireProperties } from '@bluejay/schema'; 
-
-class UsersController extends Contoller {
-  @get('/:id', {
-    params: requireProperties(object({ id: integer() }), ['id'])
-  })
-  public async getById(req: Request, res: Response) {
-    const { id } = req.params;
-    console.log(typeof id); // number
-  }
-}
-```
-
 An instance of AJV is created by default, if you want to pass your own, provide a `ajvFactory` to the options.
 
 ```typescript
@@ -207,11 +191,10 @@ import * as Ajv from 'ajv';
 const idParamSchema = object({ id: integer() });
 
 class UsersController extends Contoller {
-  @get('/:id', {
-    params: {
-      jsonSchema: requireProperties(idParamSchema, ['id']),
-      ajvFactory: () => new Ajv({ coerceTypes: true })
-    }
+  @get('/:id')
+  @params({
+    jsonSchema: requireProperties(idParamSchema, ['id']),
+    ajvFactory: () => new Ajv({ coerceTypes: true })
   })
   public async getById(req: Request, res: Response) {
     const { id } = req.params;
