@@ -9,7 +9,7 @@
     "suppressImplicitAnyIndexErrors": true,
     "inlineSourceMap": true,
     "experimentalDecorators": true,
-    "lib": ["es2017"],
+    "lib": ["es2017", "dom"],
     "types": ["node", "mocha", "reflect-metadata", "chai-subset"]
   },
   "exclude": [
