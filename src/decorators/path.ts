@@ -4,7 +4,7 @@ export function path(path: string) {
       protected path = path;
     };
 
-    Object.defineProperty(newClass, 'name', { value: target.name });
+    Object.defineProperty(newClass, 'name', { value: `path(${target.name})` });
 
     return newClass;
   };

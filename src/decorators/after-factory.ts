@@ -13,7 +13,7 @@ export function afterFactory(factory: (...args: any[]) => Handler | ErrorRequest
       }
     };
 
-    Object.defineProperty(newClass, 'name', { value: target.name });
+    Object.defineProperty(newClass, 'name', { value: `afterFactory(${target.name})` });
 
     return newClass;
   };

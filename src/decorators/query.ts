@@ -15,7 +15,6 @@ export function query(options: TQueryOptions) {
 
   return function(target: any, key: string, descriptor: PropertyDescriptor) {
     const currentValue = descriptor.value;
-
     Reflect.defineMetadata(MetadataKey.ROUTE_QUERY, jsonSchema, target, key);
 
     descriptor.value = async function(req: Request) {

@@ -27,6 +27,7 @@ describe('@beforeFactory()', () => {
       public testProperty: string = 'foo';
 
       @get('/')
+
       private async test(req: Request, res: Response) {
         res.status(StatusCode.OK).json({ testProperty: req['testProperty'] });
       }

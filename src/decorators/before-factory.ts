@@ -13,7 +13,7 @@ export function beforeFactory(factory: (...args: any[]) => Handler | ErrorReques
       }
     };
 
-    Object.defineProperty(newClass, 'name', { value: target.name });
+    Object.defineProperty(newClass, 'name', { value: `beforeFactory(${target.name})` });
 
     return newClass;
   };

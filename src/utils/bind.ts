@@ -24,13 +24,13 @@ export function bind(app: Application, container: Container, identifier: symbol,
         // Wrap handler to catch errors. This allows consumers to not have to use try/catch for each handler.
         const fn = async function(req: Request, res: Response, next: NextFunction): Promise<void> {
           try {
-            await route.handler.call(controller, req, res, next);
+            await handler.call(controller, req, res, next);
           } catch (err) {
             next(err);
           }
         };
 
-        Object.defineProperty(fn, 'name', { value: handler.name });
+        Object.defineProperty(fn, 'name', { value: `bound(${handler.name})` });
 
         return fn;
       }
