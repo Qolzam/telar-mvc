@@ -1,4 +1,4 @@
-import { Application, Router, Request, Response, NextFunction } from 'express';
+import { Application, Router, Request, Response, NextFunction, Handler } from 'express';
 import { Container } from 'inversify';
 import { IController } from '../interfaces/controller';
 import { MetadataKey } from '../constants/metadata-key';
@@ -17,8 +17,14 @@ export function bind(app: Application, container: Container, identifier: symbol,
   }
 
   for (const route of routes) {
-    const routeBeforeMiddlewares = Reflect.getMetadata(MetadataKey.ROUTE_BEFORE_MIDDLEWARES, controller, route.handlerName) || [];
-    const routeAfterMiddlewares = Reflect.getMetadata(MetadataKey.ROUTE_AFTER_MIDDLEWARES, controller, route.handlerName) || [];
+    const routeBeforeMiddlewares: Handler[] = (Reflect.getMetadata(MetadataKey.ROUTE_BEFORE_MIDDLEWARES, controller, route.handlerName) || [])
+      .map((item: { isFactory: boolean, factoryOrHandler: (() => Handler) | Handler }) => {
+        return item.isFactory ? item.factoryOrHandler.call(controller) : item.factoryOrHandler;
+      });
+    const routeAfterMiddlewares: Handler[] = (Reflect.getMetadata(MetadataKey.ROUTE_AFTER_MIDDLEWARES, controller, route.handlerName) || [])
+      .map((item: { isFactory: boolean, factoryOrHandler: (() => Handler) | Handler }) => {
+        return item.isFactory ? item.factoryOrHandler.call(controller) : item.factoryOrHandler;
+      });
     const handlers = [...routeBeforeMiddlewares, route.handler, ...routeAfterMiddlewares].map(handler => {
       if (handler.length < 4) {
         // Wrap handler to catch errors. This allows consumers to not have to use try/catch for each handler.

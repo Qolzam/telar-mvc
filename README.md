@@ -116,7 +116,7 @@ class RootController extends Controller {
 
 #### Route level middlewares
 
-Route level middlewares are declared the exact same way as controller middlewares, using `@before` and `@after`. `@beforeFactory` and `@afterFactory` are not needed since the handler's context is already the controller.
+Route level middlewares are declared the exact same way as controller middlewares, using `@before`, `@after` and `@beforeFactory`. `@afterFactory` is currently not supported.
 
 ```typescript
 class UsersController extends Controller {

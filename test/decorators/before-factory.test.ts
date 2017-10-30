@@ -10,37 +10,75 @@ import { before } from '../../src/decorators/before';
 import bodyParser = require('body-parser');
 
 describe('@beforeFactory()', () => {
-  it('should register middleware', async () => {
-    const middlewareFactory = function(this: TestController) {
-      return (req: Request, res: Response, next: NextFunction) => {
-        req['testProperty'] = this.testProperty;
-        next();
+  describe('Class decorator', () => {
+
+    it('should register middleware', async () => {
+      const middlewareFactory = function(this: TestController) {
+        return (req: Request, res: Response, next: NextFunction) => {
+          req['testProperty'] = this.testProperty;
+          next();
+        }
+      };
+
+      const id = Symbol();
+
+      @path('/test')
+      @beforeFactory(middlewareFactory)
+      @before(bodyParser.json())
+      class TestController extends Controller {
+        public testProperty: string = 'foo';
+
+        @get('/')
+
+        private async test(req: Request, res: Response) {
+          res.status(StatusCode.OK).json({ testProperty: req['testProperty'] });
+        }
       }
-    };
 
-    const id = Symbol();
+      const sandbox = new Sandbox({
+        controllersMap: new Map([
+          [id, TestController]
+        ])
+      });
 
-    @path('/test')
-    @beforeFactory(middlewareFactory)
-    @before(bodyParser.json())
-    class TestController extends Controller {
-      public testProperty: string = 'foo';
-
-      @get('/')
-
-      private async test(req: Request, res: Response) {
-        res.status(StatusCode.OK).json({ testProperty: req['testProperty'] });
-      }
-    }
-
-    const sandbox = new Sandbox({
-      controllersMap: new Map([
-        [id, TestController]
-      ])
+      await supertest(sandbox.getApp())
+        .get('/test')
+        .expect(StatusCode.OK, { testProperty: 'foo' });
     });
+  });
 
-    await supertest(sandbox.getApp())
-      .get('/test')
-      .expect(StatusCode.OK, { testProperty: 'foo' });
+  describe('Method decorator', () => {
+    it('should register middleware', async () => {
+      const middlewareFactory = function(this: TestController) {
+        return (req: Request, res: Response, next: NextFunction) => {
+          req['testProperty'] = this.testProperty;
+          next();
+        }
+      };
+
+      const id = Symbol();
+
+      @path('/test')
+      @before(bodyParser.json())
+      class TestController extends Controller {
+        public testProperty: string = 'foo';
+
+        @get('/')
+        @beforeFactory(middlewareFactory)
+        private async test(req: Request, res: Response) {
+          res.status(StatusCode.OK).json({ testProperty: req['testProperty'] });
+        }
+      }
+
+      const sandbox = new Sandbox({
+        controllersMap: new Map([
+          [id, TestController]
+        ])
+      });
+
+      await supertest(sandbox.getApp())
+        .get('/test')
+        .expect(StatusCode.OK, { testProperty: 'foo' });
+    });
   });
 });
