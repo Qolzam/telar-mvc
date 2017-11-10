@@ -3,7 +3,7 @@ import { path } from '../../src/decorators/path';
 import { Request, Response } from 'express';
 import { get } from '../../src/decorators/get';
 import { response } from '../../src/decorators/response';
-import { boolean, object } from '@bluejay/schema';
+import { boolean, dateTime, object } from '@bluejay/schema';
 import { StatusCode } from '@bluejay/status-code';
 import { Sandbox } from '../resources/classes/sandbox';
 import supertest = require('supertest');
@@ -78,6 +78,62 @@ describe('@response()', () => {
       })
       private async test(req: Request, res: Response) {
         res.json({ active: 123 });
+      }
+    }
+
+    const sandbox = new Sandbox({
+      controllersMap: new Map([
+        [id, TestController]
+      ])
+    });
+
+    await supertest(sandbox.getApp())
+      .get('/test')
+      .expect(StatusCode.INTERNAL_SERVER_ERROR);
+  });
+
+  it('should accepted an coerced date', async () => {
+    const id = Symbol();
+
+    @path('/test')
+    @after(errorHandler)
+    class TestController extends Controller {
+      @get('/')
+      @response({
+        statusCode: StatusCode.OK,
+        jsonSchema: object({ created_at: dateTime() }),
+        coerceToJSON: true
+      })
+      private async test(req: Request, res: Response) {
+        res.json({ created_at: new Date() });
+      }
+    }
+
+    const sandbox = new Sandbox({
+      controllersMap: new Map([
+        [id, TestController]
+      ])
+    });
+
+    await supertest(sandbox.getApp())
+      .get('/test')
+      .expect(StatusCode.INTERNAL_SERVER_ERROR);
+  });
+
+  it('should reject an uncoerced date', async () => {
+    const id = Symbol();
+
+    @path('/test')
+    @after(errorHandler)
+    class TestController extends Controller {
+      @get('/')
+      @response({
+        statusCode: StatusCode.OK,
+        jsonSchema: object({ created_at: dateTime() }),
+        coerceToJSON: false
+      })
+      private async test(req: Request, res: Response) {
+        res.json({ created_at: new Date() });
       }
     }
 

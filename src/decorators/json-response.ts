@@ -29,6 +29,9 @@ export function jsonResponse(options: TJSONResponseOptions) {
       const oldJSON = res.json.bind(res);
 
       res.json = (body: object): Response => { // Override res.json
+        if (options.coerceToJSON) {
+          body = JSON.parse(JSON.stringify(body));
+        }
         if (is2xx(res.statusCode as StatusCode)) {
           if (validator(body)) {
             if (!isStatusCodesArray) {
