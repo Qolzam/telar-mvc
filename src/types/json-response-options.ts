@@ -6,4 +6,5 @@ export type TJSONResponseOptions = TCommonResponseOptions & {
   jsonSchema: TJSONSchema;
   contentType?: 'application/json';
   ajvFactory?: () => Ajv;
+  coerceToJSON?: boolean;
 };
