@@ -148,7 +148,7 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 }
 </code></pre>
 				<h4 id="route-level-middlewares">Route level middlewares</h4>
-				<p>Route level middlewares are declared the exact same way as controller middlewares, using <code>@before</code> and <code>@after</code>. <code>@beforeFactory</code> and <code>@afterFactory</code> are not needed since the handler&#39;s context is already the controller.</p>
+				<p>Route level middlewares are declared the exact same way as controller middlewares, using <code>@before</code>, <code>@after</code> and <code>@beforeFactory</code>. <code>@afterFactory</code> is currently not supported.</p>
 				<pre><code class="lang-typescript"><span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
   <span class="hljs-keyword">private</span> foo: <span class="hljs-built_in">string</span> = <span class="hljs-string">'bar'</span>;
 
@@ -353,6 +353,8 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
   }
 }
 </code></pre>
+				<h2 id="api-documentation">API Documentation</h2>
+				<p>See <a href="https://bluebirds-blue-jay.github.io/inversify-controller/">Github Pages</a>.</p>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -388,6 +390,9 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#tjsonresponseoptions" class="tsd-kind-icon">TJSONResponse<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#tmiddlewaredefinition" class="tsd-kind-icon">TMiddleware<wbr>Definition</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#tparamsoptions" class="tsd-kind-icon">TParams<wbr>Options</a>
