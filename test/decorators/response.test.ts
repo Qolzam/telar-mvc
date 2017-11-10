@@ -117,7 +117,7 @@ describe('@response()', () => {
 
     await supertest(sandbox.getApp())
       .get('/test')
-      .expect(StatusCode.INTERNAL_SERVER_ERROR);
+      .expect(StatusCode.OK);
   });
 
   it('should reject an uncoerced date', async () => {
