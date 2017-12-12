@@ -1,11 +1,12 @@
 import * as AJV from 'ajv';
-import { Request } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { BadRequestRestError } from '@bluejay/rest-errors';
 import { MetadataKey } from '../constants/metadata-key';
 import { TQueryOptions } from '../types/query-options';
 import { translateAjvError } from '../utils/translate-ajv-error';
 import { TJSONSchema } from '@bluejay/schema';
 import { isJSONSchema } from '../utils/is-json-schema';
+import { before } from './before';
 
 const defaultAjvInstance = new AJV({ coerceTypes: true, useDefaults: true });
 const defaultAjvFactory = () => defaultAjvInstance;
@@ -19,10 +20,9 @@ export function query(options: TQueryOptions | TJSONSchema) {
   const validator = ajvInstance.compile(jsonSchema);
 
   return function(target: any, key: string, descriptor: PropertyDescriptor) {
-    const currentValue = descriptor.value;
     Reflect.defineMetadata(MetadataKey.ROUTE_QUERY, jsonSchema, target, key);
 
-    descriptor.value = async function(req: Request) {
+    before(async (req: Request, res: Response, next: NextFunction) => {
       let query = req.query;
 
       if (validator(query)) {
@@ -43,10 +43,12 @@ export function query(options: TQueryOptions | TJSONSchema) {
             query[groupName] = group;
           }
         }
-        return await currentValue.apply(this, arguments);
+
+        next();
+      } else {
+        throw translateAjvError(BadRequestRestError, validator.errors[0], jsonSchema, query);
       }
 
-      throw translateAjvError(BadRequestRestError, validator.errors[0], jsonSchema, query);
-    };
+    })(target, key, descriptor);
   }
 }

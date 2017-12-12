@@ -1,10 +1,11 @@
 import * as AJV from 'ajv';
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { MetadataKey } from '../constants/metadata-key';
 import { InternalServerErrorRestError } from '@bluejay/rest-errors';
 import { translateAjvError } from '../utils/translate-ajv-error';
 import { TJSONResponseOptions } from '../types/json-response-options';
 import { is2xx, StatusCode } from '@bluejay/status-code';
+import { before } from './before';
 
 const defaultAjvInstance = new AJV({ removeAdditional: true });
 
@@ -18,14 +19,12 @@ export function jsonResponse(options: TJSONResponseOptions) {
   const isStatusCodesArray = Array.isArray(options.statusCode);
 
   return function(target: any, key: string, descriptor: PropertyDescriptor) {
-    const currentValue = descriptor.value;
-
     Reflect.defineMetadata(MetadataKey.ROUTE_RESPONSE, {
       statusCodes: isStatusCodesArray ? options.statusCode : [options.statusCode],
       jsonSchema: options.jsonSchema
     }, target, key);
 
-    descriptor.value = async function(req: Request, res: Response) {
+    before((req: Request, res: Response, next: NextFunction) => {
       const oldJSON = res.json.bind(res);
 
       res.json = (body: object): Response => { // Override res.json
@@ -44,7 +43,7 @@ export function jsonResponse(options: TJSONResponseOptions) {
         return oldJSON(body);
       };
 
-      await currentValue.apply(this, arguments);
-    };
+      next();
+    })(target, key, descriptor);
   }
 }

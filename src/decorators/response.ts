@@ -2,7 +2,8 @@ import { TCustomResponseOptions } from '../types/custom-response-options';
 import { isJSONResponseOptions } from '../utils/is-json-response-options';
 import { jsonResponse } from './json-response';
 import { TJSONResponseOptions } from '../types/json-response-options';
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import { before } from './before';
 
 export function response(options: TCustomResponseOptions | TJSONResponseOptions) {
   if (isJSONResponseOptions(options)) {
@@ -10,11 +11,10 @@ export function response(options: TCustomResponseOptions | TJSONResponseOptions)
   }
 
   return function(target: any, key: string, descriptor: PropertyDescriptor) {
-    const currentValue = descriptor.value;
-    descriptor.value = async function(req: Request, res: Response) {
+    before((req: Request, res: Response, next: NextFunction) => {
       res.status(options.statusCode as number);
       res.set('Content-Type', options.contentType);
-      return await currentValue.apply(this, arguments);
-    }
+      next();
+    })(target, key, descriptor);
   }
 }
