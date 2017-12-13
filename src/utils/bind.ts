@@ -25,7 +25,7 @@ export function bind(app: Application, container: Container, identifier: symbol,
       .map((item: { isFactory: boolean, factoryOrHandler: (() => Handler) | Handler }) => {
         return item.isFactory ? item.factoryOrHandler.call(controller) : item.factoryOrHandler;
       });
-    const handlers = [...routeBeforeMiddlewares, route.handler, ...routeAfterMiddlewares].map(handler => {
+    const handlers = [...routeBeforeMiddlewares.reverse(), route.handler, ...routeAfterMiddlewares.reverse()].map(handler => {
       if (handler.length < 4) {
         // Wrap handler to catch errors. This allows consumers to not have to use try/catch for each handler.
         const fn = async function(req: Request, res: Response, next: NextFunction): Promise<void> {
