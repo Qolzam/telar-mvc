@@ -95,6 +95,7 @@
 								<li class="tsd-kind-type-alias"><a href="globals.html#tparamsoptions" class="tsd-kind-icon">TParams<wbr>Options</a></li>
 								<li class="tsd-kind-type-alias"><a href="globals.html#tqueryoptions" class="tsd-kind-icon">TQuery<wbr>Options</a></li>
 								<li class="tsd-kind-type-alias"><a href="globals.html#troutedescription" class="tsd-kind-icon">TRoute<wbr>Description</a></li>
+								<li class="tsd-kind-type-alias"><a href="globals.html#tschemavalidationerrorfactory" class="tsd-kind-icon">TSchema<wbr>Validation<wbr>Error<wbr>Factory</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section tsd-is-not-exported">
@@ -114,6 +115,7 @@
 								<li class="tsd-kind-function"><a href="globals.html#bind" class="tsd-kind-icon">bind</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#body" class="tsd-kind-icon">body</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#child" class="tsd-kind-icon">child</a></li>
+								<li class="tsd-kind-function tsd-has-type-parameter"><a href="globals.html#createschemavalidationerror" class="tsd-kind-icon">create<wbr>Schema<wbr>Validation<wbr>Error</a></li>
 								<li class="tsd-kind-function tsd-is-not-exported"><a href="globals.html#defaultajvfactory" class="tsd-kind-icon">default<wbr>Ajv<wbr>Factory</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#del" class="tsd-kind-icon">del</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#get" class="tsd-kind-icon">get</a></li>
@@ -134,7 +136,6 @@
 								<li class="tsd-kind-function"><a href="globals.html#put" class="tsd-kind-icon">put</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#query" class="tsd-kind-icon">query</a></li>
 								<li class="tsd-kind-function"><a href="globals.html#response" class="tsd-kind-icon">response</a></li>
-								<li class="tsd-kind-function"><a href="globals.html#translateajverror" class="tsd-kind-icon">translate<wbr>Ajv<wbr>Error</a></li>
 							</ul>
 						</section>
 					</div>
@@ -148,7 +149,7 @@
 					<div class="tsd-signature tsd-kind-icon">TCommon<wbr>Response<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/types/common-response-options.ts#L3">types/common-response-options.ts:3</a></li>
+							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/types/common-response-options.ts#L3">types/common-response-options.ts:3</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -166,7 +167,7 @@
 					<div class="tsd-signature tsd-kind-icon">TCustom<wbr>Body<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/types/custom-body-options.ts#L1">types/custom-body-options.ts:1</a></li>
+							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/types/custom-body-options.ts#L1">types/custom-body-options.ts:1</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -184,7 +185,7 @@
 					<div class="tsd-signature tsd-kind-icon">TCustom<wbr>Response<wbr>Options<span class="tsd-signature-symbol">:</span> <a href="globals.html#tcommonresponseoptions" class="tsd-signature-type">TCommonResponseOptions</a><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/types/custom-response-options.ts#L3">types/custom-response-options.ts:3</a></li>
+							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/types/custom-response-options.ts#L3">types/custom-response-options.ts:3</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -194,7 +195,7 @@
 					<div class="tsd-signature tsd-kind-icon">TJSONBody<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/types/json-body-options.ts#L4">types/json-body-options.ts:4</a></li>
+							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/types/json-body-options.ts#L5">types/json-body-options.ts:5</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -218,6 +219,9 @@
 							<li class="tsd-parameter">
 								<h5>json<wbr>Schema<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TJSONSchema</span></h5>
 							</li>
+							<li class="tsd-parameter">
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> validation<wbr>Error<wbr>Factory<span class="tsd-signature-symbol">?: </span><a href="globals.html#tschemavalidationerrorfactory" class="tsd-signature-type">TSchemaValidationErrorFactory</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol">&gt;</span></h5>
+							</li>
 						</ul>
 					</div>
 				</section>
@@ -227,7 +231,7 @@
 					<div class="tsd-signature tsd-kind-icon">TJSONResponse<wbr>Options<span class="tsd-signature-symbol">:</span> <a href="globals.html#tcommonresponseoptions" class="tsd-signature-type">TCommonResponseOptions</a><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/types/json-response-options.ts#L5">types/json-response-options.ts:5</a></li>
+							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/types/json-response-options.ts#L6">types/json-response-options.ts:6</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -237,7 +241,7 @@
 					<div class="tsd-signature tsd-kind-icon">TMiddleware<wbr>Definition<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/types/middleware-definition.ts#L3">types/middleware-definition.ts:3</a></li>
+							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/types/middleware-definition.ts#L3">types/middleware-definition.ts:3</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -258,7 +262,7 @@
 					<div class="tsd-signature tsd-kind-icon">TParams<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/types/params-options.ts#L4">types/params-options.ts:4</a></li>
+							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/types/params-options.ts#L5">types/params-options.ts:5</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -282,6 +286,9 @@
 							<li class="tsd-parameter">
 								<h5>json<wbr>Schema<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TJSONSchema</span></h5>
 							</li>
+							<li class="tsd-parameter">
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> validation<wbr>Error<wbr>Factory<span class="tsd-signature-symbol">?: </span><a href="globals.html#tschemavalidationerrorfactory" class="tsd-signature-type">TSchemaValidationErrorFactory</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol">&gt;</span></h5>
+							</li>
 						</ul>
 					</div>
 				</section>
@@ -291,7 +298,7 @@
 					<div class="tsd-signature tsd-kind-icon">TQuery<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/types/query-options.ts#L4">types/query-options.ts:4</a></li>
+							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/types/query-options.ts#L5">types/query-options.ts:5</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -352,6 +359,9 @@
 									</li>
 								</ul>
 							</li>
+							<li class="tsd-parameter">
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> validation<wbr>Error<wbr>Factory<span class="tsd-signature-symbol">?: </span><a href="globals.html#tschemavalidationerrorfactory" class="tsd-signature-type">TSchemaValidationErrorFactory</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol">&gt;</span></h5>
+							</li>
 						</ul>
 					</div>
 				</section>
@@ -361,7 +371,7 @@
 					<div class="tsd-signature tsd-kind-icon">TRoute<wbr>Description<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/types/route-description.ts#L3">types/route-description.ts:3</a></li>
+							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/types/route-description.ts#L3">types/route-description.ts:3</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -400,6 +410,40 @@
 						</ul>
 					</div>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias">
+					<a name="tschemavalidationerrorfactory" class="tsd-anchor"></a>
+					<h3>TSchema<wbr>Validation<wbr>Error<wbr>Factory</h3>
+					<div class="tsd-signature tsd-kind-icon">TSchema<wbr>Validation<wbr>Error<wbr>Factory<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/types/schema-validation-error-factory.ts#L3">types/schema-validation-error-factory.ts:3</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-siganture">
+								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-alias tsd-is-not-exported">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>ajvError<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ErrorObject</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">D</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>ajvError: <span class="tsd-signature-type">ErrorObject</span></h5>
+											</li>
+											<li>
+												<h5>data: <span class="tsd-signature-type">D</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">T</span></h4>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
 				<h2>Variables</h2>
@@ -409,10 +453,10 @@
 					<div class="tsd-signature tsd-kind-icon">default<wbr>Ajv<wbr>Instance<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Ajv</span><span class="tsd-signature-symbol"> =&nbsp;new AJV({ coerceTypes: true, useDefaults: true })</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/body.ts#L10">decorators/body.ts:10</a></li>
-							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/json-response.ts#L9">decorators/json-response.ts:9</a></li>
-							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/params.ts#L10">decorators/params.ts:10</a></li>
-							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/query.ts#L10">decorators/query.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/body.ts#L11">decorators/body.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/json-response.ts#L10">decorators/json-response.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/params.ts#L11">decorators/params.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/query.ts#L11">decorators/query.ts:11</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -429,7 +473,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/accepts.ts#L4">decorators/accepts.ts:4</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/accepts.ts#L5">decorators/accepts.ts:5</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -452,7 +496,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/after.ts#L9">decorators/after.ts:9</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/after.ts#L9">decorators/after.ts:9</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -475,7 +519,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/after-factory.ts#L7">decorators/after-factory.ts:7</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/after-factory.ts#L7">decorators/after-factory.ts:7</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -519,7 +563,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/before.ts#L7">decorators/before.ts:7</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/before.ts#L7">decorators/before.ts:7</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -542,7 +586,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/before-factory.ts#L9">decorators/before-factory.ts:9</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/before-factory.ts#L9">decorators/before-factory.ts:9</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -580,7 +624,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/utils/bind.ts#L8">utils/bind.ts:8</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/utils/bind.ts#L8">utils/bind.ts:8</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -612,7 +656,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/body.ts#L13">decorators/body.ts:13</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/body.ts#L14">decorators/body.ts:14</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -635,7 +679,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/child.ts#L3">decorators/child.ts:3</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/child.ts#L3">decorators/child.ts:3</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -645,6 +689,41 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-has-type-parameter">
+					<a name="createschemavalidationerror" class="tsd-anchor"></a>
+					<h3>create<wbr>Schema<wbr>Validation<wbr>Error</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-has-type-parameter">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Schema<wbr>Validation<wbr>Error&lt;T&gt;<span class="tsd-signature-symbol">(</span>ajvError<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ErrorObject</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, ctorOrFactory<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TConstructible</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><a href="globals.html#tschemavalidationerrorfactory" class="tsd-signature-type">TSchemaValidationErrorFactory</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/utils/create-schema-validation-error.ts#L6">utils/create-schema-validation-error.ts:6</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>T<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Error</span></h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>ajvError: <span class="tsd-signature-type">ErrorObject</span></h5>
+								</li>
+								<li>
+									<h5>data: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>ctorOrFactory: <span class="tsd-signature-type">TConstructible</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><a href="globals.html#tschemavalidationerrorfactory" class="tsd-signature-type">TSchemaValidationErrorFactory</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">T</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -661,7 +740,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/body.ts#L11">decorators/body.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/body.ts#L12">decorators/body.ts:12</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Ajv</span></h4>
@@ -669,7 +748,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/json-response.ts#L11">decorators/json-response.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/json-response.ts#L12">decorators/json-response.ts:12</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Ajv</span></h4>
@@ -677,7 +756,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/params.ts#L11">decorators/params.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/params.ts#L12">decorators/params.ts:12</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Ajv</span></h4>
@@ -685,7 +764,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/query.ts#L11">decorators/query.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/query.ts#L12">decorators/query.ts:12</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Ajv</span></h4>
@@ -702,7 +781,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/del.ts#L5">decorators/del.ts:5</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/del.ts#L5">decorators/del.ts:5</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -725,7 +804,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/get.ts#L5">decorators/get.ts:5</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/get.ts#L5">decorators/get.ts:5</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -748,7 +827,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/head.ts#L5">decorators/head.ts:5</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/head.ts#L5">decorators/head.ts:5</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -771,7 +850,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/is.ts#L4">decorators/is.ts:4</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/is.ts#L5">decorators/is.ts:5</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -794,7 +873,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/utils/is-class-decorator.ts#L3">utils/is-class-decorator.ts:3</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/utils/is-class-decorator.ts#L3">utils/is-class-decorator.ts:3</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -820,7 +899,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/utils/is-common-reponse-options.ts#L5">utils/is-common-reponse-options.ts:5</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/utils/is-common-reponse-options.ts#L5">utils/is-common-reponse-options.ts:5</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -843,7 +922,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/utils/is-custom-body-options.ts#L4">utils/is-custom-body-options.ts:4</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/utils/is-custom-body-options.ts#L4">utils/is-custom-body-options.ts:4</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -866,7 +945,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/utils/is-json-response-options.ts#L5">utils/is-json-response-options.ts:5</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/utils/is-json-response-options.ts#L5">utils/is-json-response-options.ts:5</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -889,7 +968,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/utils/is-json-schema.ts#L4">utils/is-json-schema.ts:4</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/utils/is-json-schema.ts#L4">utils/is-json-schema.ts:4</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -912,7 +991,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/utils/is-property-decorator.ts#L1">utils/is-property-decorator.ts:1</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/utils/is-property-decorator.ts#L1">utils/is-property-decorator.ts:1</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -938,7 +1017,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/json-response.ts#L15">decorators/json-response.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/json-response.ts#L16">decorators/json-response.ts:16</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -961,7 +1040,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/method.ts#L6">decorators/method.ts:6</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/method.ts#L6">decorators/method.ts:6</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -987,7 +1066,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/params.ts#L13">decorators/params.ts:13</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/params.ts#L14">decorators/params.ts:14</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1010,7 +1089,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/patch.ts#L5">decorators/patch.ts:5</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/patch.ts#L5">decorators/patch.ts:5</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1033,7 +1112,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/path.ts#L1">decorators/path.ts:1</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/path.ts#L1">decorators/path.ts:1</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1056,7 +1135,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/post.ts#L5">decorators/post.ts:5</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/post.ts#L5">decorators/post.ts:5</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1079,7 +1158,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/put.ts#L5">decorators/put.ts:5</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/put.ts#L5">decorators/put.ts:5</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1102,7 +1181,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/query.ts#L13">decorators/query.ts:13</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/query.ts#L14">decorators/query.ts:14</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1125,7 +1204,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/decorators/response.ts#L7">decorators/response.ts:7</a></li>
+									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/a659b4d/src/decorators/response.ts#L9">decorators/response.ts:9</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1135,38 +1214,6 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="translateajverror" class="tsd-anchor"></a>
-					<h3>translate<wbr>Ajv<wbr>Error</h3>
-					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">translate<wbr>Ajv<wbr>Error<span class="tsd-signature-symbol">(</span>ctor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TConstructible</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">RestError</span><span class="tsd-signature-symbol">&gt;</span>, ajvErr<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ErrorObject</span>, schema<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RestError</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/bluebirds-blue-jay/inversify-controller/blob/0d28bd7/src/utils/translate-ajv-error.ts#L5">utils/translate-ajv-error.ts:5</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>ctor: <span class="tsd-signature-type">TConstructible</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">RestError</span><span class="tsd-signature-symbol">&gt;</span></h5>
-								</li>
-								<li>
-									<h5>ajvErr: <span class="tsd-signature-type">ErrorObject</span></h5>
-								</li>
-								<li>
-									<h5>schema: <span class="tsd-signature-type">object</span></h5>
-								</li>
-								<li>
-									<h5>data: <span class="tsd-signature-type">any</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">RestError</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -1218,6 +1265,9 @@
 					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#troutedescription" class="tsd-kind-icon">TRoute<wbr>Description</a>
 					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="globals.html#tschemavalidationerrorfactory" class="tsd-kind-icon">TSchema<wbr>Validation<wbr>Error<wbr>Factory</a>
+					</li>
 					<li class=" tsd-kind-variable tsd-is-not-exported">
 						<a href="globals.html#defaultajvinstance" class="tsd-kind-icon">default<wbr>Ajv<wbr>Instance</a>
 					</li>
@@ -1244,6 +1294,9 @@
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#child" class="tsd-kind-icon">child</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="globals.html#createschemavalidationerror" class="tsd-kind-icon">create<wbr>Schema<wbr>Validation<wbr>Error</a>
 					</li>
 					<li class=" tsd-kind-function tsd-is-not-exported">
 						<a href="globals.html#defaultajvfactory" class="tsd-kind-icon">default<wbr>Ajv<wbr>Factory</a>
@@ -1304,9 +1357,6 @@
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="globals.html#response" class="tsd-kind-icon">response</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="globals.html#translateajverror" class="tsd-kind-icon">translate<wbr>Ajv<wbr>Error</a>
 					</li>
 				</ul>
 			</nav>
