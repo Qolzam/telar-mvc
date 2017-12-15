@@ -9,6 +9,7 @@ import { integer, object, requireProperties } from '@bluejay/schema';
 import supertest = require('supertest');
 import { Sandbox } from '../resources/classes/sandbox';
 import { errorHandler } from '../resources/middlewares/error-handler';
+import { ForbiddenRestError } from '@bluejay/rest-errors';
 
 describe('@params()', () => {
   function doTest(sandbox: Sandbox) {
@@ -47,6 +48,39 @@ describe('@params()', () => {
     });
 
     doTest(sandbox);
+
+    it('should throw a custom error', async () => {
+      const id = Symbol();
+
+      class MyError extends ForbiddenRestError {
+        public code = 'my-error';
+      }
+
+      @path('/test')
+      @after(errorHandler)
+      class TestController extends Controller {
+        @get('/:id')
+        @params({
+          jsonSchema: requireProperties(object({ id: integer() }), ['id']),
+          validationErrorFactory: () => new MyError('')
+        })
+        private async getById(req: Request, res: Response) {
+          res.status(StatusCode.OK).json(req.params);
+        }
+      }
+
+      const sandbox = new Sandbox({
+        controllersMap: new Map([
+          [id, TestController]
+        ])
+      });
+
+      const res = await supertest(sandbox.getApp())
+        .get('/test/true')
+        .expect(StatusCode.FORBIDDEN);
+
+      expect(res.body.code).to.equal('my-error');
+    });
   });
 
   describe('Schema only', () => {

@@ -2,7 +2,7 @@ import * as AJV from 'ajv';
 import { NextFunction, Request, Response } from 'express';
 import { MetadataKey } from '../constants/metadata-key';
 import { InternalServerErrorRestError } from '@bluejay/rest-errors';
-import { translateAjvError } from '../utils/translate-ajv-error';
+import { createSchemaValidationError } from '../utils/create-schema-validation-error';
 import { TJSONResponseOptions } from '../types/json-response-options';
 import { is2xx, StatusCode } from '@bluejay/status-code';
 import { before } from './before';
@@ -37,7 +37,7 @@ export function jsonResponse(options: TJSONResponseOptions) {
               res.status(options.statusCode as number);
             }
           } else {
-            throw translateAjvError(InternalServerErrorRestError, validator.errors[0], options.jsonSchema, body);
+            throw createSchemaValidationError(validator.errors[0], body, options.validationErrorFactory || InternalServerErrorRestError);
           }
         }
         return oldJSON(body);

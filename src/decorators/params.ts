@@ -2,7 +2,7 @@ import * as AJV from 'ajv';
 import { NextFunction, Request, Response } from 'express';
 import * as RestErrors from '@bluejay/rest-errors';
 import { MetadataKey } from '../constants/metadata-key';
-import { translateAjvError } from '../utils/translate-ajv-error';
+import { createSchemaValidationError } from '../utils/create-schema-validation-error';
 import { TParamsOptions } from '../types/params-options';
 import { TJSONSchema } from '@bluejay/schema';
 import { isJSONSchema } from '../utils/is-json-schema';
@@ -21,7 +21,7 @@ export function params(options: TParamsOptions | TJSONSchema) {
 
     before((req: Request, res: Response, next: NextFunction) => {
       if (!validator(req.params)) {
-        throw translateAjvError(RestErrors.BadRequest, validator.errors[0], jsonSchema, req.params);
+        throw createSchemaValidationError(validator.errors[0], req.params, (<TParamsOptions>options).validationErrorFactory || RestErrors.BadRequest);
       } else {
         next();
       }

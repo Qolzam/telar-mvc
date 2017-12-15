@@ -9,5 +9,5 @@ export function errorHandler(err: Error, req: Request, res: Response, next: Next
     res.status(StatusCode.INTERNAL_SERVER_ERROR);
   }
 
-  res.json({ error: true, message: err.message });
+  res.json({ error: true, message: err.message, code: (err as IRestError).code });
 }

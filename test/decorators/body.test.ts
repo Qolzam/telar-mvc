@@ -11,6 +11,7 @@ import { StatusCode } from '@bluejay/status-code';
 import supertest = require('supertest');
 import { before } from '../../src/decorators/before';
 import bodyParser = require('body-parser');
+import { ForbiddenRestError } from '@bluejay/rest-errors';
 
 describe('@body()', () => {
   function doTest(sandbox: Sandbox) {
@@ -33,7 +34,6 @@ describe('@body()', () => {
         .post('/test')
         .send({ foo: 'foo', bar: 'true', baz: [12] })
         .expect(StatusCode.CREATED, { foo: 'foo', bar: true, baz: ['12'] });
-
     });
   }
 
@@ -64,6 +64,43 @@ describe('@body()', () => {
     });
 
     doTest(sandbox);
+
+    it('should throw a custom error', async () => {
+      class MyError extends ForbiddenRestError {
+        public code = 'my-error';
+      }
+
+      @path('/test')
+      @before(bodyParser.json())
+      @after(errorHandler)
+      class TestController extends Controller {
+        @post('/')
+        @body({
+          jsonSchema: requireProperties(object({
+            foo: string(),
+            bar: boolean(),
+            baz: tuple([string()])
+          }), ['foo', 'bar']),
+          validationErrorFactory: () => new MyError('')
+        })
+        private async test(req: Request, res: Response) {
+          res.status(StatusCode.CREATED).json(req.body);
+        }
+      }
+
+      const sandbox = new Sandbox({
+        controllersMap: new Map([
+          [id, TestController]
+        ])
+      });
+
+      const res = await supertest(sandbox.getApp())
+        .post('/test')
+        .send({ foo: '12' })
+        .expect(StatusCode.FORBIDDEN);
+
+      expect(res.body.code).to.equal('my-error');
+    });
   });
 
   describe('Schema only', () => {

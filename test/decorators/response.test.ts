@@ -9,6 +9,7 @@ import { Sandbox } from '../resources/classes/sandbox';
 import supertest = require('supertest');
 import { after } from '../../src/decorators/after';
 import { errorHandler } from '../resources/middlewares/error-handler';
+import { ForbiddenRestError } from '@bluejay/rest-errors';
 
 describe('@response()', () => {
   it('should set status code and content type', async () => {
@@ -173,5 +174,39 @@ describe('@response()', () => {
     await supertest(sandbox.getApp())
       .get('/test')
       .expect(StatusCode.OK, { active: true });
+  });
+
+  it('should throw a custom error', async () => {
+    const id = Symbol();
+
+    class MyError extends ForbiddenRestError {
+      public code = 'my-error';
+    }
+
+    @path('/test')
+    @after(errorHandler)
+    class TestController extends Controller {
+      @get('/')
+      @response({
+        statusCode: StatusCode.OK,
+        jsonSchema: object({ active: boolean() }, { required: ['active'] }),
+        validationErrorFactory: () => new MyError('')
+      })
+      private async test(req: Request, res: Response) {
+        res.json({});
+      }
+    }
+
+    const sandbox = new Sandbox({
+      controllersMap: new Map([
+        [id, TestController]
+      ])
+    });
+
+    const res = await supertest(sandbox.getApp())
+      .get('/test')
+      .expect(StatusCode.FORBIDDEN);
+
+    expect(res.body.code).to.equal('my-error');
   });
 });

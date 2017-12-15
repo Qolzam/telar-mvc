@@ -10,6 +10,7 @@ import { after } from '../../src/decorators/after';
 import { errorHandler } from '../resources/middlewares/error-handler';
 import { Sandbox } from '../resources/classes/sandbox';
 import supertest = require('supertest');
+import { ForbiddenRestError } from '@bluejay/rest-errors';
 
 describe('@query()', () => {
   function setup(options: TQueryOptions | TJSONSchema) {
@@ -81,6 +82,24 @@ describe('@query()', () => {
         .get('/test')
         .query({ isActive: true, other: 'foo' })
         .expect(StatusCode.OK, { active: true, other: 'foo' });
+    });
+
+    it('should throw a custom error', async () => {
+      class MyError extends ForbiddenRestError {
+        public code = 'my-error';
+      }
+
+      const sandbox = setup({
+        jsonSchema: object({ active: boolean(), other: string() }),
+        validationErrorFactory: () => new MyError('')
+      });
+
+      const res = await supertest(sandbox.getApp())
+        .get('/test')
+        .query({ active: 2345 })
+        .expect(StatusCode.FORBIDDEN);
+
+      expect(res.body.code).to.equal('my-error');
     });
   });
 

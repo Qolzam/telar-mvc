@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import { BadRequestRestError } from '@bluejay/rest-errors';
 import { MetadataKey } from '../constants/metadata-key';
 import { TQueryOptions } from '../types/query-options';
-import { translateAjvError } from '../utils/translate-ajv-error';
+import { createSchemaValidationError } from '../utils/create-schema-validation-error';
 import { TJSONSchema } from '@bluejay/schema';
 import { isJSONSchema } from '../utils/is-json-schema';
 import { before } from './before';
@@ -46,7 +46,7 @@ export function query(options: TQueryOptions | TJSONSchema) {
 
         next();
       } else {
-        throw translateAjvError(BadRequestRestError, validator.errors[0], jsonSchema, query);
+        throw createSchemaValidationError(validator.errors[0], query, (<TQueryOptions>options).validationErrorFactory || BadRequestRestError);
       }
 
     })(target, key, descriptor);
