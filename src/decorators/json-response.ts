@@ -1,11 +1,10 @@
 import * as AJV from 'ajv';
 import { NextFunction, Request, Response } from 'express';
 import { MetadataKey } from '../constants/metadata-key';
-import { InternalServerErrorRestError } from '@bluejay/rest-errors';
-import { createSchemaValidationError } from '../utils/create-schema-validation-error';
 import { TJSONResponseOptions } from '../types/json-response-options';
 import { is2xx, StatusCode } from '@bluejay/status-code';
 import { before } from './before';
+import { Config } from '../config';
 
 const defaultAjvInstance = new AJV({ removeAdditional: true });
 
@@ -37,7 +36,7 @@ export function jsonResponse(options: TJSONResponseOptions) {
               res.status(options.statusCode as number);
             }
           } else {
-            throw createSchemaValidationError(validator.errors[0], body, options.validationErrorFactory || InternalServerErrorRestError);
+            throw Config.get('jsonResponseValidationErrorFactory', options.validationErrorFactory)(validator.errors[0], body);
           }
         }
         return oldJSON(body);

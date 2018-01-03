@@ -1,12 +1,11 @@
 import * as AJV from 'ajv';
 import { NextFunction, Request, Response } from 'express';
-import { BadRequestRestError } from '@bluejay/rest-errors';
 import { MetadataKey } from '../constants/metadata-key';
 import { TQueryOptions } from '../types/query-options';
-import { createSchemaValidationError } from '../utils/create-schema-validation-error';
 import { TJSONSchema } from '@bluejay/schema';
 import { isJSONSchema } from '../utils/is-json-schema';
 import { before } from './before';
+import { Config } from '../config';
 
 const defaultAjvInstance = new AJV({ coerceTypes: true, useDefaults: true });
 const defaultAjvFactory = () => defaultAjvInstance;
@@ -46,7 +45,7 @@ export function query(options: TQueryOptions | TJSONSchema) {
 
         next();
       } else {
-        throw createSchemaValidationError(validator.errors[0], query, (<TQueryOptions>options).validationErrorFactory || BadRequestRestError);
+        throw Config.get('queryValidationErrorFactory', (<TQueryOptions>options).validationErrorFactory)(validator.errors[0], query);
       }
 
     })(target, key, descriptor);
