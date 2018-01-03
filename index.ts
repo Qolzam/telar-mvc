@@ -25,6 +25,7 @@ export { afterFactory } from './src/decorators/after-factory';
 export { path } from './src/decorators/path';
 export { accepts } from './src/decorators/accepts';
 export { body } from './src/decorators/body';
+export { jsonBody } from './src/decorators/json-body';
 export { child } from './src/decorators/child';
 export { is } from './src/decorators/is';
 export { params } from './src/decorators/params';
