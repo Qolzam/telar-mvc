@@ -9,7 +9,7 @@ import * as Lodash from 'lodash';
 export type TAcceptsErrorFactory = (requestHeader: string, formats: string[]) => Error;
 export type TIsErrorFactory = (requestHeader: string, format: string) => Error;
 
-type TConfigProperties = {
+export type TConfigProperties = {
   jsonBodyValidationErrorFactory: TSchemaValidationErrorFactory<Error>;
   jsonResponseValidationErrorFactory: TSchemaValidationErrorFactory<Error>;
   queryValidationErrorFactory: TSchemaValidationErrorFactory<Error>,
