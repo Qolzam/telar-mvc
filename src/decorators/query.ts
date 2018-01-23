@@ -2,8 +2,7 @@ import * as AJV from 'ajv';
 import { NextFunction, Request, Response } from 'express';
 import { MetadataKey } from '../constants/metadata-key';
 import { TQueryOptions } from '../types/query-options';
-import { TJSONSchema } from '@bluejay/schema';
-import { isJSONSchema } from '../utils/is-json-schema';
+import { TJSONSchema, isJSONSchemaLike } from '@bluejay/schema';
 import { before } from './before';
 import { Config } from '../config';
 
@@ -11,7 +10,7 @@ const defaultAjvInstance = new AJV({ coerceTypes: true, useDefaults: true });
 const defaultAjvFactory = () => defaultAjvInstance;
 
 export function query(options: TQueryOptions | TJSONSchema) {
-  const jsonSchema = isJSONSchema(options) ? options : (<TQueryOptions>options).jsonSchema;
+  const jsonSchema = isJSONSchemaLike(options) ? options : (<TQueryOptions>options).jsonSchema;
   const groups =  (<TQueryOptions>options).groups;
   const transform =  (<TQueryOptions>options).transform;
   const ajvFactory =  (<TQueryOptions>options).ajvFactory;
