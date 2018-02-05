@@ -68,6 +68,18 @@ describe('@query()', () => {
         .expect(StatusCode.OK, { filters: { active: true }, other: 'foo' });
     });
 
+    it('should retain an empty group', async () => {
+      const sandbox = setup({
+        jsonSchema: object({}),
+        groups: { filters: [] }
+      });
+
+      await supertest(sandbox.getApp())
+        .get('/test')
+        .query({})
+        .expect(StatusCode.OK, { filters: {} });
+    });
+
     it('should transform properties', async () => {
       const sandbox = setup({
         jsonSchema: object({ isActive: boolean(), other: string() }),
