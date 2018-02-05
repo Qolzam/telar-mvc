@@ -1,9 +1,8 @@
-import { TJSONSchema } from '@bluejay/schema';
+import { TJSONSchema, isJSONSchemaLike } from '@bluejay/schema';
 import * as AJV from 'ajv';
 import { NextFunction, Request, Response } from 'express';
 import { MetadataKey } from '../constants/metadata-key';
 import { TJSONBodyOptions } from '../types/json-body-options';
-import { isJSONSchema } from '../utils/is-json-schema';
 import { before } from './before';
 import { Config } from '../config';
 
@@ -11,7 +10,7 @@ const defaultAjvInstance = new AJV({ coerceTypes: true, useDefaults: true });
 const defaultAjvFactory = () => defaultAjvInstance;
 
 export function body(options: TJSONBodyOptions | TJSONSchema) {
-  const jsonSchema = isJSONSchema(options) ? options : (<TJSONBodyOptions>options).jsonSchema;
+  const jsonSchema = isJSONSchemaLike(options) ? options : (<TJSONBodyOptions>options).jsonSchema;
   const ajvInstance = ((<TJSONBodyOptions>options).ajvFactory || defaultAjvFactory)();
   const validator = ajvInstance.compile(jsonSchema);
 
@@ -25,5 +24,5 @@ export function body(options: TJSONBodyOptions | TJSONSchema) {
         throw Config.get('jsonBodyValidationErrorFactory', (<TJSONBodyOptions>options).validationErrorFactory)(validator.errors[0], req.body);
       }
     })(target, key, descriptor);
-  }
+  };
 }

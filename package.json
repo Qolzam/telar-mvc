@@ -49,7 +49,7 @@
   "dependencies": {
     "@bluejay/http-method": "^2.0.1",
     "@bluejay/rest-errors": "^3.0.8",
-    "@bluejay/schema": "^1.1.1",
+    "@bluejay/schema": "^1.7.0",
     "@bluejay/status-code": "^3.0.0",
     "@bluejay/url": "^2.0.0",
     "@bluejay/utils": "^3.0.0",

@@ -6,7 +6,7 @@ import { errorHandler } from '../resources/middlewares/error-handler';
 import { Request, Response } from 'express';
 import { post } from '../../src/decorators/post';
 import { body } from '../../src/decorators/body';
-import { boolean, object, requireProperties, string, tuple } from '@bluejay/schema';
+import { boolean, object, oneOf, requireProperties, string, tuple } from '@bluejay/schema';
 import { StatusCode } from '@bluejay/status-code';
 import supertest = require('supertest');
 import { before } from '../../src/decorators/before';
@@ -128,5 +128,35 @@ describe('@body()', () => {
     });
 
     doTest(sandbox);
+  });
+
+  it('should support non-simple-object schemas (such as oneOf)', async () => {
+    const id = Symbol();
+
+    @path('/test')
+    @before(bodyParser.json())
+    @after(errorHandler)
+    class TestController extends Controller {
+      @post('/')
+      @body(oneOf([
+          requireProperties(object({ foo: string() }), ['foo']),
+          requireProperties(object({ bar: string() }), ['bar'])
+        ])
+      )
+      private async test(req: Request, res: Response) {
+        res.status(StatusCode.CREATED).json(req.body);
+      }
+    }
+
+    const sandbox = new Sandbox({
+      controllersMap: new Map([
+        [id, TestController]
+      ])
+    });
+
+    await supertest(sandbox.getApp())
+      .post('/test')
+      .send({ foo: 'foo' })
+      .expect(StatusCode.CREATED, { foo: 'foo' });
   });
 });

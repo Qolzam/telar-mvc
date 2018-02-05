@@ -2,8 +2,7 @@ import * as AJV from 'ajv';
 import { NextFunction, Request, Response } from 'express';
 import { MetadataKey } from '../constants/metadata-key';
 import { TParamsOptions } from '../types/params-options';
-import { TJSONSchema } from '@bluejay/schema';
-import { isJSONSchema } from '../utils/is-json-schema';
+import { TJSONSchema, isJSONSchemaLike } from '@bluejay/schema';
 import { before } from './before';
 import { Config } from '../config';
 
@@ -11,7 +10,7 @@ const defaultAjvInstance = new AJV({ coerceTypes: true });
 const defaultAjvFactory = () => defaultAjvInstance;
 
 export function params(options: TParamsOptions | TJSONSchema) {
-  const jsonSchema = isJSONSchema(options) ? options : (<TParamsOptions>options).jsonSchema;
+  const jsonSchema = isJSONSchemaLike(options) ? options : (<TParamsOptions>options).jsonSchema;
   const ajvInstance = ((<TParamsOptions>options).ajvFactory || defaultAjvFactory)();
   const validator = ajvInstance.compile(jsonSchema);
 
