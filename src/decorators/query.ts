@@ -25,7 +25,7 @@ export function query(options: TQueryOptions | TJSONSchema) {
 
       if (validator(query)) {
         if (transform) {
-          query = await transform(query);
+          query = await transform(query, req);
         }
 
         if (groups) {
