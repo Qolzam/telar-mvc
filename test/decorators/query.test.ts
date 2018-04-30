@@ -113,6 +113,23 @@ describe('@query()', () => {
 
       expect(res.body.code).to.equal('my-error');
     });
+
+    it('should parse a null value', async () => {
+      class MyError extends ForbiddenRestError {
+        public code = 'my-error';
+      }
+
+      const sandbox = setup({
+        jsonSchema: object({ active: boolean({ nullable: true }) })
+      });
+
+      const res = await supertest(sandbox.getApp())
+        .get('/test')
+        .query({ active: null })
+        .expect(StatusCode.OK);
+
+      expect(res.body.active).to.equal(null);
+    });
   });
 
   describe('Schema only', () => {
