@@ -32,7 +32,7 @@
     "chai": "^4.1.2",
     "chai-subset": "^1.6.0",
     "express": "^4.16.2",
-    "inversify": "^4.3.0",
+    "inversify": "^4.13.0",
     "mocha": "^4.0.1",
     "nyc": "^11.2.1",
     "reflect-metadata": "^0.1.10",
@@ -43,7 +43,7 @@
     "typescript": "^2.5.3"
   },
   "peerDependencies": {
-    "inversify": "^4.3.0",
+    "inversify": "^4.13.0",
     "express": "^4.16.2"
   },
   "dependencies": {
