@@ -1,5 +1,9 @@
 # Inversify Controller
 
+[![npm](https://img.shields.io/npm/v/@bluejay/inversify-controller.svg?style=flat-square)](https://www.npmjs.com/package/@bluejay/inversify-controller)
+ [![npm](https://img.shields.io/npm/dm/@bluejay/inversify-controller.svg?style=flat-square)](https://www.npmjs.com/package/@bluejay/inversify-controller)
+[![npm](https://img.shields.io/npm/l/@bluejay/inversify-controller.svg?style=flat-square)](https://www.npmjs.com/package/@bluejay/inversify-controller)
+
 ## Requirements
 
 - `node >= 7.10`
