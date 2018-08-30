@@ -1,23 +1,16 @@
-import * as AJV from 'ajv';
+import { is2xx, StatusCode } from '@bluejay/status-code';
 import { NextFunction, Request, Response } from 'express';
+import { Config } from '../config';
 import { MetadataKey } from '../constants/metadata-key';
 import { TJSONResponseOptions } from '../types/json-response-options';
-import { is2xx, StatusCode } from '@bluejay/status-code';
 import { before } from './before';
-import { Config } from '../config';
-
-const defaultAjvInstance = new AJV({ removeAdditional: true });
-
-const defaultAjvFactory = () => {
-  return defaultAjvInstance;
-};
 
 export function jsonResponse(options: TJSONResponseOptions) {
-  const ajvInstance = (options.ajvFactory || defaultAjvFactory)();
+  const ajvInstance = Config.get('jsonResponseAJVFactory', options.ajvFactory)();
   const validator = ajvInstance.compile(options.jsonSchema);
   const isStatusCodesArray = Array.isArray(options.statusCode);
 
-  return function(target: any, key: string, descriptor: PropertyDescriptor) {
+  return function (target: any, key: string, descriptor: PropertyDescriptor) {
     Reflect.defineMetadata(MetadataKey.ROUTE_RESPONSE, {
       statusCodes: isStatusCodesArray ? options.statusCode : [options.statusCode],
       jsonSchema: options.jsonSchema
@@ -44,5 +37,5 @@ export function jsonResponse(options: TJSONResponseOptions) {
 
       next();
     })(target, key, descriptor);
-  }
+  };
 }

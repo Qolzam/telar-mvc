@@ -1,23 +1,18 @@
-import * as AJV from 'ajv';
+import { isJSONSchemaLike, TJSONSchema } from '@bluejay/schema';
 import { NextFunction, Request, Response } from 'express';
+import { Config } from '../config';
 import { MetadataKey } from '../constants/metadata-key';
 import { TQueryOptions } from '../types/query-options';
-import { TJSONSchema, isJSONSchemaLike } from '@bluejay/schema';
 import { before } from './before';
-import { Config } from '../config';
-
-const defaultAjvInstance = new AJV({ coerceTypes: true, useDefaults: true });
-const defaultAjvFactory = () => defaultAjvInstance;
 
 export function query(options: TQueryOptions | TJSONSchema) {
   const jsonSchema = isJSONSchemaLike(options) ? options : (<TQueryOptions>options).jsonSchema;
-  const groups =  (<TQueryOptions>options).groups;
-  const transform =  (<TQueryOptions>options).transform;
-  const ajvFactory =  (<TQueryOptions>options).ajvFactory;
-  const ajvInstance = (ajvFactory || defaultAjvFactory)();
+  const groups = (<TQueryOptions>options).groups;
+  const transform = (<TQueryOptions>options).transform;
+  const ajvInstance = Config.get('queryAJVFactory', (<TQueryOptions>options).ajvFactory)();
   const validator = ajvInstance.compile(jsonSchema);
 
-  return function(target: any, key: string, descriptor: PropertyDescriptor) {
+  return function (target: any, key: string, descriptor: PropertyDescriptor) {
     Reflect.defineMetadata(MetadataKey.ROUTE_QUERY, jsonSchema, target, key);
 
     before(async (req: Request, res: Response, next: NextFunction) => {
@@ -48,5 +43,5 @@ export function query(options: TQueryOptions | TJSONSchema) {
       }
 
     })(target, key, descriptor);
-  }
+  };
 }
