@@ -46,7 +46,7 @@
   "peerDependencies": {
     "inversify": "^4.13.0",
     "express": "^4.16.2",
-    "ajv": "^5.0.0"
+    "ajv": ">=5.0.0 <7.0.0"
   },
   "dependencies": {
     "@bluejay/http-method": "^2.0.1",
