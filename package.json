@@ -35,12 +35,12 @@
     "express": "^4.16.2",
     "inversify": "^4.13.0",
     "mocha": "^4.0.1",
-    "nyc": "^11.2.1",
+    "nyc": "13.3.0",
     "reflect-metadata": "^0.1.10",
     "supertest": "^3.0.0",
     "supertest-as-promised": "^4.0.2",
     "ts-node": "^3.3.0",
-    "typedoc": "^0.9.0",
+    "typedoc": "0.14.2",
     "typescript": "^2.5.3"
   },
   "peerDependencies": {
@@ -51,7 +51,7 @@
   "dependencies": {
     "@bluejay/http-method": "^2.0.1",
     "@bluejay/rest-errors": "^3.0.8",
-    "@bluejay/schema": "^1.7.0",
+    "@bluejay/schema": "1.9.4",
     "@bluejay/status-code": "^3.0.0",
     "@bluejay/url": "^2.0.0",
     "@bluejay/utils": "^3.0.0"
