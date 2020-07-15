@@ -1,4 +1,5 @@
 import { is2xx, StatusCode } from '@bluejay/status-code';
+import { ValidateFunction } from 'ajv';
 import { NextFunction, Request, Response } from 'express';
 import { Config } from '../config';
 import { MetadataKey } from '../constants/metadata-key';
@@ -6,9 +7,17 @@ import { TJSONResponseOptions } from '../types/json-response-options';
 import { before } from './before';
 
 export function jsonResponse(options: TJSONResponseOptions) {
-  const ajvInstance = Config.get('jsonResponseAJVFactory', options.ajvFactory)();
-  const validator = ajvInstance.compile(options.jsonSchema);
   const isStatusCodesArray = Array.isArray(options.statusCode);
+
+  let validator: ValidateFunction;
+  const getValidator = () => {
+    if (validator) {
+      return validator;
+    }
+    const ajvInstance = Config.get('jsonResponseAJVFactory', options.ajvFactory)();
+    validator = ajvInstance.compile(options.jsonSchema);
+    return validator;
+  };
 
   return function (target: any, key: string, descriptor: PropertyDescriptor) {
     Reflect.defineMetadata(MetadataKey.ROUTE_RESPONSE, {
@@ -24,12 +33,12 @@ export function jsonResponse(options: TJSONResponseOptions) {
           body = JSON.parse(JSON.stringify(body));
         }
         if (is2xx(res.statusCode as StatusCode)) {
-          if (validator(body)) {
+          if (getValidator()(body)) {
             if (!isStatusCodesArray) {
               res.status(options.statusCode as number);
             }
           } else {
-            throw Config.get('jsonResponseValidationErrorFactory', options.validationErrorFactory)(validator.errors[0], body);
+            throw Config.get('jsonResponseValidationErrorFactory', options.validationErrorFactory)(getValidator().errors[0], body);
           }
         }
         return oldJSON(body);
