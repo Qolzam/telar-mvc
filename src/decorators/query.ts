@@ -1,4 +1,5 @@
 import { isJSONSchemaLike, TJSONSchema } from '@bluejay/schema';
+import { ValidateFunction } from 'ajv';
 import { NextFunction, Request, Response } from 'express';
 import { Config } from '../config';
 import { MetadataKey } from '../constants/metadata-key';
@@ -9,8 +10,16 @@ export function query(options: TQueryOptions | TJSONSchema) {
   const jsonSchema = isJSONSchemaLike(options) ? options : (<TQueryOptions>options).jsonSchema;
   const groups = (<TQueryOptions>options).groups;
   const transform = (<TQueryOptions>options).transform;
-  const ajvInstance = Config.get('queryAJVFactory', (<TQueryOptions>options).ajvFactory)();
-  const validator = ajvInstance.compile(jsonSchema);
+
+  let validator: ValidateFunction;
+  const getValidator = () => {
+    if (validator) {
+      return validator;
+    }
+    const ajvInstance = Config.get('queryAJVFactory', (<TQueryOptions>options).ajvFactory)();
+    validator = ajvInstance.compile(jsonSchema);
+    return validator;
+  };
 
   return function (target: any, key: string, descriptor: PropertyDescriptor) {
     Reflect.defineMetadata(MetadataKey.ROUTE_QUERY, jsonSchema, target, key);
@@ -18,7 +27,7 @@ export function query(options: TQueryOptions | TJSONSchema) {
     before(async (req: Request, res: Response, next: NextFunction) => {
       let query = req.query;
 
-      if (validator(query)) {
+      if (getValidator()(query)) {
         if (transform) {
           query = await transform(query, req);
         }
@@ -39,7 +48,7 @@ export function query(options: TQueryOptions | TJSONSchema) {
 
         next();
       } else {
-        throw Config.get('queryValidationErrorFactory', (<TQueryOptions>options).validationErrorFactory)(validator.errors[0], query);
+        throw Config.get('queryValidationErrorFactory', (<TQueryOptions>options).validationErrorFactory)(getValidator().errors[0], query);
       }
 
     })(target, key, descriptor);
