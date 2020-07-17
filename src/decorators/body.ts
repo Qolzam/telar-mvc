@@ -1,13 +1,14 @@
 import { isJSONSchemaLike, TJSONSchema } from '@bluejay/schema';
 import { ValidateFunction } from 'ajv';
 import { NextFunction, Request, Response } from 'express';
+import * as Lodash from 'lodash';
 import { Config } from '../config';
 import { MetadataKey } from '../constants/metadata-key';
 import { TJSONBodyOptions } from '../types/json-body-options';
 import { before } from './before';
 
 export function body(options: TJSONBodyOptions | TJSONSchema) {
-  const jsonSchema = isJSONSchemaLike(options) ? options : (<TJSONBodyOptions>options).jsonSchema;
+  const jsonSchema = Lodash.cloneDeep(isJSONSchemaLike(options) ? options : (<TJSONBodyOptions>options).jsonSchema);
 
   let validator: ValidateFunction;
   const getValidator = () => {

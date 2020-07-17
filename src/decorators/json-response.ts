@@ -1,12 +1,14 @@
 import { is2xx, StatusCode } from '@bluejay/status-code';
 import { ValidateFunction } from 'ajv';
 import { NextFunction, Request, Response } from 'express';
+import * as Lodash from 'lodash';
 import { Config } from '../config';
 import { MetadataKey } from '../constants/metadata-key';
 import { TJSONResponseOptions } from '../types/json-response-options';
 import { before } from './before';
 
 export function jsonResponse(options: TJSONResponseOptions) {
+  const jsonSchema = Lodash.cloneDeep(options.jsonSchema);
   const isStatusCodesArray = Array.isArray(options.statusCode);
 
   let validator: ValidateFunction;
@@ -15,7 +17,7 @@ export function jsonResponse(options: TJSONResponseOptions) {
       return validator;
     }
     const ajvInstance = Config.get('jsonResponseAJVFactory', options.ajvFactory)();
-    validator = ajvInstance.compile(options.jsonSchema);
+    validator = ajvInstance.compile(jsonSchema);
     return validator;
   };
 

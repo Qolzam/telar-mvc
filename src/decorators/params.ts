@@ -1,13 +1,14 @@
 import { isJSONSchemaLike, TJSONSchema } from '@bluejay/schema';
 import { ValidateFunction } from 'ajv';
 import { NextFunction, Request, Response } from 'express';
+import * as Lodash from 'lodash';
 import { Config } from '../config';
 import { MetadataKey } from '../constants/metadata-key';
 import { TParamsOptions } from '../types/params-options';
 import { before } from './before';
 
 export function params(options: TParamsOptions | TJSONSchema) {
-  const jsonSchema = isJSONSchemaLike(options) ? options : (<TParamsOptions>options).jsonSchema;
+  const jsonSchema = Lodash.cloneDeep(isJSONSchemaLike(options) ? options : (<TParamsOptions>options).jsonSchema);
 
   let validator: ValidateFunction;
   const getValidator = () => {
