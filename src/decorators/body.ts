@@ -8,7 +8,9 @@ import { TJSONBodyOptions } from '../types/json-body-options';
 import { before } from './before';
 
 export function body(options: TJSONBodyOptions | TJSONSchema) {
-  const jsonSchema = Lodash.cloneDeep(isJSONSchemaLike(options) ? options : (<TJSONBodyOptions>options).jsonSchema);
+  options = Lodash.cloneDeep(options);
+  const jsonSchema = isJSONSchemaLike(options) ? options : (<TJSONBodyOptions>options).jsonSchema;
+  const jsonSchemaSafeCopy = Lodash.cloneDeep(jsonSchema);
 
   let validator: ValidateFunction;
   const getValidator = () => {
@@ -16,7 +18,7 @@ export function body(options: TJSONBodyOptions | TJSONSchema) {
       return validator;
     }
     const ajvInstance = Config.get('bodyAJVFactory', (<TJSONBodyOptions>options).ajvFactory)();
-    validator = ajvInstance.compile(jsonSchema);
+    validator = ajvInstance.compile(jsonSchemaSafeCopy);
     return validator;
   };
 

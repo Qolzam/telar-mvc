@@ -8,7 +8,9 @@ import { TJSONResponseOptions } from '../types/json-response-options';
 import { before } from './before';
 
 export function jsonResponse(options: TJSONResponseOptions) {
-  const jsonSchema = Lodash.cloneDeep(options.jsonSchema);
+  options = Lodash.cloneDeep(options);
+  const jsonSchema = options.jsonSchema;
+  const jsonSchemaSafeCopy = Lodash.cloneDeep(jsonSchema);
   const isStatusCodesArray = Array.isArray(options.statusCode);
 
   let validator: ValidateFunction;
@@ -17,14 +19,14 @@ export function jsonResponse(options: TJSONResponseOptions) {
       return validator;
     }
     const ajvInstance = Config.get('jsonResponseAJVFactory', options.ajvFactory)();
-    validator = ajvInstance.compile(jsonSchema);
+    validator = ajvInstance.compile(jsonSchemaSafeCopy);
     return validator;
   };
 
   return function (target: any, key: string, descriptor: PropertyDescriptor) {
     Reflect.defineMetadata(MetadataKey.ROUTE_RESPONSE, {
       statusCodes: isStatusCodesArray ? options.statusCode : [options.statusCode],
-      jsonSchema: options.jsonSchema
+      jsonSchema
     }, target, key);
 
     before((req: Request, res: Response, next: NextFunction) => {

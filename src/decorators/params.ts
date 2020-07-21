@@ -8,7 +8,9 @@ import { TParamsOptions } from '../types/params-options';
 import { before } from './before';
 
 export function params(options: TParamsOptions | TJSONSchema) {
-  const jsonSchema = Lodash.cloneDeep(isJSONSchemaLike(options) ? options : (<TParamsOptions>options).jsonSchema);
+  options = Lodash.cloneDeep(options);
+  const jsonSchema = isJSONSchemaLike(options) ? options : (<TParamsOptions>options).jsonSchema;
+  const jsonSchemaSafeCopy = Lodash.cloneDeep(jsonSchema);
 
   let validator: ValidateFunction;
   const getValidator = () => {
@@ -16,7 +18,7 @@ export function params(options: TParamsOptions | TJSONSchema) {
       return validator;
     }
     const ajvInstance = Config.get('paramsAJVFactory', (<TParamsOptions>options).ajvFactory)();
-    validator = ajvInstance.compile(jsonSchema);
+    validator = ajvInstance.compile(jsonSchemaSafeCopy);
     return validator;
   };
 
