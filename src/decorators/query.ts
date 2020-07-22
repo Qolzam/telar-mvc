@@ -8,7 +8,9 @@ import { TQueryOptions } from '../types/query-options';
 import { before } from './before';
 
 export function query(options: TQueryOptions | TJSONSchema) {
-  const jsonSchema = Lodash.cloneDeep(isJSONSchemaLike(options) ? options : (<TQueryOptions>options).jsonSchema);
+  options = Lodash.cloneDeep(options);
+  const jsonSchema = isJSONSchemaLike(options) ? options : (<TQueryOptions>options).jsonSchema;
+  const jsonSchemaSafeCopy = Lodash.cloneDeep(jsonSchema);
   const groups = (<TQueryOptions>options).groups;
   const transform = (<TQueryOptions>options).transform;
 
@@ -18,7 +20,7 @@ export function query(options: TQueryOptions | TJSONSchema) {
       return validator;
     }
     const ajvInstance = Config.get('queryAJVFactory', (<TQueryOptions>options).ajvFactory)();
-    validator = ajvInstance.compile(jsonSchema);
+    validator = ajvInstance.compile(jsonSchemaSafeCopy);
     return validator;
   };
 
