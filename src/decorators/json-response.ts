@@ -9,6 +9,15 @@ import { before } from './before';
 
 export function jsonResponse(options: TJSONResponseOptions) {
   options = Lodash.cloneDeep(options);
+
+  const validationRate = Config.get('jsonResponseValidationRate', options.validationRate);
+
+  if (validationRate > 1 || validationRate < 0) {
+    throw new Error(`jsonResponseValidationRate is out of range: >= 0 <= 1.`);
+  }
+
+  const shouldAlwaysValidate = validationRate === 1;
+
   const jsonSchema = options.jsonSchema;
   const jsonSchemaSafeCopy = Lodash.cloneDeep(jsonSchema);
   const isStatusCodesArray = Array.isArray(options.statusCode);
@@ -36,7 +45,11 @@ export function jsonResponse(options: TJSONResponseOptions) {
         if (options.coerceToJSON) {
           body = JSON.parse(JSON.stringify(body));
         }
-        if (is2xx(res.statusCode as StatusCode)) {
+
+        // Randomize validation if needed.
+        const shouldValidate = shouldAlwaysValidate || (Math.random() <= validationRate);
+
+        if (is2xx(res.statusCode as StatusCode) && shouldValidate) {
           if (getValidator()(body)) {
             if (!isStatusCodesArray) {
               res.status(options.statusCode as number);

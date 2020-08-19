@@ -1,11 +1,6 @@
-import {
-  BadRequestRestError,
-  InternalServerErrorRestError,
-  NotAcceptableRestError,
-  UnsupportedMediaTypeRestError
-} from '@bluejay/rest-errors';
-import { Ajv } from 'ajv';
+import { BadRequestRestError, InternalServerErrorRestError, NotAcceptableRestError, UnsupportedMediaTypeRestError } from '@bluejay/rest-errors';
 import * as AJV from 'ajv';
+import { Ajv } from 'ajv';
 import * as Lodash from 'lodash';
 import { TSchemaValidationErrorFactory } from './types/schema-validation-error-factory';
 import { makeSchemaValidationErrorFactory } from './utils/make-schema-validation-error-factory';
@@ -17,6 +12,7 @@ export type TAJVFactory = () => Ajv;
 export type TConfigProperties = {
   jsonBodyValidationErrorFactory: TSchemaValidationErrorFactory<Error>;
   jsonResponseValidationErrorFactory: TSchemaValidationErrorFactory<Error>;
+  jsonResponseValidationRate: number;
   queryValidationErrorFactory: TSchemaValidationErrorFactory<Error>,
   paramsValidationErrorFactory: TSchemaValidationErrorFactory<Error>,
   acceptsErrorFactory: TAcceptsErrorFactory,
@@ -31,6 +27,7 @@ export abstract class Config {
   private static properties: TConfigProperties = {
     jsonBodyValidationErrorFactory: makeSchemaValidationErrorFactory(BadRequestRestError),
     jsonResponseValidationErrorFactory: makeSchemaValidationErrorFactory(InternalServerErrorRestError),
+    jsonResponseValidationRate: 1,
     queryValidationErrorFactory: makeSchemaValidationErrorFactory(BadRequestRestError),
     paramsValidationErrorFactory: makeSchemaValidationErrorFactory(BadRequestRestError),
     isErrorFactory: (requestHeader: string, format: string) => new NotAcceptableRestError(`"Content-Type" should support ${format}, got ${requestHeader}.`),

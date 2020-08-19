@@ -5,6 +5,7 @@ import { TSchemaValidationErrorFactory } from './schema-validation-error-factory
 
 export type TJSONResponseOptions = TCommonResponseOptions & {
   jsonSchema: TJSONSchema;
+  validationRate?: number;
   contentType?: 'application/json';
   ajvFactory?: () => Ajv;
   coerceToJSON?: boolean;
