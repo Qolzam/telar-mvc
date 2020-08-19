@@ -17,6 +17,7 @@ export function jsonResponse(options: TJSONResponseOptions) {
   }
 
   const shouldAlwaysValidate = validationRate === 1;
+  const shouldNeverValidate = validationRate === 0;
 
   const jsonSchema = options.jsonSchema;
   const jsonSchemaSafeCopy = Lodash.cloneDeep(jsonSchema);
@@ -47,7 +48,7 @@ export function jsonResponse(options: TJSONResponseOptions) {
         }
 
         // Randomize validation if needed.
-        const shouldValidate = shouldAlwaysValidate || (Math.random() <= validationRate);
+        const shouldValidate = !shouldNeverValidate && (shouldAlwaysValidate || (Math.random() <= validationRate));
 
         if (is2xx(res.statusCode as StatusCode) && shouldValidate) {
           if (getValidator()(body)) {
