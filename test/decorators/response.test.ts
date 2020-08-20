@@ -1,15 +1,15 @@
-import { Controller } from '../../src/classes/controller';
-import { path } from '../../src/decorators/path';
-import { Request, Response } from 'express';
-import { get } from '../../src/decorators/get';
-import { response } from '../../src/decorators/response';
+import { ForbiddenRestError } from '@bluejay/rest-errors';
 import { boolean, dateTime, object } from '@bluejay/schema';
 import { StatusCode } from '@bluejay/status-code';
-import { Sandbox } from '../resources/classes/sandbox';
-import supertest = require('supertest');
+import { Request, Response } from 'express';
+import { Controller } from '../../src/classes/controller';
 import { after } from '../../src/decorators/after';
+import { get } from '../../src/decorators/get';
+import { path } from '../../src/decorators/path';
+import { response } from '../../src/decorators/response';
+import { Sandbox } from '../resources/classes/sandbox';
 import { errorHandler } from '../resources/middlewares/error-handler';
-import { ForbiddenRestError } from '@bluejay/rest-errors';
+import supertest = require('supertest');
 
 describe('@response()', () => {
   it('should set status code and content type', async () => {
@@ -208,5 +208,54 @@ describe('@response()', () => {
       .expect(StatusCode.FORBIDDEN);
 
     expect(res.body.code).to.equal('my-error');
+  });
+
+  it('should validate a 4th of the responses', async () => {
+    const id = Symbol();
+
+    @path('/test')
+    class TestController extends Controller {
+      @get('/')
+      @response({
+        statusCode: StatusCode.OK,
+        jsonSchema: object({ active: boolean() }),
+        validationRate: .25 // A fourth of the responses.
+      })
+      private async test(req: Request, res: Response) {
+        res.json({ active: 123 }); // This is intentionally wrong.
+      }
+    }
+
+    const sandbox = new Sandbox({
+      controllersMap: new Map([
+        [id, TestController]
+      ])
+    });
+
+    const requestCount = 300;
+    let count500 = 0;
+    let count200 = 0;
+
+    for (let i = 0; i < requestCount; i++) {
+      await supertest(sandbox.getApp())
+        .get('/test')
+        .expect((result: Response) => {
+          if (result.statusCode === StatusCode.INTERNAL_SERVER_ERROR) {
+            ++count500;
+          } else if (result.statusCode === StatusCode.OK) {
+            ++count200;
+          } else {
+            throw new Error(`Unexpected status: ${result.statusCode}.`);
+          }
+        });
+
+
+    }
+
+    const rate500 = count500 / requestCount;
+    const rate200 = count200 / requestCount;
+
+    expect(rate500).to.be.within(.15, .35);
+    expect(rate200).to.be.within(.65, .85);
   });
 });
