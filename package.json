@@ -1,6 +1,6 @@
 {
   "name": "@bluejay/inversify-controller",
-  "version": "3.2.4-beta.0",
+  "version": "3.3.0",
   "description": "Annotations based controllers for Typescript.",
   "main": "index.js",
   "scripts": {
