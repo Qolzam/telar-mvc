@@ -29,7 +29,7 @@ export function body(options: TJSONBodyOptions | TJSONSchema) {
       if (getValidator()(req.body)) {
         next();
       } else {
-        throw Config.get('jsonBodyValidationErrorFactory', (<TJSONBodyOptions>options).validationErrorFactory)(getValidator().errors[0], req.body);
+        throw Config.get('jsonBodyValidationErrorFactory', (<TJSONBodyOptions>options).validationErrorFactory)(getValidator().errors![0], req.body);
       }
     })(target, key, descriptor);
   };

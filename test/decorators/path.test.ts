@@ -1,3 +1,5 @@
+import { expect } from 'chai';
+
 import { IController } from '../../src/interfaces/controller';
 import { Sandbox } from '../resources/classes/sandbox';
 import { Controller } from '../../src/classes/controller';

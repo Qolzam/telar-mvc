@@ -6,4 +6,4 @@ export type TParamsOptions = {
   jsonSchema: TJSONSchema;
   ajvFactory?: () => Ajv;
   validationErrorFactory?: TSchemaValidationErrorFactory<Error>;
-}
+};

@@ -28,30 +28,30 @@ export function query(options: TQueryOptions | TJSONSchema) {
     Reflect.defineMetadata(MetadataKey.ROUTE_QUERY, jsonSchema, target, key);
 
     before(async (req: Request, res: Response, next: NextFunction) => {
-      let query = req.query;
+      let parsedQuery = req.query;
 
-      if (getValidator()(query)) {
+      if (getValidator()(parsedQuery)) {
         if (transform) {
-          query = await transform(query, req);
+          parsedQuery = await transform(parsedQuery, req);
         }
 
         if (groups) {
-          const queryKeys = Object.keys(query);
+          const queryKeys = Object.keys(parsedQuery);
           for (const groupName of Object.keys(groups)) {
             const group = {};
             for (const propertyName of groups[groupName]) {
               if (queryKeys.includes(propertyName)) {
-                group[propertyName] = query[propertyName];
-                delete query[propertyName];
+                group[propertyName] = parsedQuery[propertyName];
+                delete parsedQuery[propertyName];
               }
             }
-            query[groupName] = group;
+            parsedQuery[groupName] = group;
           }
         }
 
         next();
       } else {
-        throw Config.get('queryValidationErrorFactory', (<TQueryOptions>options).validationErrorFactory)(getValidator().errors[0], query);
+        throw Config.get('queryValidationErrorFactory', (<TQueryOptions>options).validationErrorFactory)(getValidator().errors![0], parsedQuery);
       }
 
     })(target, key, descriptor);

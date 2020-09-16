@@ -1,4 +1,6 @@
-import { Controller, path, params, child, get, query, before, after } from '../../';
+import { expect } from 'chai';
+
+import { Controller, path, params, child, get, query, before, after } from '../../src';
 import * as supertest from 'supertest';
 import { Sandbox } from '../resources/classes/sandbox';
 import { NextFunction, Request, Response } from 'express';
@@ -27,7 +29,7 @@ describe('Controller', () => {
         @get('/')
         @query(object({ id__in: list(integer(), { minItems: 1 }) }))
         public async batchGetItem(req: Request, res: Response) {
-          res.status(StatusCode.OK).json(req.query.id__in.map((id: number) => ({ id })));
+          res.status(StatusCode.OK).json((req.query as any).id__in.map((id: number) => ({ id })));
         }
       }
 
@@ -68,8 +70,8 @@ describe('Controller', () => {
       const userSelfId = Symbol();
 
       function addToSteps(req: Request, step: string, next?: NextFunction) {
-        req.params.steps = req.params.steps || [];
-        req.params.steps.push(step);
+        (req.params as any).steps = req.params.steps || [];
+        (req.params as any).steps.push(step);
         next && next();
       }
 

@@ -1,10 +1,13 @@
-import { Application, Request, Response, NextFunction, Handler, Router } from 'express';
-import { Container } from 'inversify';
-import { IController } from '../interfaces/controller';
-import { MetadataKey } from '../constants/metadata-key';
+/* tslint:disable-next-line:ordered-imports */
+import 'reflect-metadata';
+
 import { ensureSlashes } from '@bluejay/url';
-import { TRouteDescription } from '../types/route-description';
 import * as URL from '@bluejay/url';
+import { Application, Handler, NextFunction, Request, Response, Router } from 'express';
+import { Container } from 'inversify';
+import { MetadataKey } from '../constants/metadata-key';
+import { IController } from '../interfaces/controller';
+import { TRouteDescription } from '../types/route-description';
 
 function _bind(router: Router, container: Container, identifier: symbol, _baseBeforeMiddlewares: Handler[] = [], _baseAfterMiddlewares: Handler[] = [], _basePath = ''): Router {
   const controller = container.get<IController>(identifier);
@@ -20,11 +23,11 @@ function _bind(router: Router, container: Container, identifier: symbol, _baseBe
   for (const route of routes) {
     const routeBeforeMiddlewares: Handler[] = (Reflect.getMetadata(MetadataKey.ROUTE_BEFORE_MIDDLEWARES, controller, route.handlerName) || [])
       .map((item: { isFactory: boolean, factoryOrHandler: (() => Handler) | Handler }) => {
-        return item.isFactory ? item.factoryOrHandler.call(controller) : item.factoryOrHandler;
+        return item.isFactory ? item.factoryOrHandler.call(controller, undefined as unknown as Request, undefined as unknown as Response, undefined as unknown as NextFunction) : item.factoryOrHandler; // TODO Fix parameters
       });
     const routeAfterMiddlewares: Handler[] = (Reflect.getMetadata(MetadataKey.ROUTE_AFTER_MIDDLEWARES, controller, route.handlerName) || [])
       .map((item: { isFactory: boolean, factoryOrHandler: (() => Handler) | Handler }) => {
-        return item.isFactory ? item.factoryOrHandler.call(controller) : item.factoryOrHandler;
+        return item.isFactory ? item.factoryOrHandler.call(controller, undefined as unknown as Request, undefined as unknown as Response, undefined as unknown as NextFunction) : item.factoryOrHandler; // TODO Fix parameters
       });
 
     const handlers = [..._baseBeforeMiddlewares, ...routeBeforeMiddlewares.reverse(), route.handler, ...routeAfterMiddlewares.reverse(), ..._baseAfterMiddlewares].map(handler => {

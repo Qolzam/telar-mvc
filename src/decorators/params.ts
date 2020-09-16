@@ -27,7 +27,7 @@ export function params(options: TParamsOptions | TJSONSchema) {
 
     before((req: Request, res: Response, next: NextFunction) => {
       if (!getValidator()(req.params)) {
-        throw Config.get('paramsValidationErrorFactory', (<TParamsOptions>options).validationErrorFactory)(getValidator().errors[0], req.params);
+        throw Config.get('paramsValidationErrorFactory', (<TParamsOptions>options).validationErrorFactory)(getValidator().errors![0], req.params);
       } else {
         next();
       }

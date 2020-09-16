@@ -1,3 +1,5 @@
+import { expect } from 'chai';
+
 import { Controller } from '../../src/classes/controller';
 import { path } from '../../src/decorators/path';
 import { Request, Response } from 'express';

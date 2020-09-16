@@ -14,6 +14,6 @@ export function makeSchemaValidationErrorFactory(ctor: TConstructible<RestError>
       data,
       schema: ajvError.schema
     });
-  }
+  };
 }
 

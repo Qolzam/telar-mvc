@@ -1,13 +1,13 @@
-import { ErrorRequestHandler, Handler } from 'express';
 import { TConstructible } from '@bluejay/utils';
+import { ErrorRequestHandler, Handler } from 'express';
 import { MetadataKey } from '../constants/metadata-key';
 import { IController } from '../interfaces/controller';
+import { TMiddlewareDefinition } from '../types/middleware-definition';
 import { isClassDecorator } from '../utils/is-class-decorator';
 import { isPropertyDecorator } from '../utils/is-property-decorator';
-import { TMiddlewareDefinition } from '../types/middleware-definition';
 
 export function beforeFactory(factory: () => Handler | ErrorRequestHandler): any {
-  return function(target: TConstructible<IController> | IController, key?: string, descriptor?: PropertyDescriptor) {
+  return function(target: TConstructible<IController> | IController, key: string, descriptor: PropertyDescriptor) {
     if (isClassDecorator(target, arguments)) {
       const newClass = class extends target {
         constructor() {

@@ -1,3 +1,5 @@
+import { expect } from 'chai';
+
 import { ForbiddenRestError } from '@bluejay/rest-errors';
 import { boolean, dateTime, object } from '@bluejay/schema';
 import { StatusCode } from '@bluejay/status-code';

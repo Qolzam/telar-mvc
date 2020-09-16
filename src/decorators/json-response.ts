@@ -56,7 +56,7 @@ export function jsonResponse(options: TJSONResponseOptions) {
               res.status(options.statusCode as number);
             }
           } else {
-            throw Config.get('jsonResponseValidationErrorFactory', options.validationErrorFactory)(getValidator().errors[0], body);
+            throw Config.get('jsonResponseValidationErrorFactory', options.validationErrorFactory)(getValidator().errors![0], body);
           }
         }
         return oldJSON(body);
