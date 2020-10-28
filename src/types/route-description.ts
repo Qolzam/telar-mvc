@@ -5,4 +5,4 @@ export type TRouteDescription = {
   method: HTTPMethod;
   handlerName: string;
   handler: (...args: any[]) => Promise<void>;
-}
+};

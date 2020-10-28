@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { before } from './before';
+
 import { Config } from '../config';
 
 export function accepts(...formats: string[]) {
@@ -8,8 +9,8 @@ export function accepts(...formats: string[]) {
       if (req.accepts(formats)) {
         next();
       } else {
-        throw Config.get('acceptsErrorFactory')(req.get('accept'), formats);
+        throw Config.get('acceptsErrorFactory')(req.get('accept') as string, formats);
       }
     })(target, key, descriptor);
   };
-};
+}

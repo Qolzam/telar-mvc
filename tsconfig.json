@@ -3,17 +3,35 @@
     "module": "commonjs",
     "target": "es6",
     "moduleResolution": "node",
+    "noEmit": true,
+    "strict": true,
+    "strictNullChecks": true,
     "alwaysStrict": true,
+    "pretty": true,
+    "declaration": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "suppressImplicitAnyIndexErrors": true,
-    "inlineSourceMap": true,
     "experimentalDecorators": true,
-    "lib": ["es2017", "dom"],
-    "types": ["node", "mocha", "reflect-metadata", "chai-subset"]
+    "inlineSourceMap": true,
+    "outDir": "dist",
+    "lib": [
+      "es2017"
+    ],
+    "types": [
+      "node",
+      "mocha",
+      "chai",
+      "reflect-metadata",
+      "chai-subset"
+    ],
+    "removeComments": true
   },
+  "include": [
+    "src"
+  ],
   "exclude": [
     "node_modules",
-    "dts"
+    "dist"
   ]
 }

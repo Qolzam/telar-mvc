@@ -1,10 +1,10 @@
-import { ErrorRequestHandler, Handler } from 'express';
 import { TConstructible } from '@bluejay/utils';
+import { ErrorRequestHandler, Handler } from 'express';
 import { MetadataKey } from '../constants/metadata-key';
 import { IController } from '../interfaces/controller';
+import { TMiddlewareDefinition } from '../types/middleware-definition';
 import { isClassDecorator } from '../utils/is-class-decorator';
 import { isPropertyDecorator } from '../utils/is-property-decorator';
-import { TMiddlewareDefinition } from '../types/middleware-definition';
 
 export function beforeFactory(factory: () => Handler | ErrorRequestHandler): any {
   return function(target: TConstructible<IController> | IController, key?: string, descriptor?: PropertyDescriptor) {
@@ -21,8 +21,8 @@ export function beforeFactory(factory: () => Handler | ErrorRequestHandler): any
 
       return newClass;
     } else if (isPropertyDecorator(target, arguments)) {
-      const middlewares: TMiddlewareDefinition[] = Reflect.getMetadata(MetadataKey.ROUTE_BEFORE_MIDDLEWARES, target, key) || [];
-      Reflect.defineMetadata(MetadataKey.ROUTE_BEFORE_MIDDLEWARES, middlewares.concat({ isFactory: true, factoryOrHandler: factory }), target, key);
+      const middlewares: TMiddlewareDefinition[] = Reflect.getMetadata(MetadataKey.ROUTE_BEFORE_MIDDLEWARES, target, key as string) || [];
+      Reflect.defineMetadata(MetadataKey.ROUTE_BEFORE_MIDDLEWARES, middlewares.concat({ isFactory: true, factoryOrHandler: factory }), target, key as string);
       return undefined; // Forced to return something
     } else {
       throw new Error(`@beforeFactory() decorates classes and methods only.`);

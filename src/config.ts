@@ -38,7 +38,9 @@ export abstract class Config {
     paramsAJVFactory: () => new AJV({ coerceTypes: true })
   };
 
-  public static get<K extends keyof TConfigProperties>(propertyName: K, useIfExists?: TConfigProperties[K] | null, existsIfNull = false): TConfigProperties[K] {
+  public static get<K extends keyof TConfigProperties>(propertyName: K, useIfExists?: TConfigProperties[K] | null): TConfigProperties[K] ;
+  public static get<K extends keyof TConfigProperties>(propertyName: K, useIfExists: TConfigProperties[K] | null, existsIfNull: boolean): TConfigProperties[K] | null;
+  public static get<K extends keyof TConfigProperties>(propertyName: K, useIfExists?: TConfigProperties[K] | null, existsIfNull = false): TConfigProperties[K] | null {
     if (!Lodash.isNil(useIfExists) || (Lodash.isNull(useIfExists) && existsIfNull)) {
       return useIfExists;
     }

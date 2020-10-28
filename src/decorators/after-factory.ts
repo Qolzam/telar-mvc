@@ -1,11 +1,12 @@
-import { ErrorRequestHandler, Handler } from 'express';
-import { IController } from '../interfaces/controller';
 import { TConstructible } from '@bluejay/utils';
+import { ErrorRequestHandler, Handler } from 'express';
+
 import { MetadataKey } from '../constants/metadata-key';
+import { IController } from '../interfaces/controller';
 import { isClassDecorator } from '../utils/is-class-decorator';
 
 export function afterFactory(factory: (...args: any[]) => Handler | ErrorRequestHandler): any {
-  return function(target: TConstructible<IController>) {
+  return function (target: TConstructible<IController>) {
     if (isClassDecorator(target, arguments)) {
       const newClass = class extends target {
         constructor() {
@@ -19,7 +20,7 @@ export function afterFactory(factory: (...args: any[]) => Handler | ErrorRequest
 
       return newClass;
     } else {
-      throw new Error(`@afterFactory decorates classes only.`)
+      throw new Error(`@afterFactory decorates classes only.`);
     }
   };
 }

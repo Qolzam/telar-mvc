@@ -1,3 +1,5 @@
+import { expect } from 'chai';
+
 import { Sandbox } from '../resources/classes/sandbox';
 import { Controller } from '../../src/classes/controller';
 import { path } from '../../src/decorators/path';

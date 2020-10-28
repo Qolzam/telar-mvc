@@ -1,10 +1,12 @@
-import { Application, Request, Response, NextFunction, Handler, Router } from 'express';
-import { Container } from 'inversify';
-import { IController } from '../interfaces/controller';
-import { MetadataKey } from '../constants/metadata-key';
-import { ensureSlashes } from '@bluejay/url';
-import { TRouteDescription } from '../types/route-description';
+/* tslint:disable-next-line:ordered-imports */
 import * as URL from '@bluejay/url';
+import { ensureSlashes } from '@bluejay/url';
+import { Application, Handler, NextFunction, Request, Response, Router } from 'express';
+import { Container } from 'inversify';
+import 'reflect-metadata';
+import { MetadataKey } from '../constants/metadata-key';
+import { IController } from '../interfaces/controller';
+import { TRouteDescription } from '../types/route-description';
 
 function _bind(router: Router, container: Container, identifier: symbol, _baseBeforeMiddlewares: Handler[] = [], _baseAfterMiddlewares: Handler[] = [], _basePath = ''): Router {
   const controller = container.get<IController>(identifier);
@@ -19,18 +21,18 @@ function _bind(router: Router, container: Container, identifier: symbol, _baseBe
 
   for (const route of routes) {
     const routeBeforeMiddlewares: Handler[] = (Reflect.getMetadata(MetadataKey.ROUTE_BEFORE_MIDDLEWARES, controller, route.handlerName) || [])
-      .map((item: { isFactory: boolean, factoryOrHandler: (() => Handler) | Handler }) => {
+      .map((item: { isFactory: true, factoryOrHandler: (() => Handler) } | { isFactory: false, factoryOrHandler: Handler }) => {
         return item.isFactory ? item.factoryOrHandler.call(controller) : item.factoryOrHandler;
       });
     const routeAfterMiddlewares: Handler[] = (Reflect.getMetadata(MetadataKey.ROUTE_AFTER_MIDDLEWARES, controller, route.handlerName) || [])
-      .map((item: { isFactory: boolean, factoryOrHandler: (() => Handler) | Handler }) => {
+      .map((item: { isFactory: true, factoryOrHandler: (() => Handler) } | { isFactory: false, factoryOrHandler: Handler }) => {
         return item.isFactory ? item.factoryOrHandler.call(controller) : item.factoryOrHandler;
       });
 
     const handlers = [..._baseBeforeMiddlewares, ...routeBeforeMiddlewares.reverse(), route.handler, ...routeAfterMiddlewares.reverse(), ..._baseAfterMiddlewares].map(handler => {
       if (handler.length < 4) {
         // Wrap handler to catch errors. This allows consumers to not have to use try/catch for each handler.
-        const fn = async function(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const fn = async function (req: Request, res: Response, next: NextFunction): Promise<void> {
           try {
             await handler.call(controller, req, res, next);
           } catch (err) {

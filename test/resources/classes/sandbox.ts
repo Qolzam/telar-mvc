@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { RestError } from '@bluejay/rest-errors';
 import { StatusCode } from '@bluejay/status-code';
 import * as express from 'express';
@@ -5,7 +6,7 @@ import { Container } from 'inversify';
 import { Application, NextFunction, Request, Response } from 'express';
 import { TConstructible } from '@bluejay/utils';
 import { IController } from '../../../src/interfaces/controller';
-import { bind } from '../../../';
+import { bind } from '../../../src';
 
 export type TSandboxConstructorOptions = {
   controllersMap: Map<symbol, TConstructible<IController>>;
