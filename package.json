@@ -32,7 +32,7 @@
     "@bluejay/schema": "3.0.0-beta.0",
     "@bluejay/status-code": "4.0.0-beta.2",
     "@bluejay/url": "3.0.0-beta.3",
-    "@bluejay/utils": "4.0.0-beta.2"
+    "@bluejay/utils": "4.0.0-beta.3"
   },
   "peerDependencies": {
     "inversify": "^4.13.0",
