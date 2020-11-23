@@ -4,7 +4,7 @@
  [![npm](https://img.shields.io/npm/dm/telar-mvc.svg?style=flat-square)](https://www.npmjs.com/package/telar-mvc)
 [![npm](https://img.shields.io/npm/l/telar-mvc.svg?style=flat-square)](https://www.npmjs.com/package/telar-mvc)
 
-Implementation of MVC(Model-View-Controller) for [Koa](https://koajs.com/)
+Implementation of MVC(Model-View-Controller) based on [Koa](https://koajs.com/)
 
 ## Requirements
 
@@ -130,11 +130,11 @@ class UsersController extends Controller {
   
   @get('/')
   @before(queryParser())
-  @before(async function(this: UsersController, ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>, next: Koa.Next) {
+  @before(async function(this: UsersController, ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>, next: Koa.Next) {
     console.log(this.foo); // bar
     await next();
   })
-  public async list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+  public async list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
     
   }
 }
@@ -148,22 +148,22 @@ This module offers http decorators for all HTTP verbs. Check each decorator's do
 class UsersController extends Controller {
   
   @get('/')
-  public async list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+  public async list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
     
   }
   
   @get('/:id')
-  public async getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+  public async getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
       
   }
   
   @post('/')
-  public async add(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+  public async add(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
       
   }
   
   @del('/:id')
-  public async removeById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+  public async removeById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
     
   }
   
@@ -181,7 +181,7 @@ import { object, integer, requireProperties } from '@bluejay/schema';
 class UsersController extends Contoller {
   @get('/:id')
   @params(requireProperties(object({ id: integer() }), ['id']))
-  public async getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+  public async getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
     const { id } = req.params;
     console.log(typeof id); // number, thanks to Ajv's "coerceTypes" option
   }
@@ -202,7 +202,7 @@ class UsersController extends Contoller {
     jsonSchema: requireProperties(idParamSchema, ['id']),
     ajvFactory: () => new Ajv({ coerceTypes: true })
   })
-  public async getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+  public async getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
     const { id } = req.params;
     console.log(typeof id); // number
   }
@@ -224,7 +224,7 @@ import { object, boolean } from '@bluejay/schema';
 class UsersController extends Controller {
   @get('/')
   @query(object({ active: boolean() }))
-  public async list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+  public async list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
     const { active } = req.query;
     console.log(typeof active); // boolean | undefined (since not required)
   }
@@ -247,7 +247,7 @@ class UsersController extends Controller {
     groups: { filters: ['active'] }
   })
   @get('/')
-  public async list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+  public async list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
     const { filters, token } = req.query;
     console.log(typeof token); // string
     console.log(typeof filters); // object
@@ -277,7 +277,7 @@ class UsersController extends Controller {
     transform: queryTransformer
   })
   @get('/')
-  public async list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+  public async list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
     const { active } = req.query;
     console.log(typeof active); // boolean
     console.log(typeof req.query.isActive); // undefined
@@ -302,7 +302,7 @@ const userSchema = object({
 class UsersController extends Controller {
   @post('/')
   @body(requireProperties(userSchema, ['email', 'password']))
-  public async add(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+  public async add(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
     // req.body is guaranteed to match the described schema
   }
 }
@@ -319,7 +319,7 @@ class UsersController extends Controller {
   @put('/:id/picture')
   @is('image/jpg')
   @before(multer.single('file')) // Just an example, see https://www.npmjs.com/package/multer
-  public async changePicture(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+  public async changePicture(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
     
   }
 }
@@ -351,7 +351,7 @@ class UsersController extends Controller {
     statusCode: StatusCode.OK,
     jsonSchema: omitProperties(userSchema, ['password'])
   })
-  public async getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+  public async getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
     const { id } = req.params;
     const user = await this.userService.findById(id);
     if (user) {
@@ -374,7 +374,7 @@ class UsersController extends Controller {
     statusCode: StatusCode.OK,
     contentType: 'image/jpg'
   })
-  public async getPicture(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+  public async getPicture(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
     getPictureStream(req.params.id).pipe(res);
   }
 }

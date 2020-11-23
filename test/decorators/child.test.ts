@@ -1,5 +1,5 @@
-import * as Koa from 'koa'
-import * as Router from '@koa/router'
+import * as Koa from 'koa';
+import * as Router from '@koa/router';
 
 import { Controller } from '../../src/classes/controller';
 import { path } from '../../src/decorators/path';
@@ -10,32 +10,32 @@ import { child } from '../../src/decorators/child';
 import supertest = require('supertest');
 
 describe('@child()', () => {
-  it('should register a child', async () => {
-    const rootId = Symbol();
-    const childId = Symbol();
+    it('should register a child', async () => {
+        const rootId = Symbol();
+        const childId = Symbol();
 
-    @path('/child')
-    class ChildController extends Controller {
-      @get('/')
-      private async test(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
-        ctx.status= StatusCode.OK;
-      }
-    }
+        @path('/child')
+        class ChildController extends Controller {
+            @get('/')
+            private async test(
+                ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
+            ) {
+                ctx.status = StatusCode.OK;
+            }
+        }
 
-    @path('/root')
-    @child(childId)
-    class RootController extends Controller {}
+        @path('/root')
+        @child(childId)
+        class RootController extends Controller {}
 
-    const sandbox = new Sandbox({
-      controllersMap: new Map([
-        [rootId, RootController],
-        [childId, ChildController]
-      ]),
-      rootIdentifier: rootId
+        const sandbox = new Sandbox({
+            controllersMap: new Map([
+                [rootId, RootController],
+                [childId, ChildController],
+            ]),
+            rootIdentifier: rootId,
+        });
+
+        await supertest(sandbox.getApp()).get('/root/child').expect(StatusCode.OK);
     });
-
-    await supertest(sandbox.getApp())
-      .get('/root/child')
-      .expect(StatusCode.OK);
-  });
 });

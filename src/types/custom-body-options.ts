@@ -1,3 +1,3 @@
 export type TCustomBodyOptions = {
-  contentType: string;
+    contentType: string;
 };

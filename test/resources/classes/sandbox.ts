@@ -1,57 +1,54 @@
 import 'reflect-metadata';
 import * as http from 'http';
 import { StatusCode } from '@bluejay/status-code';
-import * as express from 'express';
 import { Container } from '@parisholley/inversify-async';
-import * as Koa from 'koa'
+import * as Koa from 'koa';
 import { TConstructible } from '@bluejay/utils';
 import { IController } from '../../../src/interfaces/controller';
 import { bind } from '../../../src';
 
 export type TSandboxConstructorOptions = {
-  controllersMap: Map<symbol, TConstructible<IController>>;
-  rootIdentifier?: symbol;
+    controllersMap: Map<symbol, TConstructible<IController>>;
+    rootIdentifier?: symbol;
 };
 
 export class Sandbox {
-  private container: Container;
-  private app: Koa;
-  private controllersMap: Map<symbol, TConstructible<IController>>;
-  private rootIdentifier: symbol;
+    private container: Container;
+    private app: Koa;
+    private controllersMap: Map<symbol, TConstructible<IController>>;
+    private rootIdentifier: symbol;
 
-  public constructor(options: TSandboxConstructorOptions) {
-    this.controllersMap = options.controllersMap;
-    this.container = new Container();
-    for (const [ID, controllerFactory] of this.controllersMap) {
-      this.container.bind<IController>(ID).to(controllerFactory);
+    public constructor(options: TSandboxConstructorOptions) {
+        this.controllersMap = options.controllersMap;
+        this.container = new Container();
+        for (const [ID, controllerFactory] of this.controllersMap) {
+            this.container.bind<IController>(ID).to(controllerFactory);
+        }
+        this.app = new Koa();
+
+        if (this.controllersMap.size > 1 && !options.rootIdentifier) {
+            throw new Error(`Can't say which identifier is root when provided more than 1 controller.`);
+        }
+
+        this.rootIdentifier = options.rootIdentifier || Array.from(this.controllersMap.keys())[0];
+
+        bind(this.app, this.container, this.rootIdentifier);
+
+        this.app.use(async (ctx: Koa.ParameterizedContext<Koa.DefaultState, Koa.DefaultContext>, next: Koa.Next) => {
+            try {
+                await next();
+            } catch (err) {
+                ctx.status = err.statusCode || StatusCode.NON_AUTHORITATIVE_INFORMATION;
+                ctx.body = { error: true };
+            }
+        });
     }
-    this.app = new Koa();
 
-    if (this.controllersMap.size > 1 && !options.rootIdentifier) {
-      throw new Error(`Can't say which identifier is root when provided more than 1 controller.`);
+    public getContainer() {
+        return this.container;
     }
 
-    this.rootIdentifier = options.rootIdentifier || Array.from(this.controllersMap.keys())[0];
-
-    bind(this.app, this.container, this.rootIdentifier);
-
-    this.app.use(async (ctx:  Koa.ParameterizedContext<Koa.DefaultState, Koa.DefaultContext>, next: Koa.Next) => {
-      try {
-        await next()
-      } catch (err) {
-    console.log('[ERROR] SANDBOX   ', err)
-
-        ctx.status = err.statusCode || StatusCode.NON_AUTHORITATIVE_INFORMATION
-        ctx.body = { error: true };
-      }
-    });
-  }
-
-  public getContainer() {
-    return this.container;
-  }
-
-  public getApp() {
-    return http.createServer(this.app.callback());
-  }
+    public getApp() {
+        return http.createServer(this.app.callback());
+    }
 }

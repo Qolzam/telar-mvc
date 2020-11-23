@@ -1,10 +1,24 @@
 sudo: required
-dist: trusty
 language: node_js
-node_js:
-  - "8.6.0"
-  - "12.8.1"
 cache:
   directories:
+    - ~/.npm
     - node_modules
-script: npm run travis
+
+node_js:
+  - '12'
+
+os:
+  - linux
+
+jobs:
+  include:
+    - stage: release
+      script:
+        - npm run lint
+        - npm test
+        - npm run build
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
+        - npm install @semantic-release/changelog @semantic-release/git
+        - npx semantic-release

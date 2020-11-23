@@ -1,10 +1,6 @@
-docs/
-test/
-node_modules/
-.nyc_output/
-.travis.yml
-.idea/
+src
 tsconfig.json
-*.ts
-!dist/**/*.d.ts
-!dist/**/*.js
+tsconfig-cjs.json
+.eslintignore
+.prettierrc.js
+.travis.yml

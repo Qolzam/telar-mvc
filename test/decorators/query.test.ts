@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import * as Koa from 'koa'
-import * as Router from '@koa/router'
+import * as Koa from 'koa';
+import * as Router from '@koa/router';
 
 import { Controller } from '../../src/classes/controller';
 import { path } from '../../src/decorators/path';
@@ -16,144 +16,127 @@ import supertest = require('supertest');
 import { ForbiddenRestError } from '@bluejay/rest-errors';
 
 describe('@query()', () => {
-  function setup(options: TQueryOptions | TJSONSchema) {
-    const id = Symbol();
+    function setup(options: TQueryOptions | TJSONSchema) {
+        const id = Symbol();
 
-    @path('/test')
-    @after(errorHandler)
-    class TestController extends Controller {
-      @get('/')
-      @query(options)
-      private async test(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
-        ctx.status = StatusCode.OK 
-        ctx.body = ctx.request.query;
-      }
+        @path('/test')
+        @after(errorHandler)
+        class TestController extends Controller {
+            @get('/')
+            @query(options)
+            private async test(
+                ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
+            ) {
+                ctx.status = StatusCode.OK;
+                ctx.body = ctx.request.query;
+            }
+        }
+
+        return new Sandbox({
+            controllersMap: new Map([[id, TestController]]),
+        });
     }
 
-    return new Sandbox({
-      controllersMap: new Map([
-        [id, TestController]
-      ])
-    });
-  }
+    describe('Via options', () => {
+        it('should accept request', async () => {
+            const sandbox = setup({
+                jsonSchema: object({ active: boolean() }),
+            });
 
-  describe('Via options', () => {
-    it('should accept request', async () => {
-      const sandbox = setup({
-        jsonSchema: object({ active: boolean() })
-      });
+            await supertest(sandbox.getApp())
+                .get('/test')
+                .query({ active: true })
+                .expect(StatusCode.OK, { active: true });
+        });
 
-      await supertest(sandbox.getApp())
-        .get('/test')
-        .query({ active: true })
-        .expect(StatusCode.OK, { active: true });
-    });
+        it('should reject request', async () => {
+            const sandbox = setup({
+                jsonSchema: object({ active: boolean() }),
+            });
 
-    it('should reject request', async () => {
-      const sandbox = setup({
-        jsonSchema: object({ active: boolean() })
-      });
+            await supertest(sandbox.getApp()).get('/test').query({ active: 2345 }).expect(StatusCode.BAD_REQUEST);
+        });
 
-      await supertest(sandbox.getApp())
-        .get('/test')
-        .query({ active: 2345 })
-        .expect(StatusCode.BAD_REQUEST);
-    });
+        it('should group properties', async () => {
+            const sandbox = setup({
+                jsonSchema: object({ active: boolean(), other: string() }),
+                groups: { filters: ['active'] },
+            });
 
-    it('should group properties', async () => {
-      const sandbox = setup({
-        jsonSchema: object({ active: boolean(), other: string() }),
-        groups: { filters: ['active'] }
-      });
+            await supertest(sandbox.getApp())
+                .get('/test')
+                .query({ active: true, other: 'foo' })
+                .expect(StatusCode.OK, { filters: { active: true }, other: 'foo' });
+        });
 
-      await supertest(sandbox.getApp())
-        .get('/test')
-        .query({ active: true, other: 'foo' })
-        .expect(StatusCode.OK, { filters: { active: true }, other: 'foo' });
-    });
+        it('should retain an empty group', async () => {
+            const sandbox = setup({
+                jsonSchema: object({}),
+                groups: { filters: [] },
+            });
 
-    it('should retain an empty group', async () => {
-      const sandbox = setup({
-        jsonSchema: object({}),
-        groups: { filters: [] }
-      });
+            await supertest(sandbox.getApp()).get('/test').query({}).expect(StatusCode.OK, { filters: {} });
+        });
 
-      await supertest(sandbox.getApp())
-        .get('/test')
-        .query({})
-        .expect(StatusCode.OK, { filters: {} });
-    });
+        it('should transform properties', async () => {
+            const sandbox = setup({
+                jsonSchema: object({ isActive: boolean(), other: string() }),
+                transform: (query) => {
+                    query.active = query.isActive;
+                    delete query.isActive;
+                    return query;
+                },
+            });
 
-    it('should transform properties', async () => {
-      const sandbox = setup({
-        jsonSchema: object({ isActive: boolean(), other: string() }),
-        transform: query => {
-          query.active = query.isActive;
-          delete query.isActive;
-          return query;
-        }
-      });
+            await supertest(sandbox.getApp())
+                .get('/test')
+                .query({ isActive: true, other: 'foo' })
+                .expect(StatusCode.OK, { active: true, other: 'foo' });
+        });
 
-      await supertest(sandbox.getApp())
-        .get('/test')
-        .query({ isActive: true, other: 'foo' })
-        .expect(StatusCode.OK, { active: true, other: 'foo' });
-    });
+        it('should throw a custom error', async () => {
+            class MyError extends ForbiddenRestError {
+                public code = 'my-error';
+            }
 
-    it('should throw a custom error', async () => {
-      class MyError extends ForbiddenRestError {
-        public code = 'my-error';
-      }
+            const sandbox = setup({
+                jsonSchema: object({ active: boolean(), other: string() }),
+                validationErrorFactory: () => new MyError(''),
+            });
 
-      const sandbox = setup({
-        jsonSchema: object({ active: boolean(), other: string() }),
-        validationErrorFactory: () => new MyError('')
-      });
+            const res = await supertest(sandbox.getApp())
+                .get('/test')
+                .query({ active: 2345 })
+                .expect(StatusCode.FORBIDDEN);
 
-      const res = await supertest(sandbox.getApp())
-        .get('/test')
-        .query({ active: 2345 })
-        .expect(StatusCode.FORBIDDEN);
+            expect(res.body.code).to.equal('my-error');
+        });
 
-      expect(res.body.code).to.equal('my-error');
+        it('should parse a null value', async () => {
+            const sandbox = setup({
+                jsonSchema: object({ active: boolean({ nullable: true }) }),
+            });
+
+            const res = await supertest(sandbox.getApp()).get('/test').query({ active: null }).expect(StatusCode.OK);
+
+            expect(res.body.active).to.equal(null);
+        });
     });
 
-    it('should parse a null value', async () => {
-      class MyError extends ForbiddenRestError {
-        public code = 'my-error';
-      }
+    describe('Schema only', () => {
+        it('should accept request', async () => {
+            const sandbox = setup(object({ active: boolean() }));
 
-      const sandbox = setup({
-        jsonSchema: object({ active: boolean({ nullable: true }) })
-      });
+            await supertest(sandbox.getApp())
+                .get('/test')
+                .query({ active: true })
+                .expect(StatusCode.OK, { active: true });
+        });
 
-      const res = await supertest(sandbox.getApp())
-        .get('/test')
-        .query({ active: null })
-        .expect(StatusCode.OK);
+        it('should reject request', async () => {
+            const sandbox = setup(object({ active: boolean() }));
 
-      expect(res.body.active).to.equal(null);
+            await supertest(sandbox.getApp()).get('/test').query({ active: 2345 }).expect(StatusCode.BAD_REQUEST);
+        });
     });
-  });
-
-  describe('Schema only', () => {
-    it('should accept request', async () => {
-      const sandbox = setup(object({ active: boolean() }));
-
-      await supertest(sandbox.getApp())
-        .get('/test')
-        .query({ active: true })
-        .expect(StatusCode.OK, { active: true });
-    });
-
-    it('should reject request', async () => {
-      const sandbox = setup(object({ active: boolean() }));
-
-      await supertest(sandbox.getApp())
-        .get('/test')
-        .query({ active: 2345 })
-        .expect(StatusCode.BAD_REQUEST);
-    });
-  });
-
 });

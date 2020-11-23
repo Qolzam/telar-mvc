@@ -6,9 +6,9 @@ import { IController } from '../interfaces/controller';
 
 @injectable()
 export class Controller implements IController {
-  protected path = '/';
+    protected path = '/';
 
-  public getPath() {
-    return this.path;
-  }
+    public getPath(): string {
+        return this.path;
+    }
 }

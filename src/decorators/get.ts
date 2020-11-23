@@ -1,9 +1,9 @@
 import { HTTPMethod } from '@bluejay/http-method';
 import { method } from './method';
 
-/* tslint:disable-next-line:no-unused-variable */
-import { IController } from  '../interfaces/controller'; // Keep!!!
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { IController } from '../interfaces/controller'; // Keep!!!
 
 export function get(path: string) {
-  return method(HTTPMethod.GET, path);
+    return method(HTTPMethod.GET, path);
 }

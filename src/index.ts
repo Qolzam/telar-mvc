@@ -18,7 +18,7 @@ export { head } from './decorators/head';
 export { put } from './decorators/put';
 export { post } from './decorators/post';
 export { before } from './decorators/before';
-export { beforeFactory} from './decorators/before-factory';
+export { beforeFactory } from './decorators/before-factory';
 export { after } from './decorators/after';
 export { afterFactory } from './decorators/after-factory';
 export { path } from './decorators/path';

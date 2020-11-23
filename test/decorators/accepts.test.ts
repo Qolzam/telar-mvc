@@ -1,5 +1,5 @@
-import * as Koa from 'koa'
-import * as Router from '@koa/router'
+import * as Koa from 'koa';
+import * as Router from '@koa/router';
 
 import { Controller } from '../../src/classes/controller';
 import { path } from '../../src/decorators/path';
@@ -12,35 +12,30 @@ import supertest = require('supertest');
 import { Sandbox } from '../resources/classes/sandbox';
 
 describe('@accepts()', () => {
-  const id = Symbol();
+    const id = Symbol();
 
-  @path('/test')
-  @after(errorHandler)
-  class TestController extends Controller {
-    @get('/')
-    @accepts('application/json')
-    private async test(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
-      ctx.status = StatusCode.OK;
+    @path('/test')
+    @after(errorHandler)
+    class TestController extends Controller {
+        @get('/')
+        @accepts('application/json')
+        private async test(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
+            ctx.status = StatusCode.OK;
+        }
     }
-  }
 
-  const sandbox = new Sandbox({
-    controllersMap: new Map([
-      [id, TestController]
-    ])
-  });
+    const sandbox = new Sandbox({
+        controllersMap: new Map([[id, TestController]]),
+    });
 
-  it('should accept the request', async () => {
-    await supertest(sandbox.getApp())
-      .get('/test')
-      .set('Accept', 'application/json')
-      .expect(StatusCode.OK);
-  });
+    it('should accept the request', async () => {
+        await supertest(sandbox.getApp()).get('/test').set('Accept', 'application/json').expect(StatusCode.OK);
+    });
 
-  it('should reject the request', async () => {
-    await supertest(sandbox.getApp())
-      .get('/test')
-      .set('Accept', 'image/jpg')
-      .expect(StatusCode.UNSUPPORTED_MEDIA_TYPE);
-  });
+    it('should reject the request', async () => {
+        await supertest(sandbox.getApp())
+            .get('/test')
+            .set('Accept', 'image/jpg')
+            .expect(StatusCode.UNSUPPORTED_MEDIA_TYPE);
+    });
 });
