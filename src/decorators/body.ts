@@ -4,16 +4,17 @@ import { StatusCode } from '@bluejay/status-code';
 import * as Router from '@koa/router';
 import { ValidateFunction } from 'ajv';
 import * as Koa from 'koa';
-import * as Lodash from 'lodash';
 import { Config } from '../config';
 import { MetadataKey } from '../constants/metadata-key';
 import { TJSONBodyOptions } from '../types/json-body-options';
 import { before } from './before';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const cloneDeep = require('lodash.clonedeep');
 
 export function body(options: TJSONBodyOptions | TJSONSchema) {
-    options = Lodash.cloneDeep(options);
+    options = cloneDeep(options);
     const jsonSchema = isJSONSchemaLike(options) ? options : (<TJSONBodyOptions>options).jsonSchema;
-    const jsonSchemaSafeCopy = Lodash.cloneDeep(jsonSchema);
+    const jsonSchemaSafeCopy = cloneDeep(jsonSchema);
 
     let validator: ValidateFunction;
     const getValidator = () => {

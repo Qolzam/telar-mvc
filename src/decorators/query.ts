@@ -4,16 +4,17 @@ import { StatusCode } from '@bluejay/status-code';
 import * as Router from '@koa/router';
 import { ValidateFunction } from 'ajv';
 import * as Koa from 'koa';
-import * as Lodash from 'lodash';
 import { Config } from '../config';
 import { MetadataKey } from '../constants/metadata-key';
 import { TQueryOptions } from '../types/query-options';
 import { before } from './before';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const cloneDeep = require('lodash.clonedeep');
 
 export function query(options: TQueryOptions | TJSONSchema) {
-    options = Lodash.cloneDeep(options);
+    options = cloneDeep(options);
     const jsonSchema = isJSONSchemaLike(options) ? options : (<TQueryOptions>options).jsonSchema;
-    const jsonSchemaSafeCopy = Lodash.cloneDeep(jsonSchema);
+    const jsonSchemaSafeCopy = cloneDeep(jsonSchema);
     const groups = (<TQueryOptions>options).groups;
     const transform = (<TQueryOptions>options).transform;
 

@@ -6,7 +6,11 @@ import {
 } from '@bluejay/rest-errors';
 import * as AJV from 'ajv';
 import { Ajv } from 'ajv';
-import * as Lodash from 'lodash';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const isNil = require('lodash.isnil');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const isNull = require('lodash.isnull');
+
 import { TSchemaValidationErrorFactory } from './types/schema-validation-error-factory';
 import { makeSchemaValidationErrorFactory } from './utils/make-schema-validation-error-factory';
 
@@ -59,8 +63,9 @@ export abstract class Config {
         useIfExists?: TConfigProperties[K] | null,
         existsIfNull = false,
     ): TConfigProperties[K] | null {
-        if (!Lodash.isNil(useIfExists) || (Lodash.isNull(useIfExists) && existsIfNull)) {
-            return useIfExists;
+        if (!isNil(useIfExists) || (isNull(useIfExists) && existsIfNull)) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            return useIfExists!;
         }
 
         return this.properties[propertyName];
