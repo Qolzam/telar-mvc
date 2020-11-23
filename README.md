@@ -14,7 +14,7 @@ Implementation of MVC(Model-View-Controller) based on [Koa](https://koajs.com/)
 
 ## Installation **
 
-`npm i inversify reflect-metadata telar-mvc`
+`npm i @parisholley/inversify-async koa @koa/router ajv reflect-metadata telar-mvc`
 
 ## Note on JSON schemas
 
