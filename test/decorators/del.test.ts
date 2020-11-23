@@ -1,7 +1,9 @@
+import * as Koa from 'koa'
+import * as Router from '@koa/router'
+
 import * as supertest from 'supertest';
 import { Sandbox } from '../resources/classes/sandbox';
 import { Controller } from '../../src/classes/controller';
-import { Request, Response } from 'express';
 import { path } from '../../src/decorators/path';
 import { StatusCode } from '@bluejay/status-code';
 import { del } from '../../src/decorators/del';
@@ -13,8 +15,8 @@ describe('@del()', () => {
     @path('/test')
     class TestController extends Controller {
       @del('/')
-      private async test(req: Request, res: Response) {
-        res.sendStatus(StatusCode.NO_CONTENT);
+      private async test(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+        ctx.status = StatusCode.NO_CONTENT;
       }
     }
 

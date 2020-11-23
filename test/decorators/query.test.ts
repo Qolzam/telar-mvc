@@ -1,8 +1,9 @@
 import { expect } from 'chai';
+import * as Koa from 'koa'
+import * as Router from '@koa/router'
 
 import { Controller } from '../../src/classes/controller';
 import { path } from '../../src/decorators/path';
-import { Request, Response } from 'express';
 import { get } from '../../src/decorators/get';
 import { query } from '../../src/decorators/query';
 import { boolean, object, string, TJSONSchema } from '@bluejay/schema';
@@ -23,8 +24,9 @@ describe('@query()', () => {
     class TestController extends Controller {
       @get('/')
       @query(options)
-      private async test(req: Request, res: Response) {
-        res.status(StatusCode.OK).json(req.query);
+      private async test(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+        ctx.status = StatusCode.OK 
+        ctx.body = ctx.request.query;
       }
     }
 

@@ -1,9 +1,9 @@
 import 'reflect-metadata';
-import { RestError } from '@bluejay/rest-errors';
+import * as http from 'http';
 import { StatusCode } from '@bluejay/status-code';
 import * as express from 'express';
-import { Container } from 'inversify';
-import { Application, NextFunction, Request, Response } from 'express';
+import { Container } from '@parisholley/inversify-async';
+import * as Koa from 'koa'
 import { TConstructible } from '@bluejay/utils';
 import { IController } from '../../../src/interfaces/controller';
 import { bind } from '../../../src';
@@ -15,7 +15,7 @@ export type TSandboxConstructorOptions = {
 
 export class Sandbox {
   private container: Container;
-  private app: Application;
+  private app: Koa;
   private controllersMap: Map<symbol, TConstructible<IController>>;
   private rootIdentifier: symbol;
 
@@ -25,7 +25,7 @@ export class Sandbox {
     for (const [ID, controllerFactory] of this.controllersMap) {
       this.container.bind<IController>(ID).to(controllerFactory);
     }
-    this.app = express();
+    this.app = new Koa();
 
     if (this.controllersMap.size > 1 && !options.rootIdentifier) {
       throw new Error(`Can't say which identifier is root when provided more than 1 controller.`);
@@ -35,9 +35,15 @@ export class Sandbox {
 
     bind(this.app, this.container, this.rootIdentifier);
 
-    this.app.use((err: RestError, req: Request, res: Response, next: NextFunction) => {
-      // console.log(err);
-      res.status(err.statusCode || StatusCode.INTERNAL_SERVER_ERROR).json({ error: true });
+    this.app.use(async (ctx:  Koa.ParameterizedContext<Koa.DefaultState, Koa.DefaultContext>, next: Koa.Next) => {
+      try {
+        await next()
+      } catch (err) {
+    console.log('[ERROR] SANDBOX   ', err)
+
+        ctx.status = err.statusCode || StatusCode.NON_AUTHORITATIVE_INFORMATION
+        ctx.body = { error: true };
+      }
     });
   }
 
@@ -46,6 +52,6 @@ export class Sandbox {
   }
 
   public getApp() {
-    return this.app;
+    return http.createServer(this.app.callback());
   }
 }

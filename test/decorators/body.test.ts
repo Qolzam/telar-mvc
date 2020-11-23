@@ -1,18 +1,19 @@
 import { expect } from 'chai';
+import * as Koa from 'koa'
+import * as Router from '@koa/router'
 
 import { Sandbox } from '../resources/classes/sandbox';
 import { Controller } from '../../src/classes/controller';
 import { path } from '../../src/decorators/path';
 import { after } from '../../src/decorators/after';
 import { errorHandler } from '../resources/middlewares/error-handler';
-import { Request, Response } from 'express';
 import { post } from '../../src/decorators/post';
 import { body } from '../../src/decorators/body';
 import { boolean, object, oneOf, requireProperties, string, tuple } from '@bluejay/schema';
 import { StatusCode } from '@bluejay/status-code';
 import supertest = require('supertest');
 import { before } from '../../src/decorators/before';
-import bodyParser = require('body-parser');
+import bodyParser = require('koa-bodyparser');
 import { ForbiddenRestError } from '@bluejay/rest-errors';
 
 describe('@body()', () => {
@@ -43,7 +44,7 @@ describe('@body()', () => {
     const id = Symbol();
 
     @path('/test')
-    @before(bodyParser.json())
+    @before(bodyParser())
     @after(errorHandler)
     class TestController extends Controller {
       @post('/')
@@ -54,8 +55,9 @@ describe('@body()', () => {
           baz: tuple([string()])
         }), ['foo'])
       })
-      private async test(req: Request, res: Response) {
-        res.status(StatusCode.CREATED).json(req.body);
+      private async test(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+        ctx.status = StatusCode.CREATED 
+        ctx.body = ctx.request.body;
       }
     }
 
@@ -73,7 +75,7 @@ describe('@body()', () => {
       }
 
       @path('/test')
-      @before(bodyParser.json())
+      @before(bodyParser())
       @after(errorHandler)
       class TestController extends Controller {
         @post('/')
@@ -85,8 +87,9 @@ describe('@body()', () => {
           }), ['foo', 'bar']),
           validationErrorFactory: () => new MyError('')
         })
-        private async test(req: Request, res: Response) {
-          res.status(StatusCode.CREATED).json(req.body);
+        private async test(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+          ctx.status = StatusCode.CREATED 
+          ctx.body = ctx.request.body;
         }
       }
 
@@ -100,7 +103,7 @@ describe('@body()', () => {
         .post('/test')
         .send({ foo: '12' })
         .expect(StatusCode.FORBIDDEN);
-
+      console.log('[RES]  ', res.body)
       expect(res.body.code).to.equal('my-error');
     });
   });
@@ -109,7 +112,7 @@ describe('@body()', () => {
     const id = Symbol();
 
     @path('/test')
-    @before(bodyParser.json())
+    @before(bodyParser())
     @after(errorHandler)
     class TestController extends Controller {
       @post('/')
@@ -118,8 +121,9 @@ describe('@body()', () => {
         bar: boolean(),
         baz: tuple([string()])
       }), ['foo']))
-      private async test(req: Request, res: Response) {
-        res.status(StatusCode.CREATED).json(req.body);
+      private async test(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+        ctx.status = StatusCode.CREATED
+        ctx.body = ctx.request.body;
       }
     }
 
@@ -136,7 +140,7 @@ describe('@body()', () => {
     const id = Symbol();
 
     @path('/test')
-    @before(bodyParser.json())
+    @before(bodyParser())
     @after(errorHandler)
     class TestController extends Controller {
       @post('/')
@@ -145,8 +149,9 @@ describe('@body()', () => {
           requireProperties(object({ bar: string() }), ['bar'])
         ])
       )
-      private async test(req: Request, res: Response) {
-        res.status(StatusCode.CREATED).json(req.body);
+      private async test(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+        ctx.status = StatusCode.CREATED
+        ctx.body = ctx.request.body;
       }
     }
 

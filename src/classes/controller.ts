@@ -1,7 +1,7 @@
 /* tslint:disable-next-line:ordered-imports */
 import 'reflect-metadata';
 
-import { injectable } from 'inversify';
+import { injectable } from '@parisholley/inversify-async';
 import { IController } from '../interfaces/controller';
 
 @injectable()

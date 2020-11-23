@@ -1,6 +1,9 @@
+import { IRestError } from '@bluejay/rest-errors';
 import { isJSONSchemaLike, TJSONSchema } from '@bluejay/schema';
+import { StatusCode } from '@bluejay/status-code';
+import * as Router from '@koa/router';
 import { ValidateFunction } from 'ajv';
-import { NextFunction, Request, Response } from 'express';
+import * as Koa from 'koa';
 import * as Lodash from 'lodash';
 import { Config } from '../config';
 import { MetadataKey } from '../constants/metadata-key';
@@ -27,12 +30,12 @@ export function query(options: TQueryOptions | TJSONSchema) {
   return function (target: any, key: string, descriptor: PropertyDescriptor) {
     Reflect.defineMetadata(MetadataKey.ROUTE_QUERY, jsonSchema, target, key);
 
-    before(async (req: Request, res: Response, next: NextFunction) => {
-      let parsedQuery = req.query;
+    before(async (ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>, next: Koa.Next) => {
+      let parsedQuery = ctx.query;
 
       if (getValidator()(parsedQuery)) {
         if (transform) {
-          parsedQuery = await transform(parsedQuery, req);
+          parsedQuery = await transform(parsedQuery, ctx.request);
         }
 
         if (groups) {
@@ -49,9 +52,12 @@ export function query(options: TQueryOptions | TJSONSchema) {
           }
         }
 
-        next();
+        await next();
       } else {
-        throw Config.get('queryValidationErrorFactory', (<TQueryOptions>options).validationErrorFactory)(getValidator().errors![0], parsedQuery);
+        const parsedErr = Config.get('queryValidationErrorFactory', (<TQueryOptions>options).validationErrorFactory)(getValidator().errors![0], parsedQuery);
+        const statusCode = (parsedErr as IRestError).statusCode || StatusCode.FORBIDDEN;
+        ctx.status = statusCode;
+        ctx.body = parsedErr;
       }
 
     })(target, key, descriptor);

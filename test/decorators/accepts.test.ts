@@ -1,8 +1,10 @@
+import * as Koa from 'koa'
+import * as Router from '@koa/router'
+
 import { Controller } from '../../src/classes/controller';
 import { path } from '../../src/decorators/path';
 import { after } from '../../src/decorators/after';
 import { errorHandler } from '../resources/middlewares/error-handler';
-import { Request, Response } from 'express';
 import { StatusCode } from '@bluejay/status-code';
 import { get } from '../../src/decorators/get';
 import { accepts } from '../../src/decorators/accepts';
@@ -17,8 +19,8 @@ describe('@accepts()', () => {
   class TestController extends Controller {
     @get('/')
     @accepts('application/json')
-    private async test(req: Request, res: Response) {
-      res.sendStatus(StatusCode.OK);
+    private async test(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+      ctx.status = StatusCode.OK;
     }
   }
 

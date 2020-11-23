@@ -29,6 +29,5 @@ export { child } from './decorators/child';
 export { is } from './decorators/is';
 export { params } from './decorators/params';
 export { query } from './decorators/query';
-export { response } from './decorators/response';
 
 export { Config } from './config';

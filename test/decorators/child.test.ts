@@ -1,6 +1,8 @@
+import * as Koa from 'koa'
+import * as Router from '@koa/router'
+
 import { Controller } from '../../src/classes/controller';
 import { path } from '../../src/decorators/path';
-import { Request, Response } from 'express';
 import { get } from '../../src/decorators/get';
 import { StatusCode } from '@bluejay/status-code';
 import { Sandbox } from '../resources/classes/sandbox';
@@ -15,8 +17,8 @@ describe('@child()', () => {
     @path('/child')
     class ChildController extends Controller {
       @get('/')
-      private async test(req: Request, res: Response) {
-        res.sendStatus(StatusCode.OK);
+      private async test(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+        ctx.status= StatusCode.OK;
       }
     }
 

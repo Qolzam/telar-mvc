@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>@bluejay/inversify-controller</title>
+	<title>telar-mvc</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="index.html" class="title">@bluejay/inversify-controller</a>
+					<a href="index.html" class="title">telar-mvc</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -54,7 +54,7 @@
 					<a href="globals.html">Globals</a>
 				</li>
 			</ul>
-			<h1> @bluejay/inversify-controller</h1>
+			<h1> telar-mvc</h1>
 		</div>
 	</div>
 </header>
@@ -65,9 +65,9 @@
 				<a href="#inversify-controller" id="inversify-controller" style="color: inherit; text-decoration: none;">
 					<h1>Inversify Controller</h1>
 				</a>
-				<p><a href="https://www.npmjs.com/package/@bluejay/inversify-controller"><img src="https://img.shields.io/npm/v/@bluejay/inversify-controller.svg?style=flat-square" alt="npm"></a>
-					<a href="https://www.npmjs.com/package/@bluejay/inversify-controller"><img src="https://img.shields.io/npm/dm/@bluejay/inversify-controller.svg?style=flat-square" alt="npm"></a>
-				<a href="https://www.npmjs.com/package/@bluejay/inversify-controller"><img src="https://img.shields.io/npm/l/@bluejay/inversify-controller.svg?style=flat-square" alt="npm"></a></p>
+				<p><a href="https://www.npmjs.com/package/telar-mvc"><img src="https://img.shields.io/npm/v/telar-mvc.svg?style=flat-square" alt="npm"></a>
+					<a href="https://www.npmjs.com/package/telar-mvc"><img src="https://img.shields.io/npm/dm/telar-mvc.svg?style=flat-square" alt="npm"></a>
+				<a href="https://www.npmjs.com/package/telar-mvc"><img src="https://img.shields.io/npm/l/telar-mvc.svg?style=flat-square" alt="npm"></a></p>
 				<a href="#requirements" id="requirements" style="color: inherit; text-decoration: none;">
 					<h2>Requirements</h2>
 				</a>
@@ -79,7 +79,7 @@
 				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
 					<h2>Installation</h2>
 				</a>
-				<p><code>npm i inversify reflect-metadata @bluejay/inversify-controller</code></p>
+				<p><code>npm i inversify reflect-metadata telar-mvc</code></p>
 				<a href="#note-on-json-schemas" id="note-on-json-schemas" style="color: inherit; text-decoration: none;">
 					<h2>Note on JSON schemas</h2>
 				</a>
@@ -91,7 +91,7 @@
 				<a href="#creating-a-root-controller" id="creating-a-root-controller" style="color: inherit; text-decoration: none;">
 					<h3>Creating a root controller</h3>
 				</a>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Controller, path } <span class="hljs-keyword">from</span> <span class="hljs-string">'@bluejay/inversify-controller'</span>;
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Controller, path } <span class="hljs-keyword">from</span> <span class="hljs-string">'telar-mvc'</span>;
 
 <span class="hljs-meta">@path</span>(<span class="hljs-string">'/'</span>)
 <span class="hljs-keyword">class</span> RootController <span class="hljs-keyword">extends</span> Controller {
@@ -101,7 +101,7 @@
 					<h3>Binding your root controller to your Express application / Inversify container</h3>
 				</a>
 				<p>The <code>bind()</code> helper correlates your express app, your Inversify container and your root controller.</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { bind } <span class="hljs-keyword">from</span> <span class="hljs-string">'@bluejay/inversify-controller'</span>;
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { bind } <span class="hljs-keyword">from</span> <span class="hljs-string">'telar-mvc'</span>;
 <span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> express <span class="hljs-keyword">from</span> <span class="hljs-string">'express'</span>;
 <span class="hljs-keyword">import</span> { container } <span class="hljs-keyword">from</span> <span class="hljs-string">'./inversify.config'</span>;
 <span class="hljs-keyword">import</span> { Identifiers } <span class="hljs-keyword">from</span> <span class="hljs-string">'./constants/identifiers'</span>; <span class="hljs-comment">// Inversify identifiers</span>
@@ -140,11 +140,11 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 					<h4>Global middlewares</h4>
 				</a>
 				<p>Since the middlewares are attached to the root controller, all routes from all children will inherit them. This gives you the same result as if you were using <code>app.use()</code>, but keeps everything in the same place.</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { before, after } <span class="hljs-keyword">from</span> <span class="hljs-string">'@bluejay/inversify-controller'</span>;
-<span class="hljs-keyword">import</span> { bodyParser } <span class="hljs-keyword">from</span> <span class="hljs-string">'body-parser'</span>;
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { before, after } <span class="hljs-keyword">from</span> <span class="hljs-string">'telar-mvc'</span>;
+<span class="hljs-keyword">import</span> { bodyParser } <span class="hljs-keyword">from</span> <span class="hljs-string">'koa-bodyparser'</span>;
 <span class="hljs-keyword">import</span> { errorHandler } <span class="hljs-keyword">from</span> <span class="hljs-string">''</span>
 
-<span class="hljs-meta">@before</span>(bodyParser.json())
+<span class="hljs-meta">@before</span>(bodyParser())
 <span class="hljs-meta">@after</span>(errorHandler())
 <span class="hljs-meta">@path</span>(<span class="hljs-string">'/'</span>)
 <span class="hljs-keyword">class</span> RootController <span class="hljs-keyword">extends</span> Controller {
@@ -175,11 +175,11 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 
   <span class="hljs-meta">@get</span>(<span class="hljs-string">'/'</span>)
   <span class="hljs-meta">@before</span>(queryParser())
-  <span class="hljs-meta">@before</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"><span class="hljs-keyword">this</span>: UsersController, req: Request, res: Response, next: NextFunction</span>) </span>{
+  <span class="hljs-meta">@before</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"><span class="hljs-keyword">this</span>: UsersController, ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>, next: Koa.Next</span>) </span>{
     <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">this</span>.foo); <span class="hljs-comment">// bar</span>
     next();
   })
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(req: Request, res: Response) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
 
   }
 }</code></pre>
@@ -190,22 +190,22 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 				<pre><code class="language-typescript"><span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
 
   <span class="hljs-meta">@get</span>(<span class="hljs-string">'/'</span>)
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(req: Request, res: Response) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
 
   }
 
   <span class="hljs-meta">@get</span>(<span class="hljs-string">'/:id'</span>)
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getById(req: Request, res: Response) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
 
   }
 
   <span class="hljs-meta">@post</span>(<span class="hljs-string">'/'</span>)
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> add(req: Request, res: Response) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> add(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
 
   }
 
   <span class="hljs-meta">@del</span>(<span class="hljs-string">'/:id'</span>)
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> removeById(req: Request, res: Response) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> removeById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
 
   }
 
@@ -220,7 +220,7 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 <span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Contoller {
   <span class="hljs-meta">@get</span>(<span class="hljs-string">'/:id'</span>)
   <span class="hljs-meta">@params</span>(requireProperties(object({ id: integer() }), [<span class="hljs-string">'id'</span>]))
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getById(req: Request, res: Response) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
     <span class="hljs-keyword">const</span> { id } = req.params;
     <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> id); <span class="hljs-comment">// number, thanks to Ajv's "coerceTypes" option</span>
   }
@@ -237,7 +237,7 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
     jsonSchema: requireProperties(idParamSchema, [<span class="hljs-string">'id'</span>]),
     ajvFactory: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-keyword">new</span> Ajv({ coerceTypes: <span class="hljs-literal">true</span> })
   })
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getById(req: Request, res: Response) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
     <span class="hljs-keyword">const</span> { id } = req.params;
     <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> id); <span class="hljs-comment">// number</span>
   }
@@ -253,7 +253,7 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 <span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
   <span class="hljs-meta">@get</span>(<span class="hljs-string">'/'</span>)
   <span class="hljs-meta">@query</span>(object({ active: <span class="hljs-built_in">boolean</span>() }))
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(req: Request, res: Response) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
     <span class="hljs-keyword">const</span> { active } = req.query;
     <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> active); <span class="hljs-comment">// boolean | undefined (since not required)</span>
   }
@@ -271,7 +271,7 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
     groups: { filters: [<span class="hljs-string">'active'</span>] }
   })
   <span class="hljs-meta">@get</span>(<span class="hljs-string">'/'</span>)
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(req: Request, res: Response) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
     <span class="hljs-keyword">const</span> { filters, token } = req.query;
     <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> token); <span class="hljs-comment">// string</span>
     <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> filters); <span class="hljs-comment">// object</span>
@@ -297,7 +297,7 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
     transform: queryTransformer
   })
   <span class="hljs-meta">@get</span>(<span class="hljs-string">'/'</span>)
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(req: Request, res: Response) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
     <span class="hljs-keyword">const</span> { active } = req.query;
     <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> active); <span class="hljs-comment">// boolean</span>
     <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> req.query.isActive); <span class="hljs-comment">// undefined</span>
@@ -320,7 +320,7 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 <span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
   <span class="hljs-meta">@post</span>(<span class="hljs-string">'/'</span>)
   <span class="hljs-meta">@body</span>(requireProperties(userSchema, [<span class="hljs-string">'email'</span>, <span class="hljs-string">'password'</span>]))
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> add(req: Request, res: Response) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> add(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
     <span class="hljs-comment">// req.body is guaranteed to match the described schema</span>
   }
 }</code></pre>
@@ -333,7 +333,7 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
   <span class="hljs-meta">@put</span>(<span class="hljs-string">'/:id/picture'</span>)
   <span class="hljs-meta">@is</span>(<span class="hljs-string">'image/jpg'</span>)
   <span class="hljs-meta">@before</span>(multer.single(<span class="hljs-string">'file'</span>)) <span class="hljs-comment">// Just an example, see https://www.npmjs.com/package/multer</span>
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> changePicture(req: Request, res: Response) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> changePicture(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
 
   }
 }</code></pre>
@@ -361,7 +361,7 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
     statusCode: StatusCode.OK,
     jsonSchema: omitProperties(userSchema, [<span class="hljs-string">'password'</span>])
   })
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getById(req: Request, res: Response) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
     <span class="hljs-keyword">const</span> { id } = req.params;
     <span class="hljs-keyword">const</span> user = <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.userService.findById(id);
     <span class="hljs-keyword">if</span> (user) {
@@ -381,7 +381,7 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
     statusCode: StatusCode.OK,
     contentType: <span class="hljs-string">'image/jpg'</span>
   })
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getPicture(req: Request, res: Response) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getPicture(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
     getPictureStream(req.params.id).pipe(res);
   }
 }</code></pre>

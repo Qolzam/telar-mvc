@@ -1,11 +1,13 @@
+import * as Koa from 'koa'
+import * as Router from '@koa/router'
+
 import { post } from '../../src/decorators/post';
 import { Controller } from '../../src/classes/controller';
 import { path } from '../../src/decorators/path';
 import { before } from '../../src/decorators/before';
-import bodyParser = require('body-parser');
+import bodyParser = require('koa-bodyparser');
 import { after } from '../../src/decorators/after';
 import { errorHandler } from '../resources/middlewares/error-handler';
-import { Request, Response } from 'express';
 import { StatusCode } from '@bluejay/status-code';
 import { is } from '../../src/decorators/is';
 import { Sandbox } from '../resources/classes/sandbox';
@@ -15,13 +17,14 @@ describe('@is()', () => {
   const id = Symbol();
 
   @path('/test')
-  @before(bodyParser.json())
+  @before(bodyParser())
   @after(errorHandler)
   class TestController extends Controller {
     @post('/')
     @is('application/json')
-    private async test(req: Request, res: Response) {
-      res.status(StatusCode.CREATED).json(req.body);
+    private async test(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+      ctx.status = StatusCode.CREATED
+      ctx.body = ctx.request.body;
     }
   }
 

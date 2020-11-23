@@ -1,8 +1,10 @@
+import * as Koa from 'koa'
+import * as Router from '@koa/router'
+
 import { Sandbox } from '../resources/classes/sandbox';
 import { path } from '../../src/decorators/path';
 import { Controller } from '../../src/classes/controller';
 import { before } from '../../src/decorators/before';
-import { NextFunction, Request, Response } from 'express';
 import { get } from '../../src/decorators/get';
 import { StatusCode } from '@bluejay/status-code';
 import supertest = require('supertest');
@@ -12,14 +14,15 @@ describe('@before()', () => {
     const id = Symbol();
 
     @path('/test')
-    @before((req: Request, res: Response, next: NextFunction) => {
-      req['testProperty'] = 'foo';
+    @before((ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>, next: Koa.Next) => {
+      ctx.req['testProperty'] = 'foo';
       next();
     })
     class TestController extends Controller {
       @get('/')
-      private async test(req: Request, res: Response) {
-        res.status(StatusCode.OK).json({ testProperty: req['testProperty'] });
+      private async test(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+        ctx.status = StatusCode.OK 
+        ctx.body = { testProperty: ctx.req['testProperty'] };
       }
     }
 
@@ -42,12 +45,13 @@ describe('@before()', () => {
     class TestController extends Controller {
       private testProperty: string = 'foo';
       @get('/')
-      @before(function(this: TestController, req: Request, res: Response, next: NextFunction) {
-        req['testProperty'] = this.testProperty;
+      @before(function(this: TestController, ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>, next: Koa.Next) {
+        ctx.req['testProperty'] = this.testProperty;
         next();
       })
-      private async test(req: Request, res: Response) {
-        res.status(StatusCode.OK).json({ testProperty: req['testProperty'] });
+      private async test(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+        ctx.status = StatusCode.OK 
+        ctx.body = { testProperty: ctx.req['testProperty'] };
       }
     }
 

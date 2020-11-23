@@ -1,6 +1,9 @@
+import { IRestError } from '@bluejay/rest-errors';
 import { isJSONSchemaLike, TJSONSchema } from '@bluejay/schema';
+import { StatusCode } from '@bluejay/status-code';
+import * as Router from '@koa/router';
 import { ValidateFunction } from 'ajv';
-import { NextFunction, Request, Response } from 'express';
+import * as Koa from 'koa';
 import * as Lodash from 'lodash';
 import { Config } from '../config';
 import { MetadataKey } from '../constants/metadata-key';
@@ -25,11 +28,14 @@ export function params(options: TParamsOptions | TJSONSchema) {
   return function (target: any, key: string, descriptor: PropertyDescriptor) {
     Reflect.defineMetadata(MetadataKey.ROUTE_PARAMS, jsonSchema, target, key);
 
-    before((req: Request, res: Response, next: NextFunction) => {
-      if (!getValidator()(req.params)) {
-        throw Config.get('paramsValidationErrorFactory', (<TParamsOptions>options).validationErrorFactory)(getValidator().errors![0], req.params);
+    before(async (ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>, next: Koa.Next) => {
+      if (!getValidator()(ctx.params)) {
+        const parsedErr = Config.get('paramsValidationErrorFactory', (<TParamsOptions>options).validationErrorFactory)(getValidator().errors![0], ctx.params);
+        const statusCode = (parsedErr as IRestError).statusCode || StatusCode.FORBIDDEN;
+        ctx.status = statusCode;
+        ctx.body = parsedErr;
       } else {
-        next();
+        await next();
       }
     })(target, key, descriptor);
   };

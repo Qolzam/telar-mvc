@@ -1,8 +1,9 @@
 import { expect } from 'chai';
+import * as Koa from 'koa'
+import * as Router from '@koa/router'
 
 import { Controller } from '../../src/classes/controller';
 import { path } from '../../src/decorators/path';
-import { Request, Response } from 'express';
 import { get } from '../../src/decorators/get';
 import { StatusCode } from '@bluejay/status-code';
 import { params } from '../../src/decorators/params';
@@ -38,8 +39,9 @@ describe('@params()', () => {
       @params({
         jsonSchema: requireProperties(object({ id: integer() }), ['id'])
       })
-      private async getById(req: Request, res: Response) {
-        res.status(StatusCode.OK).json(req.params);
+      private async getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+        ctx.status = StatusCode.OK
+        ctx.body = ctx.params;
       }
     }
 
@@ -66,8 +68,9 @@ describe('@params()', () => {
           jsonSchema: requireProperties(object({ id: integer() }), ['id']),
           validationErrorFactory: () => new MyError('')
         })
-        private async getById(req: Request, res: Response) {
-          res.status(StatusCode.OK).json(req.params);
+        private async getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+          ctx.status = StatusCode.OK 
+          ctx.body = ctx.params;
         }
       }
 
@@ -93,8 +96,9 @@ describe('@params()', () => {
     class TestController extends Controller {
       @get('/:id')
       @params(requireProperties(object({ id: integer() }), ['id']))
-      private async getById(req: Request, res: Response) {
-        res.status(StatusCode.OK).json(req.params);
+      private async getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+        ctx.status = StatusCode.OK 
+        ctx.body = ctx.params;
       }
     }
 

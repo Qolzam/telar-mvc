@@ -1,6 +1,9 @@
+import { IRestError } from '@bluejay/rest-errors';
 import { isJSONSchemaLike, TJSONSchema } from '@bluejay/schema';
+import { StatusCode } from '@bluejay/status-code';
+import * as Router from '@koa/router';
 import { ValidateFunction } from 'ajv';
-import { NextFunction, Request, Response } from 'express';
+import * as Koa from 'koa';
 import * as Lodash from 'lodash';
 import { Config } from '../config';
 import { MetadataKey } from '../constants/metadata-key';
@@ -25,12 +28,18 @@ export function body(options: TJSONBodyOptions | TJSONSchema) {
   return function (target: any, key: string, descriptor: PropertyDescriptor) {
     Reflect.defineMetadata(MetadataKey.ROUTE_BODY, jsonSchema, target, key);
 
-    before((req: Request, res: Response, next: NextFunction) => {
-      if (getValidator()(req.body)) {
-        next();
+    before(async (ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>, next: Koa.Next) => {
+      const isValid = getValidator()((ctx.request as Koa.Request & {body: unknown}).body);
+      if (isValid) {
+
+        await next();
       } else {
-        throw Config.get('jsonBodyValidationErrorFactory', (<TJSONBodyOptions>options).validationErrorFactory)(getValidator().errors![0], req.body);
+        const parsedErr = Config.get('jsonBodyValidationErrorFactory', (<TJSONBodyOptions>options).validationErrorFactory)(getValidator().errors![0], (ctx.request as Koa.Request & {body: unknown}).body);
+        const statusCode = (parsedErr as IRestError).statusCode || StatusCode.FORBIDDEN;
+        ctx.status = statusCode;
+        ctx.body = parsedErr;
       }
     })(target, key, descriptor);
   };
 }
+

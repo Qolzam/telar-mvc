@@ -1,8 +1,8 @@
-# Inversify Controller
+# Telar MVC
 
-[![npm](https://img.shields.io/npm/v/@bluejay/inversify-controller.svg?style=flat-square)](https://www.npmjs.com/package/@bluejay/inversify-controller)
- [![npm](https://img.shields.io/npm/dm/@bluejay/inversify-controller.svg?style=flat-square)](https://www.npmjs.com/package/@bluejay/inversify-controller)
-[![npm](https://img.shields.io/npm/l/@bluejay/inversify-controller.svg?style=flat-square)](https://www.npmjs.com/package/@bluejay/inversify-controller)
+[![npm](https://img.shields.io/npm/v/telar-mvc.svg?style=flat-square)](https://www.npmjs.com/package/telar-mvc)
+ [![npm](https://img.shields.io/npm/dm/telar-mvc.svg?style=flat-square)](https://www.npmjs.com/package/telar-mvc)
+[![npm](https://img.shields.io/npm/l/telar-mvc.svg?style=flat-square)](https://www.npmjs.com/package/telar-mvc)
 
 ## Requirements
 
@@ -10,9 +10,9 @@
 - `typescript >= 2.4`
 - [Inversify](https://github.com/inversify/InversifyJS#installation)
 
-## Installation
+## Installation **
 
-`npm i inversify reflect-metadata @bluejay/inversify-controller`
+`npm i inversify reflect-metadata telar-mvc`
 
 ## Note on JSON schemas
 
@@ -25,7 +25,7 @@ Although you can use plain JSON schemas, we recommend the use of Bluejay's [sche
 ### Creating a root controller
 
 ```typescript
-import { Controller, path } from '@bluejay/inversify-controller';
+import { Controller, path } from 'telar-mvc';
 
 @path('/')
 class RootController extends Controller {
@@ -38,12 +38,12 @@ class RootController extends Controller {
 The `bind()` helper correlates your express app, your Inversify container and your root controller.
 
 ```typescript
-import { bind } from '@bluejay/inversify-controller';
-import * as express from 'express';
+import { bind } from 'telar-mvc';
+import * as Koa from 'koa';
 import { container } from './inversify.config';
 import { Identifiers } from './constants/identifiers'; // Inversify identifiers
 
-const app = express();
+const app = new Koa();
 
 bind(app, container, Identifiers.RootController); // This is required and must happen early in your application, ideally right after your create your app
 ```
@@ -83,11 +83,11 @@ This module encourages you to declare middlewares at the controller level (vs. a
 Since the middlewares are attached to the root controller, all routes from all children will inherit them. This gives you the same result as if you were using `app.use()`, but keeps everything in the same place.
 
 ```typescript
-import { before, after } from '@bluejay/inversify-controller';
-import { bodyParser } from 'body-parser';
+import { before, after } from 'telar-mvc';
+import { bodyParser } from 'koa-bodyparser';
 import { errorHandler } from ''
 
-@before(bodyParser.json())
+@before(bodyParser())
 @after(errorHandler())
 @path('/')
 class RootController extends Controller {
@@ -128,11 +128,11 @@ class UsersController extends Controller {
   
   @get('/')
   @before(queryParser())
-  @before(function(this: UsersController, req: Request, res: Response, next: NextFunction) {
+  @before(async function(this: UsersController, ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>, next: Koa.Next) {
     console.log(this.foo); // bar
-    next();
+    await next();
   })
-  public async list(req: Request, res: Response) {
+  public async list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
     
   }
 }
@@ -146,22 +146,22 @@ This module offers http decorators for all HTTP verbs. Check each decorator's do
 class UsersController extends Controller {
   
   @get('/')
-  public async list(req: Request, res: Response) {
+  public async list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
     
   }
   
   @get('/:id')
-  public async getById(req: Request, res: Response) {
+  public async getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
       
   }
   
   @post('/')
-  public async add(req: Request, res: Response) {
+  public async add(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
       
   }
   
   @del('/:id')
-  public async removeById(req: Request, res: Response) {
+  public async removeById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
     
   }
   
@@ -179,7 +179,7 @@ import { object, integer, requireProperties } from '@bluejay/schema';
 class UsersController extends Contoller {
   @get('/:id')
   @params(requireProperties(object({ id: integer() }), ['id']))
-  public async getById(req: Request, res: Response) {
+  public async getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
     const { id } = req.params;
     console.log(typeof id); // number, thanks to Ajv's "coerceTypes" option
   }
@@ -200,7 +200,7 @@ class UsersController extends Contoller {
     jsonSchema: requireProperties(idParamSchema, ['id']),
     ajvFactory: () => new Ajv({ coerceTypes: true })
   })
-  public async getById(req: Request, res: Response) {
+  public async getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
     const { id } = req.params;
     console.log(typeof id); // number
   }
@@ -222,7 +222,7 @@ import { object, boolean } from '@bluejay/schema';
 class UsersController extends Controller {
   @get('/')
   @query(object({ active: boolean() }))
-  public async list(req: Request, res: Response) {
+  public async list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
     const { active } = req.query;
     console.log(typeof active); // boolean | undefined (since not required)
   }
@@ -245,7 +245,7 @@ class UsersController extends Controller {
     groups: { filters: ['active'] }
   })
   @get('/')
-  public async list(req: Request, res: Response) {
+  public async list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
     const { filters, token } = req.query;
     console.log(typeof token); // string
     console.log(typeof filters); // object
@@ -275,7 +275,7 @@ class UsersController extends Controller {
     transform: queryTransformer
   })
   @get('/')
-  public async list(req: Request, res: Response) {
+  public async list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
     const { active } = req.query;
     console.log(typeof active); // boolean
     console.log(typeof req.query.isActive); // undefined
@@ -300,7 +300,7 @@ const userSchema = object({
 class UsersController extends Controller {
   @post('/')
   @body(requireProperties(userSchema, ['email', 'password']))
-  public async add(req: Request, res: Response) {
+  public async add(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
     // req.body is guaranteed to match the described schema
   }
 }
@@ -317,19 +317,19 @@ class UsersController extends Controller {
   @put('/:id/picture')
   @is('image/jpg')
   @before(multer.single('file')) // Just an example, see https://www.npmjs.com/package/multer
-  public async changePicture(req: Request, res: Response) {
+  public async changePicture(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
     
   }
 }
 ```
 
-### Response validation
+### Response validation (**Not supporting currently for koa**)
 
 Might you want to filter some fields, coerce some types or simply make sure that your responses are up to the documentation you provided to your customers, we help you do so using JSON schemas. It is also possible to describe other types of responses, but only JSON bodies are validated for now.
 
 *Note:* Only the "expected" response can be described for now.
 
-#### JSON response
+#### JSON response (**Not supporting currently for koa**)
 
 In the example below and even though we didn't ask for specific attributes, the "password" field will never be exposed since it's not part of the schema. In other words, the response only contains the properties described in the schema. 
 
@@ -349,7 +349,7 @@ class UsersController extends Controller {
     statusCode: StatusCode.OK,
     jsonSchema: omitProperties(userSchema, ['password'])
   })
-  public async getById(req: Request, res: Response) {
+  public async getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
     const { id } = req.params;
     const user = await this.userService.findById(id);
     if (user) {
@@ -372,7 +372,7 @@ class UsersController extends Controller {
     statusCode: StatusCode.OK,
     contentType: 'image/jpg'
   })
-  public async getPicture(req: Request, res: Response) {
+  public async getPicture(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
     getPictureStream(req.params.id).pipe(res);
   }
 }
@@ -380,4 +380,4 @@ class UsersController extends Controller {
 
 ## API Documentation
 
-See [Github Pages](https://bluebirds-blue-jay.github.io/inversify-controller/).
+> TODO

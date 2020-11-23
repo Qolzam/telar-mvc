@@ -1,4 +1,6 @@
-import { NextFunction, Request, Response } from 'express';
+import * as Koa from 'koa'
+import * as Router from '@koa/router'
+
 import { Controller } from '../../src/classes/controller';
 import { path } from '../../src/decorators/path';
 import { beforeFactory } from '../../src/decorators/before-factory';
@@ -7,15 +9,15 @@ import { Sandbox } from '../resources/classes/sandbox';
 import supertest = require('supertest');
 import { get } from '../../src/decorators/get';
 import { before } from '../../src/decorators/before';
-import bodyParser = require('body-parser');
+import bodyParser = require('koa-bodyparser');
 
 describe('@beforeFactory()', () => {
   describe('Class decorator', () => {
 
     it('should register middleware', async () => {
       const middlewareFactory = function(this: TestController) {
-        return (req: Request, res: Response, next: NextFunction) => {
-          req['testProperty'] = this.testProperty;
+        return (ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>, next: Koa.Next) => {
+          ctx.req['testProperty'] = this.testProperty;
           next();
         }
       };
@@ -24,14 +26,15 @@ describe('@beforeFactory()', () => {
 
       @path('/test')
       @beforeFactory(middlewareFactory)
-      @before(bodyParser.json())
+      @before(bodyParser())
       class TestController extends Controller {
         public testProperty: string = 'foo';
 
         @get('/')
 
-        private async test(req: Request, res: Response) {
-          res.status(StatusCode.OK).json({ testProperty: req['testProperty'] });
+        private async test(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+          ctx.status = StatusCode.OK
+          ctx.body = { testProperty: ctx.req['testProperty'] };
         }
       }
 
@@ -50,8 +53,8 @@ describe('@beforeFactory()', () => {
   describe('Method decorator', () => {
     it('should register middleware', async () => {
       const middlewareFactory = function(this: TestController) {
-        return (req: Request, res: Response, next: NextFunction) => {
-          req['testProperty'] = this.testProperty;
+        return (ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>, next: Koa.Next) => {
+          ctx.req['testProperty'] = this.testProperty;
           next();
         }
       };
@@ -59,14 +62,15 @@ describe('@beforeFactory()', () => {
       const id = Symbol();
 
       @path('/test')
-      @before(bodyParser.json())
+      @before(bodyParser())
       class TestController extends Controller {
         public testProperty: string = 'foo';
 
         @get('/')
         @beforeFactory(middlewareFactory)
-        private async test(req: Request, res: Response) {
-          res.status(StatusCode.OK).json({ testProperty: req['testProperty'] });
+        private async test(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, {}>>) {
+          ctx.status = StatusCode.OK 
+          ctx.body = { testProperty: ctx.req['testProperty'] };
         }
       }
 
