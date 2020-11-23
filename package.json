@@ -13,8 +13,7 @@
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint:fix": "eslint . --ext .ts --fix",
-    "compile": "tsc",
-    "build": "rm -rf dist && mkdir dist && tsc --noEmit false",
+    "build": "tsc --noEmit false",
     "commit": "git-cz"
   },
   "publishConfig": {
