@@ -1,7 +1,7 @@
 {
   "name": "telar-mvc",
   "description": "Annotations based controllers for Typescript (koa based).",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "license": "MIT",
   "author": "Amirhossein Movahedi",
   "main": "./dist/index.js",
@@ -20,12 +20,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bluebirds-blue-jay/inversify-controller.git"
+    "url": "git+https://github.com/Qolzam/telar-mvc.git"
   },
   "bugs": {
-    "url": "https://github.com/bluebirds-blue-jay/inversify-controller/issues"
+    "url": "https://github.com/Qolzam/telar-mvc/issues"
   },
-  "homepage": "https://github.com/bluebirds-blue-jay/inversify-controller#readme",
+  "homepage": "https://github.com/Qolzam/telar-mvc#readme",
   "dependencies": {
     "@bluejay/http-method": "3.0.0-beta.0",
     "@bluejay/rest-errors": "4.0.0-beta.0",

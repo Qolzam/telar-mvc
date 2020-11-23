@@ -4,6 +4,8 @@
  [![npm](https://img.shields.io/npm/dm/telar-mvc.svg?style=flat-square)](https://www.npmjs.com/package/telar-mvc)
 [![npm](https://img.shields.io/npm/l/telar-mvc.svg?style=flat-square)](https://www.npmjs.com/package/telar-mvc)
 
+Implementation of MVC(Model-View-Controller) for [Koa](https://koajs.com/)
+
 ## Requirements
 
 - `node >= 7.10`
