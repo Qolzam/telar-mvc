@@ -88,10 +88,20 @@ function _bind(
     return router;
 }
 
+/**
+ *
+ * @param app Koa app
+ * @param container Inversify container
+ * @param rootIdentifier
+ */
 export function bind(app: Koa, container: Container, rootIdentifier: symbol): Router {
     // Enable koa router
     const router = new Router();
     app.use(router.routes()).use(router.allowedMethods());
 
+    return _bind(router, container, rootIdentifier);
+}
+
+export function bindWithRouter(router: Router, container: Container, rootIdentifier: symbol): Router {
     return _bind(router, container, rootIdentifier);
 }

@@ -4,7 +4,7 @@
  [![npm](https://img.shields.io/npm/dm/telar-mvc.svg?style=flat-square)](https://www.npmjs.com/package/telar-mvc)
 [![npm](https://img.shields.io/npm/l/telar-mvc.svg?style=flat-square)](https://www.npmjs.com/package/telar-mvc)
 
-Implementation of MVC(Model-View-Controller) based on [Koa](https://koajs.com/)
+Implementation of MVC(Model-View-Controller) based on [Koa](https://koajs.com/). Inspired by [inversify-controller](https://github.com/bluebirds-blue-jay/inversify-controller)
 
 ## Requirements
 
@@ -35,9 +35,9 @@ class RootController extends Controller {
 }
 ```
 
-### Binding your root controller to your Express application / Inversify container
+### Binding your root controller to your application / Inversify container
 
-The `bind()` helper correlates your express app, your Inversify container and your root controller.
+The `bind()` helper correlates your app, your Inversify container and your root controller.
 
 ```typescript
 import { bind } from 'telar-mvc';
