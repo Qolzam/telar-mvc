@@ -24,75 +24,62 @@ Although you can use plain JSON schemas, we recommend the use of Bluejay's [sche
 
 ## Usage
 
-### Creating a root controller
+### Creating a controller
 
 ```typescript
 import { Controller, path } from 'telar-mvc';
 
 @path('/')
-class RootController extends Controller {
+class HomeController extends Controller {
   
 }
 ```
 
-### Binding your root controller to your application / Inversify container
+### Binding your controller to your application / Inversify container
 
-The `bind()` helper correlates your app, your Inversify container and your root controller.
+The `bind()` helper correlates your app, your Inversify container and your controllers.
 
 ```typescript
-import { bind } from 'telar-mvc';
+import { bind, IController } from 'telar-mvc';
 import * as Koa from 'koa';
 import { container } from './inversify.config';
-import { Identifiers } from './constants/identifiers'; // Inversify identifiers
+import { HomeController, UserController, ProductController  } from './controllers';
+
+
+const identifiers = {
+    HomeController: Symbol('HomeController'),
+    UserController: Symbol('UserController'),
+    ProductController: Symbol('ProductController'),
+};
+
+this.container.bind<IController>(identifiers.HomeController).to(HomeController);
+this.container.bind<IController>(identifiers.UserController).to(UserController);
+this.container.bind<IController>(identifiers.ProductController).to(ProductController);
 
 const app = new Koa();
 
-bind(app, container, Identifiers.RootController); // This is required and must happen early in your application, ideally right after your create your app
-```
-
-### Nesting controllers
-
-We use a hierarchical structure that starts with the `RootController` and controllers can declare their children. We use a child relationship - as opposed to a parent relationship - in order to make controllers reusable (ie. declarable on multiple parents).
-
-```typescript
-// controllers/user-posts
-@path('/:id/friends') // Routes in this controller are accessible through /users/:id/friends
-class UserPostsController extends Controller {
-  
-}
-
-// controllers/users
-@path('/users')
-@child(Identifiers.UserPostsController)
-class UsersController extends Controller {
-  
-}
-
-// controllers/root
-@oath('/')
-@child(Identifiers.UsersController)
-class RootController extends Controller {
-  
-}
+/**
+ * app: Koa app
+ * container: Inversify container
+ * controllers symbol: A list of controllers symbol 
+ * NOTE: This is required and must happen early in your application, ideally right after your create your app
+ */
+bind(app, container, [identifiers.HomeController, identifiers.UserController, identifiers.ProductController]);
 ```
 
 ### Middlewares
 
-This module encourages you to declare middlewares at the controller level (vs. at the app level).
-
-#### Global middlewares
-
-Since the middlewares are attached to the root controller, all routes from all children will inherit them. This gives you the same result as if you were using `app.use()`, but keeps everything in the same place.
+This module encourages you to declare middlewares at the controller level (vs. at the app level). This gives you the same result as if you were using `app.use()`, but keeps everything in the same place.
 
 ```typescript
 import { before, after } from 'telar-mvc';
 import { bodyParser } from 'koa-bodyparser';
-import { errorHandler } from ''
+import { errorHandler } from '../error-handler';
 
 @before(bodyParser())
 @after(errorHandler())
 @path('/')
-class RootController extends Controller {
+class HomeController extends Controller {
   
 }
 ```
@@ -107,15 +94,15 @@ class UsersController extends Controller {
 }
 ```
 
-#### Passing arguments to global middlewares
+#### Passing arguments to middlewares
 
 There are times where you need to inject some properties into a middleware, which properties are accessible in the controller itself. `@beforeFactory` and `@afterFactory` allow you to differ a middleware's creation.
 
 ```typescript
-@beforeFactory(function(this: RootController) { // Notice the usage of a regular function
+@beforeFactory(function(this: HomeController) { // Notice the usage of a regular function
   return logMiddlewareFactory(this.logger);
 })
-class RootController extends Controller {
+class HomeController extends Controller {
   @inject(Identifiers.LoggerService) public logger: ILoggerService;  
 }
 ```
@@ -318,7 +305,7 @@ The only validation possible for now is the content type, and this is done via t
 class UsersController extends Controller {
   @put('/:id/picture')
   @is('image/jpg')
-  @before(multer.single('file')) // Just an example, see https://www.npmjs.com/package/multer
+  @before(multer.single('file')) // Just an example, see https://www.npmjs.com/package/@koa/multer
   public async changePicture(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
     
   }
