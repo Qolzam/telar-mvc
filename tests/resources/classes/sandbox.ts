@@ -21,7 +21,9 @@ export class Sandbox {
     public constructor(options: TSandboxConstructorOptions) {
         this.controllersMap = options.controllersMap;
         this.container = new Container();
+        const identifiers: symbol[] = [];
         for (const [ID, controllerFactory] of this.controllersMap) {
+            identifiers.push(ID);
             this.container.bind<IController>(ID).to(controllerFactory);
         }
         this.app = new Koa();
@@ -32,7 +34,7 @@ export class Sandbox {
 
         this.rootIdentifier = options.rootIdentifier || Array.from(this.controllersMap.keys())[0];
 
-        bind(this.app, this.container, this.rootIdentifier);
+        bind(this.app, this.container, identifiers);
 
         this.app.use(async (ctx: Koa.ParameterizedContext<Koa.DefaultState, Koa.DefaultContext>, next: Koa.Next) => {
             try {

@@ -11,11 +11,11 @@ import { StatusCode } from '@bluejay/status-code';
 describe('Controller', () => {
     describe('Child url params', () => {
         it('should allows params in @path', async () => {
-            const rootId = Symbol();
-            const userId = Symbol();
-            const userSelfId = Symbol();
+            const rootId = Symbol('rootId');
+            const userId = Symbol('userId');
+            const userSelfId = Symbol('userSelfId');
 
-            @path('/:user_id')
+            @path('/v1/users/:user_id')
             class UserSelfController extends Controller {
                 @get('/')
                 @params(object({ user_id: integer() }, { required: ['user_id'] }))
@@ -27,8 +27,7 @@ describe('Controller', () => {
                 }
             }
 
-            @path('/users')
-            @child(userSelfId)
+            @path('/v1/users')
             class UserController extends Controller {
                 @get('/')
                 @query(object({ id__in: list(integer(), { minItems: 1 }) }))
@@ -41,7 +40,6 @@ describe('Controller', () => {
             }
 
             @path('/v1')
-            @child(userId)
             class RootController extends Controller {}
 
             const sandbox = new Sandbox({
@@ -68,21 +66,23 @@ describe('Controller', () => {
 
     describe('Middlewares order', () => {
         it('should respect middlewares order', async () => {
-            const rootId = Symbol();
-            const userId = Symbol();
-            const userSelfId = Symbol();
+            const rootId = Symbol('rootId2');
+            const userId = Symbol('userId2');
+            const userSelfId = Symbol('userSelfId2');
 
-            function addToSteps(
+            async function addToSteps(
                 ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                 step: string,
                 next?: Koa.Next,
             ) {
-                (ctx.params as any).steps = ctx.params.steps || [];
-                (ctx.params as any).steps.push(step);
-                next && next();
+                ctx.params.steps = ctx.params.steps || [];
+                ctx.params.steps.push(step);
+                if (next) {
+                    await next();
+                }
             }
 
-            @path('/:user_id')
+            @path('/v1/users/:user_id')
             @before(
                 (
                     ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
@@ -105,7 +105,11 @@ describe('Controller', () => {
                 (
                     ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                     next: Koa.Next,
-                ) => addToSteps(ctx, 'userSelfAfter2', next),
+                ) => {
+                    addToSteps(ctx, 'userSelfAfter2', next);
+                    ctx.status = StatusCode.OK;
+                    ctx.body = ctx.params.steps;
+                },
             )
             class UserSelfController extends Controller {
                 @get('/')
@@ -141,8 +145,7 @@ describe('Controller', () => {
                 }
             }
 
-            @path('/users')
-            @child(userSelfId)
+            @path('/v1/users')
             @before(
                 (
                     ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
@@ -165,7 +168,11 @@ describe('Controller', () => {
                 (
                     ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                     next: Koa.Next,
-                ) => addToSteps(ctx, 'userAfter2', next),
+                ) => {
+                    addToSteps(ctx, 'userAfter2', next);
+                    ctx.status = StatusCode.OK;
+                    ctx.body = ctx.params.steps;
+                },
             )
             class UserController extends Controller {
                 @get('/')
@@ -197,12 +204,11 @@ describe('Controller', () => {
                     ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                     next: Koa.Next,
                 ) {
-                    addToSteps(ctx, 'userHandler', next);
+                    await addToSteps(ctx, 'userHandler', next);
                 }
             }
 
             @path('/v1')
-            @child(userId)
             @before(
                 (
                     ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
@@ -272,10 +278,6 @@ describe('Controller', () => {
             const userSelfHandlerRes = await supertest(sandbox.getApp()).get('/v1/users/1').expect(StatusCode.OK);
 
             expect(userSelfHandlerRes.body).to.deep.equal([
-                'rootBefore1',
-                'rootBefore2',
-                'userBefore1',
-                'userBefore2',
                 'userSelfBefore1',
                 'userSelfBefore2',
                 'userSelfHandlerBefore1',
@@ -285,17 +287,11 @@ describe('Controller', () => {
                 'userSelfHandlerAfter2',
                 'userSelfAfter1',
                 'userSelfAfter2',
-                'userAfter1',
-                'userAfter2',
-                'rootAfter1',
-                'rootAfter2',
             ]);
 
             const userHandlerRes = await supertest(sandbox.getApp()).get('/v1/users').expect(StatusCode.OK);
 
             expect(userHandlerRes.body).to.deep.equal([
-                'rootBefore1',
-                'rootBefore2',
                 'userBefore1',
                 'userBefore2',
                 'userHandlerBefore1',
@@ -305,8 +301,6 @@ describe('Controller', () => {
                 'userHandlerAfter2',
                 'userAfter1',
                 'userAfter2',
-                'rootAfter1',
-                'rootAfter2',
             ]);
 
             const rootHandlerRes = await supertest(sandbox.getApp()).get('/v1').expect(StatusCode.OK);
