@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/Qolzam/telar-mvc/compare/v1.0.0...v1.1.0) (2020-11-24)
+
+
+### Features
+
+* replace hierarchical structure with controller list ([c0cdb6b](https://github.com/Qolzam/telar-mvc/commit/c0cdb6b63b715ad00ab1fcbe717bd9d5798106ba))
+
 # 1.0.0 (2020-11-23)
 
 
