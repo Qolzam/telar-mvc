@@ -12,7 +12,7 @@ Implementation of MVC(Model-View-Controller) based on [Koa](https://koajs.com/).
 - `typescript >= 2.4`
 - [Inversify](https://github.com/inversify/InversifyJS#installation)
 
-## Installation **
+## Installation
 
 `npm i @parisholley/inversify-async koa @koa/router ajv reflect-metadata telar-mvc`
 
