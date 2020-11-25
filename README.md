@@ -10,11 +10,19 @@ Lightweight powerful implementation of MVC(Model-View-Controller) for Node serve
 
 - `node >= 7.10`
 - `typescript >= 2.4`
-- [Inversify](https://github.com/inversify/InversifyJS#installation)
 
 ## Installation
+1. Install prerquire packages
 
-`npm i @parisholley/inversify-async koa @koa/router ajv reflect-metadata telar-mvc`
+```sh
+npm i koa @koa/router ajv reflect-metadata telar-mvc
+````
+2. Install IoC container
+   - e.g. Inversify Conainter
+   
+      ```sh
+      npm i inversify
+      ```
 
 ## Note on JSON schemas
 
@@ -35,16 +43,19 @@ class HomeController extends Controller {
 }
 ```
 
-### Binding your controller to your application / Inversify container
+### Binding your controller to your application using Inversify container
 
-The `bind()` helper correlates your app, your Inversify container and your controllers.
+The `bind()` helper correlates your app, your container and your controllers.
 
 ```typescript
-import { bind, IController } from 'telar-mvc';
+import { bind, IController, Controller } from 'telar-mvc';
 import * as Koa from 'koa';
 import { container } from './inversify.config';
 import { HomeController, UserController, ProductController  } from './controllers';
 
+// NOTE: Make sure to decorate the `Controller` class from `tela-mvc` if you are using inversify. 
+// This line should run right before binding and only should run ONE time!!!
+decorate(injectable(), Controller);
 
 const identifiers = {
     HomeController: Symbol('HomeController'),
@@ -60,8 +71,8 @@ const app = new Koa();
 
 /**
  * app: Koa app
- * container: Inversify container
- * controllers symbol: A list of controllers symbol 
+ * container: Implementation of IContainer or any IoC Container implemented `get<T>(TYPE)` method like Inversify or TypeDI
+ * controller identifiers: A list of controller identifiers 
  * NOTE: This is required and must happen early in your application, ideally right after your create your app
  */
 bind(app, container, [identifiers.HomeController, identifiers.UserController, identifiers.ProductController]);

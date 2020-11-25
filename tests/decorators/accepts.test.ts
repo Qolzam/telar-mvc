@@ -1,7 +1,6 @@
 import * as Koa from 'koa';
 import * as Router from '@koa/router';
 
-import { Controller } from '../../src/classes/controller';
 import { path } from '../../src/decorators/path';
 import { after } from '../../src/decorators/after';
 import { errorHandler } from '../resources/middlewares/error-handler';
@@ -10,6 +9,7 @@ import { get } from '../../src/decorators/get';
 import { accepts } from '../../src/decorators/accepts';
 import supertest = require('supertest');
 import { Sandbox } from '../resources/classes/sandbox';
+import { Controller } from '../../src/classes/controller';
 
 describe('@accepts()', () => {
     const id = Symbol();

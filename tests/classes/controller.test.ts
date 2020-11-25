@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { Controller, path, params, child, get, query, before, after } from '../../src';
+import { path, params, get, query, before, after, Controller } from '../../src';
 import * as supertest from 'supertest';
 import { Sandbox } from '../resources/classes/sandbox';
 import * as Koa from 'koa';

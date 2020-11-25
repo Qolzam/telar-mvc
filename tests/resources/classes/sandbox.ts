@@ -1,11 +1,13 @@
 import 'reflect-metadata';
 import * as http from 'http';
 import { StatusCode } from '@bluejay/status-code';
-import { Container } from '@parisholley/inversify-async';
+import { Container, decorate, injectable } from '@parisholley/inversify-async';
 import * as Koa from 'koa';
 import { TConstructible } from '@bluejay/utils';
 import { IController } from '../../../src/interfaces/controller';
-import { bind } from '../../../src';
+import { bind, Controller } from '../../../src';
+
+decorate(injectable(), Controller);
 
 export type TSandboxConstructorOptions = {
     controllersMap: Map<symbol, TConstructible<IController>>;
@@ -26,6 +28,7 @@ export class Sandbox {
             identifiers.push(ID);
             this.container.bind<IController>(ID).to(controllerFactory);
         }
+
         this.app = new Koa();
 
         if (this.controllersMap.size > 1 && !options.rootIdentifier) {
