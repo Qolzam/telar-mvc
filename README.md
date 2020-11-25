@@ -4,7 +4,7 @@
  [![npm](https://img.shields.io/npm/dm/telar-mvc.svg?style=flat-square)](https://www.npmjs.com/package/telar-mvc)
 [![npm](https://img.shields.io/npm/l/telar-mvc.svg?style=flat-square)](https://www.npmjs.com/package/telar-mvc)
 
-Implementation of MVC(Model-View-Controller) based on [Koa](https://koajs.com/) for Node servers. Inspired by [inversify-controller].(https://github.com/bluebirds-blue-jay/inversify-controller)
+Lightweight powerful implementation of MVC(Model-View-Controller) for Node servers. Inspired by [inversify-controller](https://github.com/bluebirds-blue-jay/inversify-controller).
 
 ## Requirements
 
