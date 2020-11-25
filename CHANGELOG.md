@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/Qolzam/telar-mvc/compare/v1.1.0...v1.2.0) (2020-11-25)
+
+
+### Features
+
+* remove inversify container from base code ([2f02248](https://github.com/Qolzam/telar-mvc/commit/2f022487de1cce674572398a1808edf8deae3701))
+
 # [1.1.0](https://github.com/Qolzam/telar-mvc/compare/v1.0.0...v1.1.0) (2020-11-24)
 
 
