@@ -1,6 +1,6 @@
 {
   "name": "telar-mvc",
-  "description": "Annotations based controllers for Typescript (koa based).",
+  "description": "Lightweight powerful implementation of MVC(Model-View-Controller) for Node servers.",
   "version": "0.0.0-development",
   "license": "MIT",
   "author": "Amir Movahedi <amir.gholzam@live.com>",
