@@ -1,27 +1,27 @@
 import * as Koa from 'koa';
 import * as Router from '@koa/router';
 
-import { post } from '../../src/decorators/post';
+import { Post } from '../../src/decorators/Post';
 import { Controller } from '../../src/classes/controller';
-import { path } from '../../src/decorators/path';
-import { before } from '../../src/decorators/before';
+import { Path } from '../../src/decorators/Path';
+import { Before } from '../../src/decorators/Before';
 import bodyParser = require('koa-bodyparser');
-import { after } from '../../src/decorators/after';
+import { After } from '../../src/decorators/After';
 import { errorHandler } from '../resources/middlewares/error-handler';
 import { StatusCode } from '@bluejay/status-code';
-import { is } from '../../src/decorators/is';
+import { Is } from '../../src/decorators/Is';
 import { Sandbox } from '../resources/classes/sandbox';
 import supertest = require('supertest');
 
-describe('@is()', () => {
+describe('@Is()', () => {
     const id = Symbol();
 
-    @path('/test')
-    @before(bodyParser())
-    @after(errorHandler)
+    @Path('/test')
+    @Before(bodyParser())
+    @After(errorHandler)
     class TestController extends Controller {
-        @post('/')
-        @is('application/json')
+        @Post('/')
+        @Is('application/json')
         private async test(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
             ctx.status = StatusCode.CREATED;
             ctx.body = ctx.request.body;

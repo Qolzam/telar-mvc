@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { path, params, get, query, before, after, Controller } from '../../src';
+import { Path, Params, Get, Query, Before, After, Controller } from '../../src';
 import * as supertest from 'supertest';
 import { Sandbox } from '../resources/classes/sandbox';
 import * as Koa from 'koa';
@@ -10,15 +10,15 @@ import { StatusCode } from '@bluejay/status-code';
 
 describe('Controller', () => {
     describe('Child url params', () => {
-        it('should allows params in @path', async () => {
+        it('should allows params in @Path', async () => {
             const rootId = Symbol('rootId');
             const userId = Symbol('userId');
             const userSelfId = Symbol('userSelfId');
 
-            @path('/v1/users/:user_id')
+            @Path('/v1/users/:user_id')
             class UserSelfController extends Controller {
-                @get('/')
-                @params(object({ user_id: integer() }, { required: ['user_id'] }))
+                @Get('/')
+                @Params(object({ user_id: integer() }, { required: ['user_id'] }))
                 public async getItem(
                     ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                 ) {
@@ -27,10 +27,10 @@ describe('Controller', () => {
                 }
             }
 
-            @path('/v1/users')
+            @Path('/v1/users')
             class UserController extends Controller {
-                @get('/')
-                @query(object({ id__in: list(integer(), { minItems: 1 }) }))
+                @Get('/')
+                @Query(object({ id__in: list(integer(), { minItems: 1 }) }))
                 public async batchGetItem(
                     ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                 ) {
@@ -39,7 +39,7 @@ describe('Controller', () => {
                 }
             }
 
-            @path('/v1')
+            @Path('/v1')
             class RootController extends Controller {}
 
             const sandbox = new Sandbox({
@@ -82,26 +82,26 @@ describe('Controller', () => {
                 }
             }
 
-            @path('/v1/users/:user_id')
-            @before(
+            @Path('/v1/users/:user_id')
+            @Before(
                 (
                     ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                     next: Koa.Next,
                 ) => addToSteps(ctx, 'userSelfBefore1', next),
             )
-            @before(
+            @Before(
                 (
                     ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                     next: Koa.Next,
                 ) => addToSteps(ctx, 'userSelfBefore2', next),
             )
-            @after(
+            @After(
                 (
                     ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                     next: Koa.Next,
                 ) => addToSteps(ctx, 'userSelfAfter1', next),
             )
-            @after(
+            @After(
                 (
                     ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                     next: Koa.Next,
@@ -112,26 +112,26 @@ describe('Controller', () => {
                 },
             )
             class UserSelfController extends Controller {
-                @get('/')
-                @before(
+                @Get('/')
+                @Before(
                     (
                         ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                         next: Koa.Next,
                     ) => addToSteps(ctx, 'userSelfHandlerBefore1', next),
                 )
-                @before(
+                @Before(
                     (
                         ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                         next: Koa.Next,
                     ) => addToSteps(ctx, 'userSelfHandlerBefore2', next),
                 )
-                @after(
+                @After(
                     (
                         ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                         next: Koa.Next,
                     ) => addToSteps(ctx, 'userSelfHandlerAfter1', next),
                 )
-                @after(
+                @After(
                     (
                         ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                         next: Koa.Next,
@@ -145,26 +145,26 @@ describe('Controller', () => {
                 }
             }
 
-            @path('/v1/users')
-            @before(
+            @Path('/v1/users')
+            @Before(
                 (
                     ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                     next: Koa.Next,
                 ) => addToSteps(ctx, 'userBefore1', next),
             )
-            @before(
+            @Before(
                 (
                     ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                     next: Koa.Next,
                 ) => addToSteps(ctx, 'userBefore2', next),
             )
-            @after(
+            @After(
                 (
                     ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                     next: Koa.Next,
                 ) => addToSteps(ctx, 'userAfter1', next),
             )
-            @after(
+            @After(
                 (
                     ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                     next: Koa.Next,
@@ -175,26 +175,26 @@ describe('Controller', () => {
                 },
             )
             class UserController extends Controller {
-                @get('/')
-                @before(
+                @Get('/')
+                @Before(
                     (
                         ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                         next: Koa.Next,
                     ) => addToSteps(ctx, 'userHandlerBefore1', next),
                 )
-                @before(
+                @Before(
                     (
                         ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                         next: Koa.Next,
                     ) => addToSteps(ctx, 'userHandlerBefore2', next),
                 )
-                @after(
+                @After(
                     (
                         ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                         next: Koa.Next,
                     ) => addToSteps(ctx, 'userHandlerAfter1', next),
                 )
-                @after(
+                @After(
                     (
                         ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                         next: Koa.Next,
@@ -208,51 +208,51 @@ describe('Controller', () => {
                 }
             }
 
-            @path('/v1')
-            @before(
+            @Path('/v1')
+            @Before(
                 (
                     ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                     next: Koa.Next,
                 ) => addToSteps(ctx, 'rootBefore1', next),
             )
-            @before(
+            @Before(
                 (
                     ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                     next: Koa.Next,
                 ) => addToSteps(ctx, 'rootBefore2', next),
             )
-            @after(
+            @After(
                 (
                     ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                     next: Koa.Next,
                 ) => addToSteps(ctx, 'rootAfter1', next),
             )
-            @after((ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) => {
+            @After((ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) => {
                 addToSteps(ctx, 'rootAfter2');
                 ctx.status = StatusCode.OK;
                 ctx.body = ctx.params.steps;
             })
             class RootController extends Controller {
-                @get('/')
-                @before(
+                @Get('/')
+                @Before(
                     (
                         ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                         next: Koa.Next,
                     ) => addToSteps(ctx, 'rootHandlerBefore1', next),
                 )
-                @before(
+                @Before(
                     (
                         ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                         next: Koa.Next,
                     ) => addToSteps(ctx, 'rootHandlerBefore2', next),
                 )
-                @after(
+                @After(
                     (
                         ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                         next: Koa.Next,
                     ) => addToSteps(ctx, 'rootHandlerAfter1', next),
                 )
-                @after(
+                @After(
                     (
                         ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                         next: Koa.Next,

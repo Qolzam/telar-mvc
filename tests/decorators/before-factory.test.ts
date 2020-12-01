@@ -2,16 +2,16 @@ import * as Koa from 'koa';
 import * as Router from '@koa/router';
 
 import { Controller } from '../../src/classes/controller';
-import { path } from '../../src/decorators/path';
-import { beforeFactory } from '../../src/decorators/before-factory';
+import { Path } from '../../src/decorators/Path';
+import { BeforeFactory } from '../../src/decorators/BeforeFactory';
 import { StatusCode } from '@bluejay/status-code';
 import { Sandbox } from '../resources/classes/sandbox';
 import supertest = require('supertest');
-import { get } from '../../src/decorators/get';
-import { before } from '../../src/decorators/before';
+import { Get } from '../../src/decorators/Get';
+import { Before } from '../../src/decorators/Before';
 import bodyParser = require('koa-bodyparser');
 
-describe('@beforeFactory()', () => {
+describe('@BeforeFactory()', () => {
     describe('Class decorator', () => {
         it('should register middleware', async () => {
             const middlewareFactory = function (this: TestController) {
@@ -26,13 +26,13 @@ describe('@beforeFactory()', () => {
 
             const id = Symbol();
 
-            @path('/test')
-            @beforeFactory(middlewareFactory)
-            @before(bodyParser())
+            @Path('/test')
+            @BeforeFactory(middlewareFactory)
+            @Before(bodyParser())
             class TestController extends Controller {
                 public testProperty = 'foo';
 
-                @get('/')
+                @Get('/')
                 private async test(
                     ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                 ) {
@@ -63,13 +63,13 @@ describe('@beforeFactory()', () => {
 
             const id = Symbol();
 
-            @path('/test')
-            @before(bodyParser())
+            @Path('/test')
+            @Before(bodyParser())
             class TestController extends Controller {
                 public testProperty = 'foo';
 
-                @get('/')
-                @beforeFactory(middlewareFactory)
+                @Get('/')
+                @BeforeFactory(middlewareFactory)
                 private async test(
                     ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                 ) {

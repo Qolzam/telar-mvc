@@ -11,7 +11,7 @@ import { Before } from './Before';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const cloneDeep = require('lodash.clonedeep');
 
-export function Body(options: TJSONBodyOptions | TJSONSchema) {
+export function ModelAction(options: TJSONBodyOptions | TJSONSchema) {
     options = cloneDeep(options);
     const jsonSchema = isJSONSchemaLike(options) ? options : (<TJSONBodyOptions>options).jsonSchema;
     const jsonSchemaSafeCopy = cloneDeep(jsonSchema);

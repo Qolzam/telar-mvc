@@ -1,9 +1,9 @@
 import { HTTPMethod } from '@bluejay/http-method';
-import { method } from './method';
+import { Method } from './Method';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { IController } from '../interfaces/controller'; // Keep
 
-export function del(path: string) {
-    return method(HTTPMethod.DELETE, path);
+export function Del(path: string) {
+    return Method(HTTPMethod.DELETE, path);
 }

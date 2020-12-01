@@ -3,18 +3,18 @@ import * as Koa from 'koa';
 import * as Router from '@koa/router';
 
 import { Controller } from '../../src/classes/controller';
-import { path } from '../../src/decorators/path';
-import { get } from '../../src/decorators/get';
+import { Path } from '../../src/decorators/Path';
+import { Get } from '../../src/decorators/Get';
 import { StatusCode } from '@bluejay/status-code';
-import { params } from '../../src/decorators/params';
-import { after } from '../../src/decorators/after';
+import { Params } from '../../src/decorators/Params';
+import { After } from '../../src/decorators/After';
 import { integer, object, requireProperties } from '@bluejay/schema';
 import supertest = require('supertest');
 import { Sandbox } from '../resources/classes/sandbox';
 import { errorHandler } from '../resources/middlewares/error-handler';
 import { ForbiddenRestError } from '@bluejay/rest-errors';
 
-describe('@params()', () => {
+describe('@Params()', () => {
     function doTest(sandbox: Sandbox) {
         it('should coerce integer', async () => {
             await supertest(sandbox.getApp()).get('/test/12').expect(StatusCode.OK, { id: 12 });
@@ -28,11 +28,11 @@ describe('@params()', () => {
     describe('Via options', () => {
         const id = Symbol();
 
-        @path('/test')
-        @after(errorHandler)
+        @Path('/test')
+        @After(errorHandler)
         class TestController extends Controller {
-            @get('/:id')
-            @params({
+            @Get('/:id')
+            @Params({
                 jsonSchema: requireProperties(object({ id: integer() }), ['id']),
             })
             private async getById(
@@ -56,11 +56,11 @@ describe('@params()', () => {
                 public code = 'my-error';
             }
 
-            @path('/test')
-            @after(errorHandler)
+            @Path('/test')
+            @After(errorHandler)
             class TestController extends Controller {
-                @get('/:id')
-                @params({
+                @Get('/:id')
+                @Params({
                     jsonSchema: requireProperties(object({ id: integer() }), ['id']),
                     validationErrorFactory: () => new MyError(''),
                 })
@@ -85,11 +85,11 @@ describe('@params()', () => {
     describe('Schema only', () => {
         const id = Symbol();
 
-        @path('/test')
-        @after(errorHandler)
+        @Path('/test')
+        @After(errorHandler)
         class TestController extends Controller {
-            @get('/:id')
-            @params(requireProperties(object({ id: integer() }), ['id']))
+            @Get('/:id')
+            @Params(requireProperties(object({ id: integer() }), ['id']))
             private async getById(
                 ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
             ) {

@@ -3,27 +3,27 @@ import * as Koa from 'koa';
 import * as Router from '@koa/router';
 
 import { Controller } from '../../src/classes/controller';
-import { path } from '../../src/decorators/path';
-import { get } from '../../src/decorators/get';
-import { query } from '../../src/decorators/query';
+import { Path } from '../../src/decorators/Path';
+import { Get } from '../../src/decorators/Get';
+import { Query } from '../../src/decorators/Query';
 import { boolean, object, string, TJSONSchema } from '@bluejay/schema';
 import { TQueryOptions } from '../../src/types/query-options';
 import { StatusCode } from '@bluejay/status-code';
-import { after } from '../../src/decorators/after';
+import { After } from '../../src/decorators/After';
 import { errorHandler } from '../resources/middlewares/error-handler';
 import { Sandbox } from '../resources/classes/sandbox';
 import supertest = require('supertest');
 import { ForbiddenRestError } from '@bluejay/rest-errors';
 
-describe('@query()', () => {
+describe('@Query()', () => {
     function setup(options: TQueryOptions | TJSONSchema) {
         const id = Symbol();
 
-        @path('/test')
-        @after(errorHandler)
+        @Path('/test')
+        @After(errorHandler)
         class TestController extends Controller {
-            @get('/')
-            @query(options)
+            @Get('/')
+            @Query(options)
             private async test(
                 ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
             ) {

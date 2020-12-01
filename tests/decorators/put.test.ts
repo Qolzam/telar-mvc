@@ -3,21 +3,21 @@ import * as Router from '@koa/router';
 
 import { Controller } from '../../src/classes/controller';
 import { StatusCode } from '@bluejay/status-code';
-import { path } from '../../src/decorators/path';
-import { before } from '../../src/decorators/before';
+import { Path } from '../../src/decorators/Path';
+import { Before } from '../../src/decorators/Before';
 import * as bodyParser from 'koa-bodyparser';
 import { Sandbox } from '../resources/classes/sandbox';
 import supertest = require('supertest');
-import { put } from '../../src/decorators/put';
+import { Put } from '../../src/decorators/Put';
 
-describe('@put()', () => {
+describe('@Put()', () => {
     it('should register a PUT route', async () => {
         const id = Symbol();
 
-        @path('/test')
-        @before(bodyParser())
+        @Path('/test')
+        @Before(bodyParser())
         class TestController extends Controller {
-            @put('/')
+            @Put('/')
             private async test(
                 ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
             ) {

@@ -2,19 +2,19 @@ import * as Koa from 'koa';
 import * as Router from '@koa/router';
 
 import { Sandbox } from '../resources/classes/sandbox';
-import { path } from '../../src/decorators/path';
+import { Path } from '../../src/decorators/Path';
 import { Controller } from '../../src/classes/controller';
-import { before } from '../../src/decorators/before';
-import { get } from '../../src/decorators/get';
+import { Before } from '../../src/decorators/Before';
+import { Get } from '../../src/decorators/Get';
 import { StatusCode } from '@bluejay/status-code';
 import supertest = require('supertest');
 
-describe('@before()', () => {
+describe('@Before()', () => {
     describe('Class decorator', () => {
         const id = Symbol();
 
-        @path('/test')
-        @before(
+        @Path('/test')
+        @Before(
             (
                 ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                 next: Koa.Next,
@@ -24,7 +24,7 @@ describe('@before()', () => {
             },
         )
         class TestController extends Controller {
-            @get('/')
+            @Get('/')
             private async test(
                 ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
             ) {
@@ -44,11 +44,11 @@ describe('@before()', () => {
     describe('Method decorator', () => {
         const id = Symbol();
 
-        @path('/test')
+        @Path('/test')
         class TestController extends Controller {
             private testProperty = 'foo';
-            @get('/')
-            @before(function (
+            @Get('/')
+            @Before(function (
                 this: TestController,
                 ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                 next: Koa.Next,

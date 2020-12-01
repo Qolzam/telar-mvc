@@ -6,7 +6,7 @@ import { TMiddlewareDefinition } from '../types/middleware-definition';
 import { isClassDecorator } from '../utils/is-class-decorator';
 import { isPropertyDecorator } from '../utils/is-property-decorator';
 
-export function after(middleware: Router.Middleware<any, Record<string, any>>): any {
+export function After(middleware: Router.Middleware<any, Record<string, any>>): any {
     return function (
         target: TConstructible<IController> | IController,
         key?: string,
@@ -31,7 +31,7 @@ export function after(middleware: Router.Middleware<any, Record<string, any>>): 
                 key as string,
             );
         } else {
-            throw new Error(`@after() decorates classes and methods only.`);
+            throw new Error(`@After() decorates classes and methods only.`);
         }
     };
 }

@@ -3,7 +3,7 @@ import { TCommonResponseOptions } from '../types/common-response-options';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const isPlainObject = require('lodash.isplainobject');
 
-export function isCommonResponseOptions(options: Record<string, unknown>): options is TCommonResponseOptions {
+export function isCommonResponseOptions(options: Record<string, any>): options is TCommonResponseOptions {
     /* tslint:disable-next-line:no-string-literal */
     return (
         isPlainObject(options) &&

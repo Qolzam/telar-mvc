@@ -7,11 +7,11 @@ import * as Koa from 'koa';
 import { Config } from '../config';
 import { MetadataKey } from '../constants/metadata-key';
 import { TParamsOptions } from '../types/params-options';
-import { before } from './before';
+import { Before } from './Before';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const cloneDeep = require('lodash.clonedeep');
 
-export function params(options: TParamsOptions | TJSONSchema) {
+export function Params(options: TParamsOptions | TJSONSchema) {
     options = cloneDeep(options);
     const jsonSchema = isJSONSchemaLike(options) ? options : (<TParamsOptions>options).jsonSchema;
     const jsonSchemaSafeCopy = cloneDeep(jsonSchema);
@@ -29,7 +29,7 @@ export function params(options: TParamsOptions | TJSONSchema) {
     return function (target: any, key: string, descriptor: PropertyDescriptor) {
         Reflect.defineMetadata(MetadataKey.ROUTE_PARAMS, jsonSchema, target, key);
 
-        before(
+        Before(
             async (
                 ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                 next: Koa.Next,

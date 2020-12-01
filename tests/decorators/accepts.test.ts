@@ -1,24 +1,24 @@
 import * as Koa from 'koa';
 import * as Router from '@koa/router';
 
-import { path } from '../../src/decorators/path';
-import { after } from '../../src/decorators/after';
+import { Path } from '../../src/decorators/Path';
+import { After } from '../../src/decorators/After';
 import { errorHandler } from '../resources/middlewares/error-handler';
 import { StatusCode } from '@bluejay/status-code';
-import { get } from '../../src/decorators/get';
-import { accepts } from '../../src/decorators/accepts';
+import { Get } from '../../src/decorators/Get';
+import { Accepts } from '../../src/decorators/Accepts';
 import supertest = require('supertest');
 import { Sandbox } from '../resources/classes/sandbox';
 import { Controller } from '../../src/classes/controller';
 
-describe('@accepts()', () => {
+describe('@Accepts()', () => {
     const id = Symbol();
 
-    @path('/test')
-    @after(errorHandler)
+    @Path('/test')
+    @After(errorHandler)
     class TestController extends Controller {
-        @get('/')
-        @accepts('application/json')
+        @Get('/')
+        @Accepts('application/json')
         private async test(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
             ctx.status = StatusCode.OK;
         }

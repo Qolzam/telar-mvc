@@ -5,7 +5,7 @@ import { TMiddlewareDefinition } from '../types/middleware-definition';
 import { isClassDecorator } from '../utils/is-class-decorator';
 import { isPropertyDecorator } from '../utils/is-property-decorator';
 
-export function before(middleware: Router.Middleware<any, Record<string, any>>): any {
+export function Before(middleware: Router.Middleware<any, Record<string, any>>): any {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     return function (target: any, key?: string, descriptor?: PropertyDescriptor) {
         if (isClassDecorator(target, arguments)) {
@@ -24,7 +24,7 @@ export function before(middleware: Router.Middleware<any, Record<string, any>>):
                 key as string,
             );
         } else {
-            throw new Error(`@before() decorates classes and methods only.`);
+            throw new Error(`@Before() decorates classes and methods only.`);
         }
     };
 }

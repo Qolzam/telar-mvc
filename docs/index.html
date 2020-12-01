@@ -93,7 +93,7 @@
 				</a>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Controller, path } <span class="hljs-keyword">from</span> <span class="hljs-string">'telar-mvc'</span>;
 
-<span class="hljs-meta">@path</span>(<span class="hljs-string">'/'</span>)
+<span class="hljs-meta">@Path</span>(<span class="hljs-string">'/'</span>)
 <span class="hljs-keyword">class</span> RootController <span class="hljs-keyword">extends</span> Controller {
 
 }</code></pre>
@@ -114,13 +114,13 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 				</a>
 				<p>We use a hierarchical structure that starts with the <code>RootController</code> and controllers can declare their children. We use a child relationship - as opposed to a parent relationship - in order to make controllers reusable (ie. declarable on multiple parents).</p>
 				<pre><code class="language-typescript"><span class="hljs-comment">// controllers/user-posts</span>
-<span class="hljs-meta">@path</span>(<span class="hljs-string">'/:id/friends'</span>) <span class="hljs-comment">// Routes in this controller are accessible through /users/:id/friends</span>
+<span class="hljs-meta">@Path</span>(<span class="hljs-string">'/:id/friends'</span>) <span class="hljs-comment">// Routes in this controller are accessible through /users/:id/friends</span>
 <span class="hljs-keyword">class</span> UserPostsController <span class="hljs-keyword">extends</span> Controller {
 
 }
 
 <span class="hljs-comment">// controllers/users</span>
-<span class="hljs-meta">@path</span>(<span class="hljs-string">'/users'</span>)
+<span class="hljs-meta">@Path</span>(<span class="hljs-string">'/users'</span>)
 <span class="hljs-meta">@child</span>(Identifiers.UserPostsController)
 <span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
 
@@ -144,23 +144,23 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 <span class="hljs-keyword">import</span> { bodyParser } <span class="hljs-keyword">from</span> <span class="hljs-string">'koa-bodyparser'</span>;
 <span class="hljs-keyword">import</span> { errorHandler } <span class="hljs-keyword">from</span> <span class="hljs-string">''</span>
 
-<span class="hljs-meta">@before</span>(bodyParser())
-<span class="hljs-meta">@after</span>(errorHandler())
-<span class="hljs-meta">@path</span>(<span class="hljs-string">'/'</span>)
+<span class="hljs-meta">@Before</span>(bodyParser())
+<span class="hljs-meta">@After</span>(errorHandler())
+<span class="hljs-meta">@Path</span>(<span class="hljs-string">'/'</span>)
 <span class="hljs-keyword">class</span> RootController <span class="hljs-keyword">extends</span> Controller {
 
 }</code></pre>
 				<p>Below we register a middleware that&#39;s specific to the UsersController.</p>
-				<pre><code class="language-typescript"><span class="hljs-meta">@path</span>(<span class="hljs-string">'/users'</span>)
-<span class="hljs-meta">@before</span>(logMiddleware) <span class="hljs-comment">// Only /users routes (and descendants) will be affected</span>
+				<pre><code class="language-typescript"><span class="hljs-meta">@Path</span>(<span class="hljs-string">'/users'</span>)
+<span class="hljs-meta">@Before</span>(logMiddleware) <span class="hljs-comment">// Only /users routes (and descendants) will be affected</span>
 <span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
 
 }</code></pre>
 				<a href="#passing-arguments-to-global-middlewares" id="passing-arguments-to-global-middlewares" style="color: inherit; text-decoration: none;">
 					<h4>Passing arguments to global middlewares</h4>
 				</a>
-				<p>There are times where you need to inject some properties into a middleware, which properties are accessible in the controller itself. <code>@beforeFactory</code> and <code>@afterFactory</code> allow you to differ a middleware&#39;s creation.</p>
-				<pre><code class="language-typescript"><span class="hljs-meta">@beforeFactory</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"><span class="hljs-keyword">this</span>: RootController</span>) </span>{ <span class="hljs-comment">// Notice the usage of a regular function</span>
+				<p>There are times where you need to inject some properties into a middleware, which properties are accessible in the controller itself. <code>@BeforeFactory</code> and <code>@AfterFactory</code> allow you to differ a middleware&#39;s creation.</p>
+				<pre><code class="language-typescript"><span class="hljs-meta">@BeforeFactory</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"><span class="hljs-keyword">this</span>: RootController</span>) </span>{ <span class="hljs-comment">// Notice the usage of a regular function</span>
   <span class="hljs-keyword">return</span> logMiddlewareFactory(<span class="hljs-keyword">this</span>.logger);
 })
 <span class="hljs-keyword">class</span> RootController <span class="hljs-keyword">extends</span> Controller {
@@ -169,13 +169,13 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 				<a href="#route-level-middlewares" id="route-level-middlewares" style="color: inherit; text-decoration: none;">
 					<h4>Route level middlewares</h4>
 				</a>
-				<p>Route level middlewares are declared the exact same way as controller middlewares, using <code>@before</code>, <code>@after</code> and <code>@beforeFactory</code>. <code>@afterFactory</code> is currently not supported.</p>
+				<p>Route level middlewares are declared the exact same way as controller middlewares, using <code>@Before</code>, <code>@After</code> and <code>@BeforeFactory</code>. <code>@AfterFactory</code> is currently not supported.</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
   <span class="hljs-keyword">private</span> foo: <span class="hljs-built_in">string</span> = <span class="hljs-string">'bar'</span>;
 
-  <span class="hljs-meta">@get</span>(<span class="hljs-string">'/'</span>)
-  <span class="hljs-meta">@before</span>(queryParser())
-  <span class="hljs-meta">@before</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"><span class="hljs-keyword">this</span>: UsersController, ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>, next: Koa.Next</span>) </span>{
+  <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/'</span>)
+  <span class="hljs-meta">@Before</span>(queryParser())
+  <span class="hljs-meta">@Before</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"><span class="hljs-keyword">this</span>: UsersController, ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>, next: Koa.Next</span>) </span>{
     <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">this</span>.foo); <span class="hljs-comment">// bar</span>
     next();
   })
@@ -189,22 +189,22 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 				<p>This module offers http decorators for all HTTP verbs. Check each decorator&#39;s documentation for specific options.</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
 
-  <span class="hljs-meta">@get</span>(<span class="hljs-string">'/'</span>)
+  <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/'</span>)
   <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
 
   }
 
-  <span class="hljs-meta">@get</span>(<span class="hljs-string">'/:id'</span>)
+  <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/:id'</span>)
   <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
 
   }
 
-  <span class="hljs-meta">@post</span>(<span class="hljs-string">'/'</span>)
+  <span class="hljs-meta">@Post</span>(<span class="hljs-string">'/'</span>)
   <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> add(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
 
   }
 
-  <span class="hljs-meta">@del</span>(<span class="hljs-string">'/:id'</span>)
+  <span class="hljs-meta">@Del</span>(<span class="hljs-string">'/:id'</span>)
   <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> removeById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
 
   }
@@ -214,12 +214,12 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 				<a href="#path-parameters-validation" id="path-parameters-validation" style="color: inherit; text-decoration: none;">
 					<h3>Path parameters validation</h3>
 				</a>
-				<p>Path parameters have to be declared in your route&#39;s path. Additionally, this module offers validation and type coercion through JSON schemas and the <code>@params()</code> decorator.   </p>
+				<p>Path parameters have to be declared in your route&#39;s path. Additionally, this module offers validation and type coercion through JSON schemas and the <code>@Params()</code> decorator.   </p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { object, integer, requireProperties } <span class="hljs-keyword">from</span> <span class="hljs-string">'@bluejay/schema'</span>;
 
 <span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Contoller {
-  <span class="hljs-meta">@get</span>(<span class="hljs-string">'/:id'</span>)
-  <span class="hljs-meta">@params</span>(requireProperties(object({ id: integer() }), [<span class="hljs-string">'id'</span>]))
+  <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/:id'</span>)
+  <span class="hljs-meta">@Params</span>(requireProperties(object({ id: integer() }), [<span class="hljs-string">'id'</span>]))
   <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
     <span class="hljs-keyword">const</span> { id } = req.params;
     <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> id); <span class="hljs-comment">// number, thanks to Ajv's "coerceTypes" option</span>
@@ -232,8 +232,8 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 <span class="hljs-keyword">const</span> idParamSchema = object({ id: integer() });
 
 <span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Contoller {
-  <span class="hljs-meta">@get</span>(<span class="hljs-string">'/:id'</span>)
-  <span class="hljs-meta">@params</span>({
+  <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/:id'</span>)
+  <span class="hljs-meta">@Params</span>({
     jsonSchema: requireProperties(idParamSchema, [<span class="hljs-string">'id'</span>]),
     ajvFactory: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-keyword">new</span> Ajv({ coerceTypes: <span class="hljs-literal">true</span> })
   })
@@ -246,13 +246,13 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 				<a href="#query-parameters-validation" id="query-parameters-validation" style="color: inherit; text-decoration: none;">
 					<h5>Query parameters validation</h5>
 				</a>
-				<p>Query parameters are validated through JSON schemas using the <code>@query()</code> decorator.</p>
+				<p>Query parameters are validated through JSON schemas using the <code>@Query()</code> decorator.</p>
 				<p>All HTTP method decorators also accept an optional <code>query</code> option with the same signature as the decorator.</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { object, <span class="hljs-built_in">boolean</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'@bluejay/schema'</span>;
 
 <span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
-  <span class="hljs-meta">@get</span>(<span class="hljs-string">'/'</span>)
-  <span class="hljs-meta">@query</span>(object({ active: <span class="hljs-built_in">boolean</span>() }))
+  <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/'</span>)
+  <span class="hljs-meta">@Query</span>(object({ active: <span class="hljs-built_in">boolean</span>() }))
   <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
     <span class="hljs-keyword">const</span> { active } = req.query;
     <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> active); <span class="hljs-comment">// boolean | undefined (since not required)</span>
@@ -266,11 +266,11 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 				<p>Those come handful if your application exposes complex query parameters to the end user, and you need to pass different properties to different parts of your application. </p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
 
-  <span class="hljs-meta">@query</span>({
+  <span class="hljs-meta">@Query</span>({
     jsonSchema: object({ active: <span class="hljs-built_in">boolean</span>(), token: <span class="hljs-built_in">string</span>() }),
     groups: { filters: [<span class="hljs-string">'active'</span>] }
   })
-  <span class="hljs-meta">@get</span>(<span class="hljs-string">'/'</span>)
+  <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/'</span>)
   <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
     <span class="hljs-keyword">const</span> { filters, token } = req.query;
     <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> token); <span class="hljs-comment">// string</span>
@@ -292,11 +292,11 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 };
 
 <span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
-  <span class="hljs-meta">@query</span>({
+  <span class="hljs-meta">@Query</span>({
     jsonSchema: object({ isActive: <span class="hljs-built_in">boolean</span>() }),
     transform: queryTransformer
   })
-  <span class="hljs-meta">@get</span>(<span class="hljs-string">'/'</span>)
+  <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/'</span>)
   <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
     <span class="hljs-keyword">const</span> { active } = req.query;
     <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> active); <span class="hljs-comment">// boolean</span>
@@ -306,7 +306,7 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 				<a href="#body-validation" id="body-validation" style="color: inherit; text-decoration: none;">
 					<h3>Body validation</h3>
 				</a>
-				<p>We currently only offer validation for JSON body. You can declare bodies of another type, but you will need to handle the validation by yourself. Bodies are managed through the <code>@body()</code> decorator.</p>
+				<p>We currently only offer validation for JSON body. You can declare bodies of another type, but you will need to handle the validation by yourself. Bodies are managed through the <code>@Body()</code> decorator.</p>
 				<a href="#json-body" id="json-body" style="color: inherit; text-decoration: none;">
 					<h4>JSON body</h4>
 				</a>
@@ -318,7 +318,7 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 });
 
 <span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
-  <span class="hljs-meta">@post</span>(<span class="hljs-string">'/'</span>)
+  <span class="hljs-meta">@Post</span>(<span class="hljs-string">'/'</span>)
   <span class="hljs-meta">@body</span>(requireProperties(userSchema, [<span class="hljs-string">'email'</span>, <span class="hljs-string">'password'</span>]))
   <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> add(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
     <span class="hljs-comment">// req.body is guaranteed to match the described schema</span>
@@ -328,11 +328,11 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 				<a href="#other-types" id="other-types" style="color: inherit; text-decoration: none;">
 					<h4>Other types</h4>
 				</a>
-				<p>The only validation possible for now is the content type, and this is done via the <code>@is</code> decorator, which validates the content type of the body.</p>
+				<p>The only validation possible for now is the content type, and this is done via the <code>@Is</code> decorator, which validates the content type of the body.</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
-  <span class="hljs-meta">@put</span>(<span class="hljs-string">'/:id/picture'</span>)
-  <span class="hljs-meta">@is</span>(<span class="hljs-string">'image/jpg'</span>)
-  <span class="hljs-meta">@before</span>(multer.single(<span class="hljs-string">'file'</span>)) <span class="hljs-comment">// Just an example, see https://www.npmjs.com/package/multer</span>
+  <span class="hljs-meta">@Put</span>(<span class="hljs-string">'/:id/picture'</span>)
+  <span class="hljs-meta">@Is</span>(<span class="hljs-string">'image/jpg'</span>)
+  <span class="hljs-meta">@Before</span>(multer.single(<span class="hljs-string">'file'</span>)) <span class="hljs-comment">// Just an example, see https://www.npmjs.com/package/multer</span>
   <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> changePicture(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
 
   }
@@ -356,7 +356,7 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 });
 
 <span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
-  <span class="hljs-meta">@get</span>(<span class="hljs-string">'/:id'</span>)
+  <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/:id'</span>)
   <span class="hljs-meta">@response</span>({
     statusCode: StatusCode.OK,
     jsonSchema: omitProperties(userSchema, [<span class="hljs-string">'password'</span>])
@@ -376,7 +376,7 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 					<h4>Other types</h4>
 				</a>
 				<pre><code class="language-typescript"><span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
-  <span class="hljs-meta">@get</span>(<span class="hljs-string">'/:id/picture'</span>)
+  <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/:id/picture'</span>)
   <span class="hljs-meta">@response</span>({
     statusCode: StatusCode.OK,
     contentType: <span class="hljs-string">'image/jpg'</span>

@@ -6,7 +6,7 @@ import { TMiddlewareDefinition } from '../types/middleware-definition';
 import { isClassDecorator } from '../utils/is-class-decorator';
 import { isPropertyDecorator } from '../utils/is-property-decorator';
 
-export function beforeFactory(factory: () => Router.Middleware<any, Record<string, any>>): any {
+export function BeforeFactory(factory: () => Router.Middleware<any, Record<string, any>>): any {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     return function (target: TConstructible<IController> | IController, key?: string, descriptor?: PropertyDescriptor) {
         if (isClassDecorator(target, arguments)) {
@@ -36,7 +36,7 @@ export function beforeFactory(factory: () => Router.Middleware<any, Record<strin
             );
             return undefined; // Forced to return something
         } else {
-            throw new Error(`@beforeFactory() decorates classes and methods only.`);
+            throw new Error(`@BeforeFactory() decorates classes and methods only.`);
         }
     };
 }

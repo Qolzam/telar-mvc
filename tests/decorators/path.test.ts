@@ -3,11 +3,11 @@ import { expect } from 'chai';
 import { IController } from '../../src/interfaces/controller';
 import { Sandbox } from '../resources/classes/sandbox';
 import { Controller } from '../../src/classes/controller';
-import { path } from '../../src/decorators/path';
+import { Path } from '../../src/decorators/Path';
 
-describe('@path()', function () {
+describe('@Path()', function () {
     it('should set the controller path', () => {
-        @path('/test')
+        @Path('/test')
         class TestController extends Controller {}
 
         const id = Symbol();

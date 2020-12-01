@@ -37,7 +37,7 @@ Although you can use plain JSON schemas, we recommend the use of Bluejay's [sche
 ```typescript
 import { Controller, path } from 'telar-mvc';
 
-@path('/')
+@Path('/')
 class HomeController extends Controller {
   
 }
@@ -87,9 +87,9 @@ import { before, after } from 'telar-mvc';
 import { bodyParser } from 'koa-bodyparser';
 import { errorHandler } from '../error-handler';
 
-@before(bodyParser())
-@after(errorHandler())
-@path('/')
+@Before(bodyParser())
+@After(errorHandler())
+@Path('/')
 class HomeController extends Controller {
   
 }
@@ -98,8 +98,8 @@ class HomeController extends Controller {
 Below we register a middleware that's specific to the UsersController.
 
 ```typescript
-@path('/users')
-@before(logMiddleware) // Only /users routes (and descendants) will be affected
+@Path('/users')
+@Before(logMiddleware) // Only /users routes (and descendants) will be affected
 class UsersController extends Controller {
   
 }
@@ -107,10 +107,10 @@ class UsersController extends Controller {
 
 #### Passing arguments to middlewares
 
-There are times where you need to inject some properties into a middleware, which properties are accessible in the controller itself. `@beforeFactory` and `@afterFactory` allow you to differ a middleware's creation.
+There are times where you need to inject some properties into a middleware, which properties are accessible in the controller itself. `@BeforeFactory` and `@AfterFactory` allow you to differ a middleware's creation.
 
 ```typescript
-@beforeFactory(function(this: HomeController) { // Notice the usage of a regular function
+@BeforeFactory(function(this: HomeController) { // Notice the usage of a regular function
   return logMiddlewareFactory(this.logger);
 })
 class HomeController extends Controller {
@@ -120,15 +120,15 @@ class HomeController extends Controller {
 
 #### Route level middlewares
 
-Route level middlewares are declared the exact same way as controller middlewares, using `@before`, `@after` and `@beforeFactory`. `@afterFactory` is currently not supported.
+Route level middlewares are declared the exact same way as controller middlewares, using `@Before`, `@After` and `@BeforeFactory`. `@AfterFactory` is currently not supported.
 
 ```typescript
 class UsersController extends Controller {
   private foo: string = 'bar';
   
-  @get('/')
-  @before(queryParser())
-  @before(async function(this: UsersController, ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>, next: Koa.Next) {
+  @Get('/')
+  @Before(queryParser())
+  @Before(async function(this: UsersController, ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>, next: Koa.Next) {
     console.log(this.foo); // bar
     await next();
   })
@@ -145,22 +145,22 @@ This module offers http decorators for all HTTP verbs. Check each decorator's do
 ```typescript
 class UsersController extends Controller {
   
-  @get('/')
+  @Get('/')
   public async list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
     
   }
   
-  @get('/:id')
+  @Get('/:id')
   public async getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
       
   }
   
-  @post('/')
+  @Post('/')
   public async add(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
       
   }
   
-  @del('/:id')
+  @Del('/:id')
   public async removeById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
     
   }
@@ -171,14 +171,14 @@ class UsersController extends Controller {
 
 ### Path parameters validation
 
-Path parameters have to be declared in your route's path. Additionally, this module offers validation and type coercion through JSON schemas and the `@params()` decorator.   
+Path parameters have to be declared in your route's path. Additionally, this module offers validation and type coercion through JSON schemas and the `@Params()` decorator.   
 
 ```typescript
 import { object, integer, requireProperties } from '@bluejay/schema'; 
 
 class UsersController extends Contoller {
-  @get('/:id')
-  @params(requireProperties(object({ id: integer() }), ['id']))
+  @Get('/:id')
+  @Params(requireProperties(object({ id: integer() }), ['id']))
   public async getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
     const { id } = req.params;
     console.log(typeof id); // number, thanks to Ajv's "coerceTypes" option
@@ -195,8 +195,8 @@ import * as Ajv from 'ajv';
 const idParamSchema = object({ id: integer() });
 
 class UsersController extends Contoller {
-  @get('/:id')
-  @params({
+  @Get('/:id')
+  @Params({
     jsonSchema: requireProperties(idParamSchema, ['id']),
     ajvFactory: () => new Ajv({ coerceTypes: true })
   })
@@ -212,7 +212,7 @@ If the params don't match `jsonSchema`, a `BadRequest` error will be thrown and 
 
 ##### Query parameters validation
 
-Query parameters are validated through JSON schemas using the `@query()` decorator.
+Query parameters are validated through JSON schemas using the `@Query()` decorator.
 
 All HTTP method decorators also accept an optional `query` option with the same signature as the decorator.
 
@@ -220,8 +220,8 @@ All HTTP method decorators also accept an optional `query` option with the same 
 import { object, boolean } from '@bluejay/schema';
 
 class UsersController extends Controller {
-  @get('/')
-  @query(object({ active: boolean() }))
+  @Get('/')
+  @Query(object({ active: boolean() }))
   public async list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
     const { active } = req.query;
     console.log(typeof active); // boolean | undefined (since not required)
@@ -240,11 +240,11 @@ Those come handful if your application exposes complex query parameters to the e
 ```typescript
 class UsersController extends Controller {
   
-  @query({
+  @Query({
     jsonSchema: object({ active: boolean(), token: string() }),
     groups: { filters: ['active'] }
   })
-  @get('/')
+  @Get('/')
   public async list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
     const { filters, token } = req.query;
     console.log(typeof token); // string
@@ -270,11 +270,11 @@ const queryTransformer = (query: object) => {
 };
 
 class UsersController extends Controller {
-  @query({
+  @Query({
     jsonSchema: object({ isActive: boolean() }),
     transform: queryTransformer
   })
-  @get('/')
+  @Get('/')
   public async list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
     const { active } = req.query;
     console.log(typeof active); // boolean
@@ -285,7 +285,7 @@ class UsersController extends Controller {
 
 ### Body validation
 
-We currently only offer validation for JSON body. You can declare bodies of another type, but you will need to handle the validation by yourself. Bodies are managed through the `@body()` decorator.
+We currently only offer validation for JSON body. You can declare bodies of another type, but you will need to handle the validation by yourself. Bodies are managed through the `@Body()` decorator.
 
 #### JSON body
 
@@ -298,8 +298,8 @@ const userSchema = object({
 });
 
 class UsersController extends Controller {
-  @post('/')
-  @body(requireProperties(userSchema, ['email', 'password']))
+  @Post('/')
+  @Body(requireProperties(userSchema, ['email', 'password']))
   public async add(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
     // req.body is guaranteed to match the described schema
   }
@@ -310,70 +310,15 @@ A `BadRequest` error will be thrown in case the body doesn't match the described
 
 #### Other types
 
-The only validation possible for now is the content type, and this is done via the `@is` decorator, which validates the content type of the body.
+The only validation possible for now is the content type, and this is done via the `@Is` decorator, which validates the content type of the body.
 
 ```typescript
 class UsersController extends Controller {
-  @put('/:id/picture')
-  @is('image/jpg')
-  @before(multer.single('file')) // Just an example, see https://www.npmjs.com/package/@koa/multer
+  @Put('/:id/picture')
+  @Is('image/jpg')
+  @Before(multer.single('file')) // Just an example, see https://www.npmjs.com/package/@koa/multer
   public async changePicture(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
     
-  }
-}
-```
-
-### Response validation (**Not supporting currently for koa**)
-
-Might you want to filter some fields, coerce some types or simply make sure that your responses are up to the documentation you provided to your customers, we help you do so using JSON schemas. It is also possible to describe other types of responses, but only JSON bodies are validated for now.
-
-*Note:* Only the "expected" response can be described for now.
-
-#### JSON response (**Not supporting currently for koa**)
-
-In the example below and even though we didn't ask for specific attributes, the "password" field will never be exposed since it's not part of the schema. In other words, the response only contains the properties described in the schema. 
-
-```typescript
-import { object, email, string, omitProperties } from '@bluejay/schema';
-
-const userSchema = object({
-  email: email(),
-  password: string(),
-  first_name: string({ nullable: true }),
-  last_name: string({ nullable: true })
-});
-
-class UsersController extends Controller {
-  @get('/:id')
-  @response({
-    statusCode: StatusCode.OK,
-    jsonSchema: omitProperties(userSchema, ['password'])
-  })
-  public async getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
-    const { id } = req.params;
-    const user = await this.userService.findById(id);
-    if (user) {
-      res.json(user);
-    } else {
-      throw new NotFoundRestError(`No user found for id ${id}.`)
-    }
-  }
-}
-```
-
-An `InternalServerError` error will be thrown in case the response's body doesn't match the described schema.
-
-#### Other types
-
-```typescript
-class UsersController extends Controller {
-  @get('/:id/picture')
-  @response({
-    statusCode: StatusCode.OK,
-    contentType: 'image/jpg'
-  })
-  public async getPicture(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
-    getPictureStream(req.params.id).pipe(res);
   }
 }
 ```

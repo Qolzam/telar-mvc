@@ -1,11 +1,11 @@
 import * as Router from '@koa/router';
 import * as Koa from 'koa';
 import { Config } from '../config';
-import { before } from './before';
+import { Before } from './Before';
 
-export function is(format: string) {
+export function Is(format: string) {
     return function (target: any, key: string, descriptor: PropertyDescriptor) {
-        before(
+        Before(
             async (
                 ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                 next: Koa.Next,

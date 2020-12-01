@@ -4,17 +4,17 @@ import * as Router from '@koa/router';
 import * as supertest from 'supertest';
 import { Sandbox } from '../resources/classes/sandbox';
 import { Controller } from '../../src/classes/controller';
-import { head } from '../../src/decorators/head';
-import { path } from '../../src/decorators/path';
+import { Head } from '../../src/decorators/Head';
+import { Path } from '../../src/decorators/Path';
 import { StatusCode } from '@bluejay/status-code';
 
-describe('@head()', () => {
+describe('@Head()', () => {
     it('should define a GET request', async () => {
         const id = Symbol();
 
-        @path('/test')
+        @Path('/test')
         class TestController extends Controller {
-            @head('/')
+            @Head('/')
             private async test(
                 ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
             ) {

@@ -4,17 +4,17 @@ import * as Router from '@koa/router';
 import * as supertest from 'supertest';
 import { Sandbox } from '../resources/classes/sandbox';
 import { Controller } from '../../src/classes/controller';
-import { path } from '../../src/decorators/path';
+import { Path } from '../../src/decorators/Path';
 import { StatusCode } from '@bluejay/status-code';
-import { del } from '../../src/decorators/del';
+import { Del } from '../../src/decorators/Del';
 
-describe('@del()', () => {
+describe('@Del()', () => {
     it('should define a DELETE request', async () => {
         const id = Symbol();
 
-        @path('/test')
+        @Path('/test')
         class TestController extends Controller {
-            @del('/')
+            @Del('/')
             private async test(
                 ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
             ) {

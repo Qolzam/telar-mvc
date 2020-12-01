@@ -5,7 +5,7 @@ import { MetadataKey } from '../constants/metadata-key';
 import { IController } from '../interfaces/controller';
 import { isClassDecorator } from '../utils/is-class-decorator';
 
-export function afterFactory(factory: (...args: any[]) => Router.Middleware<any, Record<string, any>>): any {
+export function AfterFactory(factory: (...args: any[]) => Router.Middleware<any, Record<string, any>>): any {
     return function (target: TConstructible<IController>) {
         if (isClassDecorator(target, arguments)) {
             const newClass = class extends target {
@@ -24,7 +24,7 @@ export function afterFactory(factory: (...args: any[]) => Router.Middleware<any,
 
             return newClass;
         } else {
-            throw new Error(`@afterFactory decorates classes only.`);
+            throw new Error(`@AfterFactory decorates classes only.`);
         }
     };
 }

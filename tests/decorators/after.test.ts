@@ -3,23 +3,23 @@ import * as Router from '@koa/router';
 
 import { Sandbox } from '../resources/classes/sandbox';
 import { Controller } from '../../src/classes/controller';
-import { path } from '../../src/decorators/path';
-import { after } from '../../src/decorators/after';
+import { Path } from '../../src/decorators/Path';
+import { After } from '../../src/decorators/After';
 import { StatusCode } from '@bluejay/status-code';
-import { get } from '../../src/decorators/get';
+import { Get } from '../../src/decorators/Get';
 import supertest = require('supertest');
 
-describe('@after()', () => {
+describe('@After()', () => {
     describe('Class decorator', () => {
         const id = Symbol();
 
-        @path('/test')
-        @after((ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) => {
+        @Path('/test')
+        @After((ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) => {
             ctx.status = StatusCode.OK;
             ctx.body = { foo: 'bar' };
         })
         class TestController extends Controller {
-            @get('/')
+            @Get('/')
             private async test(
                 ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                 next: Koa.Next,
@@ -40,10 +40,10 @@ describe('@after()', () => {
     describe('Method decorator', () => {
         const id = Symbol('toto');
 
-        @path('/test')
+        @Path('/test')
         class TestController extends Controller {
-            @get('/')
-            @after((ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) => {
+            @Get('/')
+            @After((ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) => {
                 ctx.status = StatusCode.OK;
                 ctx.body = { foo: 'bar' };
             })

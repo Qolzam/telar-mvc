@@ -1,4 +1,4 @@
-export function path(controllerPath: string) {
+export function Path(controllerPath: string) {
     return function (target: any): any {
         const newClass = <any>class extends target {
             protected path = controllerPath;

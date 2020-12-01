@@ -1,5 +1,5 @@
 import { TJSONSchema } from '@bluejay/schema';
-import { Ajv } from 'ajv';
+import Ajv from 'ajv';
 import { TSchemaValidationErrorFactory } from './schema-validation-error-factory';
 
 export type TParamsOptions = {

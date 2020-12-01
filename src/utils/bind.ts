@@ -32,19 +32,19 @@ function _bind(
     // Get route objects from controllers `{path, method: httpMethod, handlerName: methodName,handler: descriptor.value}`
     const routes: TRouteDescription[] = Reflect.getMetadata(MetadataKey.ROUTES, controller) || [];
 
-    // Get `@before` middlewares from controller
+    // Get `@Before` middlewares from controller
     const beforeMiddlewares = Reflect.getMetadata(MetadataKey.BEFORE_MIDDLEWARES, controller) || [];
 
-    // Get `@after` middlewares from controller
+    // Get `@After` middlewares from controller
     const afterMiddlewares = Reflect.getMetadata(MetadataKey.AFTER_MIDDLEWARES, controller) || [];
 
-    // Get `@path` from controller
+    // Get `@Path` from controller
     _basePath = URL.ensureSlashes(URL.join(_basePath, controller.getPath()), { leading: true, trailing: false });
 
-    // Reverse `@before` middlewares from controller
+    // Reverse `@Before` middlewares from controller
     _baseBeforeMiddlewares = _baseBeforeMiddlewares.concat(beforeMiddlewares.reverse());
 
-    // Reverse `@after` middlewares from controller
+    // Reverse `@After` middlewares from controller
     _baseAfterMiddlewares = afterMiddlewares.reverse().concat(_baseAfterMiddlewares);
 
     for (const route of routes) {
@@ -71,6 +71,7 @@ function _bind(
             },
         );
 
+        // Combine handlers for the single route path
         const handlers = [
             ..._baseBeforeMiddlewares,
             ...routeBeforeMiddlewares.reverse(),

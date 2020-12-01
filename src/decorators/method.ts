@@ -3,7 +3,7 @@ import { MetadataKey } from '../constants/metadata-key';
 import { IController } from '../interfaces/controller';
 import { TRouteDescription } from '../types/route-description';
 
-export function method(httpMethod: HTTPMethod, path: string) {
+export function Method(httpMethod: HTTPMethod, path: string) {
     return function (target: IController, methodName: string, descriptor: PropertyDescriptor) {
         const routes: TRouteDescription[] = Reflect.getOwnMetadata(MetadataKey.ROUTES, target) || [];
 

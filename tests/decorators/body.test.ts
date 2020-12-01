@@ -4,19 +4,19 @@ import * as Router from '@koa/router';
 
 import { Sandbox } from '../resources/classes/sandbox';
 import { Controller } from '../../src/classes/controller';
-import { path } from '../../src/decorators/path';
-import { after } from '../../src/decorators/after';
+import { Path } from '../../src/decorators/Path';
+import { After } from '../../src/decorators/After';
 import { errorHandler } from '../resources/middlewares/error-handler';
-import { post } from '../../src/decorators/post';
-import { body } from '../../src/decorators/body';
+import { Post } from '../../src/decorators/Post';
+import { Body } from '../../src/decorators/Body';
 import { boolean, object, oneOf, requireProperties, string, tuple } from '@bluejay/schema';
 import { StatusCode } from '@bluejay/status-code';
 import supertest = require('supertest');
-import { before } from '../../src/decorators/before';
+import { Before } from '../../src/decorators/Before';
 import bodyParser = require('koa-bodyparser');
 import { ForbiddenRestError } from '@bluejay/rest-errors';
 
-describe('@body()', () => {
+describe('@Body()', () => {
     function doTest(sandbox: Sandbox) {
         it('should post successfully', async () => {
             await supertest(sandbox.getApp())
@@ -43,12 +43,12 @@ describe('@body()', () => {
     describe('Via options', () => {
         const id = Symbol();
 
-        @path('/test')
-        @before(bodyParser())
-        @after(errorHandler)
+        @Path('/test')
+        @Before(bodyParser())
+        @After(errorHandler)
         class TestController extends Controller {
-            @post('/')
-            @body({
+            @Post('/')
+            @Body({
                 jsonSchema: requireProperties(
                     object({
                         foo: string(),
@@ -77,12 +77,12 @@ describe('@body()', () => {
                 public code = 'my-error';
             }
 
-            @path('/test')
-            @before(bodyParser())
-            @after(errorHandler)
+            @Path('/test')
+            @Before(bodyParser())
+            @After(errorHandler)
             class TestController extends Controller {
-                @post('/')
-                @body({
+                @Post('/')
+                @Body({
                     jsonSchema: requireProperties(
                         object({
                             foo: string(),
@@ -116,12 +116,12 @@ describe('@body()', () => {
     describe('Schema only', () => {
         const id = Symbol();
 
-        @path('/test')
-        @before(bodyParser())
-        @after(errorHandler)
+        @Path('/test')
+        @Before(bodyParser())
+        @After(errorHandler)
         class TestController extends Controller {
-            @post('/')
-            @body(
+            @Post('/')
+            @Body(
                 requireProperties(
                     object({
                         foo: string(),
@@ -149,12 +149,12 @@ describe('@body()', () => {
     it('should support non-simple-object schemas (such as oneOf)', async () => {
         const id = Symbol();
 
-        @path('/test')
-        @before(bodyParser())
-        @after(errorHandler)
+        @Path('/test')
+        @Before(bodyParser())
+        @After(errorHandler)
         class TestController extends Controller {
-            @post('/')
-            @body(
+            @Post('/')
+            @Body(
                 oneOf([
                     requireProperties(object({ foo: string() }), ['foo']),
                     requireProperties(object({ bar: string() }), ['bar']),

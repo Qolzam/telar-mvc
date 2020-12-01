@@ -4,8 +4,7 @@ import {
     NotAcceptableRestError,
     UnsupportedMediaTypeRestError,
 } from '@bluejay/rest-errors';
-import * as AJV from 'ajv';
-import { Ajv } from 'ajv';
+import Ajv from 'ajv';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const isNil = require('lodash.isnil');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -43,10 +42,10 @@ export abstract class Config {
             new NotAcceptableRestError(`"Content-Type" should support ${format}, got ${requestHeader}.`),
         acceptsErrorFactory: (requestHeader: string, formats: string[]) =>
             new UnsupportedMediaTypeRestError(`"Accept" should be one of ${formats.join(', ')}, got ${requestHeader}.`),
-        queryAJVFactory: () => new AJV({ coerceTypes: true, useDefaults: true }),
-        jsonResponseAJVFactory: () => new AJV({ removeAdditional: true }),
-        bodyAJVFactory: () => new AJV({ coerceTypes: true, useDefaults: true }),
-        paramsAJVFactory: () => new AJV({ coerceTypes: true }),
+        queryAJVFactory: () => new Ajv({ coerceTypes: true, useDefaults: true, strict: false }),
+        jsonResponseAJVFactory: () => new Ajv({ removeAdditional: true, strict: false }),
+        bodyAJVFactory: () => new Ajv({ coerceTypes: true, useDefaults: true, strict: false }),
+        paramsAJVFactory: () => new Ajv({ coerceTypes: true, strict: false }),
     };
 
     public static get<K extends keyof TConfigProperties>(

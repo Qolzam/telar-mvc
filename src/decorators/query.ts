@@ -7,11 +7,11 @@ import * as Koa from 'koa';
 import { Config } from '../config';
 import { MetadataKey } from '../constants/metadata-key';
 import { TQueryOptions } from '../types/query-options';
-import { before } from './before';
+import { Before } from './Before';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const cloneDeep = require('lodash.clonedeep');
 
-export function query(options: TQueryOptions | TJSONSchema) {
+export function Query(options: TQueryOptions | TJSONSchema) {
     options = cloneDeep(options);
     const jsonSchema = isJSONSchemaLike(options) ? options : (<TQueryOptions>options).jsonSchema;
     const jsonSchemaSafeCopy = cloneDeep(jsonSchema);
@@ -31,13 +31,12 @@ export function query(options: TQueryOptions | TJSONSchema) {
     return function (target: any, key: string, descriptor: PropertyDescriptor) {
         Reflect.defineMetadata(MetadataKey.ROUTE_QUERY, jsonSchema, target, key);
 
-        before(
+        Before(
             async (
                 ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
                 next: Koa.Next,
             ) => {
-                let parsedQuery = ctx.query;
-
+                let parsedQuery: Record<string, any> = ctx.query;
                 if (getValidator()(parsedQuery)) {
                     if (transform) {
                         parsedQuery = await transform(parsedQuery, ctx.request);

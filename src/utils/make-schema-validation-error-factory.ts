@@ -6,7 +6,7 @@ import { TSchemaValidationErrorFactory } from '../types/schema-validation-error-
 export function makeSchemaValidationErrorFactory(
     ctor: TConstructible<RestError>,
 ): TSchemaValidationErrorFactory<RestError> {
-    return function (ajvError: ErrorObject, data: Record<string, unknown>): RestError {
+    return function (ajvError: ErrorObject, data: Record<string, any>): RestError {
         const key = ajvError.dataPath.slice(1); // Remove leading dot
         const message = `${key} ${ajvError.message}.`;
 

@@ -1,5 +1,5 @@
 import { TJSONSchema } from '@bluejay/schema';
-import { Ajv } from 'ajv';
+import Ajv from 'ajv';
 import * as Koa from 'koa';
 import * as QS from 'qs';
 import { TSchemaValidationErrorFactory } from './schema-validation-error-factory';
