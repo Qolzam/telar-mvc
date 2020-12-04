@@ -24,6 +24,20 @@ npm i koa @koa/router ajv reflect-metadata telar-mvc
       npm i inversify
       ```
 
+3. Make sure to import `reflect-metadata` before using `ajv-class-validaitor`:
+
+```
+import "reflect-metadata";
+```
+
+4. Must add below options in your `tsconfig.json`:
+```
+{
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+}
+
+
 ## Note on JSON schemas
 
 We use [AJV](https://github.com/epoberezkin/ajv) internally for schema validation. Decorators that perform schema validation offer you to create your own AJV instance through the `ajvFactory` option. If you are to create your own instances through this option, we highly recommend to make sure you pass the same options we use along with yours, otherwise some assumptions from this documentation might not be true.
@@ -166,6 +180,42 @@ class UsersController extends Controller {
   }
   
   // ...
+}
+```
+
+### Class model validation
+
+You can use decorators for your class model`(from MVC)` to validate your request body. We use [ajv-class-validator](https://github.com/Qolzam/ajv-class-validator) to change conver json to object and validate. The model object is injected in the context.
+
+```typescript
+
+import { ActionModel } 'telar-mvc';
+import { MaxLength, Required } from 'ajv-class-validator';
+
+export class User {
+   
+  @MaxLength(15)
+  public name: string 
+
+  constructor(
+      @Required()
+      public id: string,
+  ) {
+    this.id = id
+  }
+}
+
+class UsersController extends Contoller {
+  @Get('/:id')
+  @ActionModel(User) // <---- Should define to access model in `ctx: RouterContext`
+  public async save({ model }) {
+    if (model.validate()) {
+      db.save(model);
+    } else {
+      console.log(model.errors()); // output errors - if options can passed to AJV `{allErrors: true}` you will have the list of errors
+      ctx.status = 400
+    }
+  }
 }
 ```
 
