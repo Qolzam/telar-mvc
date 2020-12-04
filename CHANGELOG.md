@@ -1,3 +1,17 @@
+# [1.3.0](https://github.com/Qolzam/telar-mvc/compare/v1.2.0...v1.3.0) (2020-12-04)
+
+
+### Bug Fixes
+
+* git is not case sensitive to filename ([697359e](https://github.com/Qolzam/telar-mvc/commit/697359e9c8e0ea1eb3a5b2733fd16c9618dd4123))
+* upgrade ajv-calss-validator package ([d953b34](https://github.com/Qolzam/telar-mvc/commit/d953b34690f7843d3edc8badb921f8dca03155bd))
+
+
+### Features
+
+* add @ActionModel decorator ([3bf51b5](https://github.com/Qolzam/telar-mvc/commit/3bf51b55546d99eaf07d1fda61a66127cfa47f6d))
+* export @ActionModel() and new interfaces ([4a293b0](https://github.com/Qolzam/telar-mvc/commit/4a293b0dc2f2af250430f34bc5239323e249aeae))
+
 # [1.2.0](https://github.com/Qolzam/telar-mvc/compare/v1.1.0...v1.2.0) (2020-11-25)
 
 
