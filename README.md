@@ -36,7 +36,7 @@ import "reflect-metadata";
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
 }
-
+```
 
 ## Note on JSON schemas
 
