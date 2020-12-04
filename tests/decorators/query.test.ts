@@ -1,6 +1,5 @@
 import { expect } from 'chai';
-import { Next, RouterContext } from '../../src/interfaces/router-context';
-
+import { RouterContext } from '../../src/interfaces/router-context';
 
 import { Controller } from '../../src/classes/controller';
 import { Path } from '../../src/decorators/Path';
@@ -24,9 +23,7 @@ describe('@Query()', () => {
         class TestController extends Controller {
             @Get('/')
             @Query(options)
-            private async test(
-                ctx: RouterContext,
-            ) {
+            private async test(ctx: RouterContext) {
                 ctx.status = StatusCode.OK;
                 ctx.body = ctx.request.query;
             }

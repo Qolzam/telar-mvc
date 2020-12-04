@@ -1,5 +1,4 @@
-import { Next, RouterContext } from '../../src/interfaces/router-context';
-
+import { RouterContext } from '../../src/interfaces/router-context';
 
 import { Post } from '../../src/decorators/Post';
 import { Controller } from '../../src/classes/controller';

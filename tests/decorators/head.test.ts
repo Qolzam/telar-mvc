@@ -1,4 +1,4 @@
-import { Next, RouterContext } from '../../src/interfaces/router-context';
+import { RouterContext } from '../../src/interfaces/router-context';
 
 import * as supertest from 'supertest';
 import { Sandbox } from '../resources/classes/sandbox';

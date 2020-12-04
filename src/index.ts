@@ -9,6 +9,8 @@ export { TCustomResponseOptions } from './types/custom-response-options';
 export { bind } from './utils/bind';
 
 export { IController } from './interfaces/controller';
+export { Model, Middleware, RouterContext, Next } from './interfaces/router-context';
+
 export { Controller } from './classes/controller';
 
 export { Del } from './decorators/Del';
@@ -24,6 +26,7 @@ export { AfterFactory } from './decorators/AfterFactory';
 export { Path } from './decorators/Path';
 export { Accepts } from './decorators/Accepts';
 export { Body } from './decorators/Body';
+export { ActionModel } from './decorators/ActionModel';
 export { JsonBody } from './decorators/JsonBody';
 export { Is } from './decorators/Is';
 export { Params } from './decorators/Params';

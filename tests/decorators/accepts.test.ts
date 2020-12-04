@@ -1,5 +1,4 @@
-import { Next, RouterContext } from '../../src/interfaces/router-context';
-
+import { RouterContext } from '../../src/interfaces/router-context';
 
 import { Path } from '../../src/decorators/Path';
 import { After } from '../../src/decorators/After';

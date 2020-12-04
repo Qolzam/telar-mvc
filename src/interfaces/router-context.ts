@@ -2,13 +2,13 @@ import * as Koa from 'koa';
 import { ErrorObject } from 'ajv';
 import * as Router from '@koa/router';
 
-type Compile<T> = T & { validate: () => boolean | PromiseLike<any>; errors: () => ErrorObject[] };
+export type Model<T> = T & { validate: () => boolean | PromiseLike<any>; errors: () => ErrorObject[] };
 
 interface RouterParamContext<StateT = any, CustomT = Record<string, any>> {
     /**
      * Object model
      */
-    model: Compile<CustomT>;
+    model: Model<CustomT>;
     /**
      * url params
      */

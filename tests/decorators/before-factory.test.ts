@@ -1,6 +1,5 @@
 import { Next, RouterContext } from '../../src/interfaces/router-context';
 
-
 import { Controller } from '../../src/classes/controller';
 import { Path } from '../../src/decorators/Path';
 import { BeforeFactory } from '../../src/decorators/BeforeFactory';
@@ -15,10 +14,7 @@ describe('@BeforeFactory()', () => {
     describe('Class decorator', () => {
         it('should register middleware', async () => {
             const middlewareFactory = function (this: TestController) {
-                return (
-                    ctx: RouterContext,
-                    next: Next,
-                ) => {
+                return (ctx: RouterContext, next: Next) => {
                     ctx.req['testProperty'] = this.testProperty;
                     next();
                 };
@@ -33,9 +29,7 @@ describe('@BeforeFactory()', () => {
                 public testProperty = 'foo';
 
                 @Get('/')
-                private async test(
-                    ctx: RouterContext,
-                ) {
+                private async test(ctx: RouterContext) {
                     ctx.status = StatusCode.OK;
                     ctx.body = { testProperty: ctx.req['testProperty'] };
                 }
@@ -52,10 +46,7 @@ describe('@BeforeFactory()', () => {
     describe('Method decorator', () => {
         it('should register middleware', async () => {
             const middlewareFactory = function (this: TestController) {
-                return (
-                    ctx: RouterContext,
-                    next: Next,
-                ) => {
+                return (ctx: RouterContext, next: Next) => {
                     ctx.req['testProperty'] = this.testProperty;
                     next();
                 };
@@ -70,9 +61,7 @@ describe('@BeforeFactory()', () => {
 
                 @Get('/')
                 @BeforeFactory(middlewareFactory)
-                private async test(
-                    ctx: RouterContext,
-                ) {
+                private async test(ctx: RouterContext) {
                     ctx.status = StatusCode.OK;
                     ctx.body = { testProperty: ctx.req['testProperty'] };
                 }

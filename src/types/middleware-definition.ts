@@ -1,4 +1,4 @@
-import * as Router from '@koa/router';
+import { Middleware } from '../interfaces/router-context';
 
 export type TMiddlewareDefinition = {
     isFactory: boolean;

@@ -1,6 +1,5 @@
 import { Next, RouterContext } from '../../src/interfaces/router-context';
 
-
 import { Sandbox } from '../resources/classes/sandbox';
 import { Controller } from '../../src/classes/controller';
 import { Path } from '../../src/decorators/Path';
@@ -20,10 +19,7 @@ describe('@After()', () => {
         })
         class TestController extends Controller {
             @Get('/')
-            private async test(
-                ctx: RouterContext,
-                next: Next,
-            ) {
+            private async test(ctx: RouterContext, next: Next) {
                 next();
             }
         }
@@ -47,10 +43,7 @@ describe('@After()', () => {
                 ctx.status = StatusCode.OK;
                 ctx.body = { foo: 'bar' };
             })
-            private async test(
-                ctx: RouterContext,
-                next: Next,
-            ) {
+            private async test(ctx: RouterContext, next: Next) {
                 next();
             }
         }

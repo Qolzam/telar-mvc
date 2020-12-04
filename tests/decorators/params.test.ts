@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { Next, RouterContext } from '../../src/interfaces/router-context';
+import { RouterContext } from '../../src/interfaces/router-context';
 
 import { Controller } from '../../src/classes/controller';
 import { Path } from '../../src/decorators/Path';
