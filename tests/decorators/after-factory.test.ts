@@ -1,5 +1,4 @@
-import * as Koa from 'koa';
-import * as Router from '@koa/router';
+import { Next, RouterContext } from '../../src/interfaces/router-context';
 
 import { Controller } from '../../src/classes/controller';
 import { Path } from '../../src/decorators/Path';
@@ -14,7 +13,7 @@ import { AfterFactory } from '../../src/decorators/AfterFactory';
 describe('@AfterFactory()', () => {
     it('should register middleware', async () => {
         const middlewareFactory = function (this: TestController) {
-            return (ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) => {
+            return (ctx: RouterContext) => {
                 ctx.body = { testProperty: this.testProperty };
             };
         };
@@ -28,10 +27,7 @@ describe('@AfterFactory()', () => {
             public testProperty = 'foo';
 
             @Get('/')
-            private async test(
-                ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                next: Koa.Next,
-            ) {
+            private async test(ctx: RouterContext, next: Next) {
                 next();
             }
         }

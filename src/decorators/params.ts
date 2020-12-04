@@ -1,9 +1,8 @@
 import { IRestError } from '@bluejay/rest-errors';
 import { isJSONSchemaLike, TJSONSchema } from '@bluejay/schema';
 import { StatusCode } from '@bluejay/status-code';
-import * as Router from '@koa/router';
+import { Next, RouterContext } from '../interfaces/router-context';
 import { ValidateFunction } from 'ajv';
-import * as Koa from 'koa';
 import { Config } from '../config';
 import { MetadataKey } from '../constants/metadata-key';
 import { TParamsOptions } from '../types/params-options';
@@ -29,24 +28,19 @@ export function Params(options: TParamsOptions | TJSONSchema) {
     return function (target: any, key: string, descriptor: PropertyDescriptor) {
         Reflect.defineMetadata(MetadataKey.ROUTE_PARAMS, jsonSchema, target, key);
 
-        Before(
-            async (
-                ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                next: Koa.Next,
-            ) => {
-                if (!getValidator()(ctx.params)) {
-                    const parsedErr = Config.get(
-                        'paramsValidationErrorFactory',
-                        (<TParamsOptions>options).validationErrorFactory,
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    )(getValidator().errors![0], ctx.params);
-                    const statusCode = (parsedErr as IRestError).statusCode || StatusCode.FORBIDDEN;
-                    ctx.status = statusCode;
-                    ctx.body = parsedErr;
-                } else {
-                    await next();
-                }
-            },
-        )(target, key, descriptor);
+        Before(async (ctx: RouterContext, next: Next) => {
+            if (!getValidator()(ctx.params)) {
+                const parsedErr = Config.get(
+                    'paramsValidationErrorFactory',
+                    (<TParamsOptions>options).validationErrorFactory,
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                )(getValidator().errors![0], ctx.params);
+                const statusCode = (parsedErr as IRestError).statusCode || StatusCode.FORBIDDEN;
+                ctx.status = statusCode;
+                ctx.body = parsedErr;
+            } else {
+                await next();
+            }
+        })(target, key, descriptor);
     };
 }

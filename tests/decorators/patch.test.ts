@@ -1,5 +1,4 @@
-import * as Koa from 'koa';
-import * as Router from '@koa/router';
+import { Next, RouterContext } from '../../src/interfaces/router-context';
 
 import { Controller } from '../../src/classes/controller';
 import { StatusCode } from '@bluejay/status-code';
@@ -18,9 +17,7 @@ describe('@Patch()', () => {
         @Before(bodyParser())
         class TestController extends Controller {
             @Patch('/')
-            private async test(
-                ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-            ) {
+            private async test(ctx: RouterContext) {
                 ctx.status = StatusCode.OK;
                 ctx.body = ctx.request.body;
             }

@@ -1,5 +1,5 @@
-import * as Koa from 'koa';
-import * as Router from '@koa/router';
+import { Next, RouterContext } from '../../src/interfaces/router-context';
+
 
 import { Sandbox } from '../resources/classes/sandbox';
 import { Controller } from '../../src/classes/controller';
@@ -14,15 +14,15 @@ describe('@After()', () => {
         const id = Symbol();
 
         @Path('/test')
-        @After((ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) => {
+        @After((ctx: RouterContext) => {
             ctx.status = StatusCode.OK;
             ctx.body = { foo: 'bar' };
         })
         class TestController extends Controller {
             @Get('/')
             private async test(
-                ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                next: Koa.Next,
+                ctx: RouterContext,
+                next: Next,
             ) {
                 next();
             }
@@ -43,13 +43,13 @@ describe('@After()', () => {
         @Path('/test')
         class TestController extends Controller {
             @Get('/')
-            @After((ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) => {
+            @After((ctx: RouterContext) => {
                 ctx.status = StatusCode.OK;
                 ctx.body = { foo: 'bar' };
             })
             private async test(
-                ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                next: Koa.Next,
+                ctx: RouterContext,
+                next: Next,
             ) {
                 next();
             }

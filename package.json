@@ -78,7 +78,7 @@
     "@bluejay/url": "3.0.0-beta.3",
     "@bluejay/utils": "4.0.0-beta.3",
     "@types/koa-bodyparser": "^4.3.0",
-    "ajv-class-validator": "^1.0.0"
+    "ajv-class-validator": "^1.0.2"
   },
   "peerDependencies": {
     "koa": "^2.13.0",

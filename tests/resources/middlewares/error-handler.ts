@@ -1,12 +1,8 @@
-import * as Koa from 'koa';
-import * as Router from '@koa/router';
 import { IRestError, isRestError } from '@bluejay/rest-errors';
 import { StatusCode } from '@bluejay/status-code';
+import { Next, RouterContext } from '../../../src/interfaces/router-context';
 
-export async function errorHandler(
-    ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-    next: Koa.Next,
-) {
+export async function errorHandler(ctx: RouterContext, next: Next) {
     try {
         await next();
     } catch (err) {

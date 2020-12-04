@@ -1,11 +1,11 @@
-import * as Router from '@koa/router';
 import { MetadataKey } from '../constants/metadata-key';
+import { Middleware } from '../interfaces/router-context';
 
 import { TMiddlewareDefinition } from '../types/middleware-definition';
 import { isClassDecorator } from '../utils/is-class-decorator';
 import { isPropertyDecorator } from '../utils/is-property-decorator';
 
-export function Before(middleware: Router.Middleware<any, Record<string, any>>): any {
+export function Before(middleware: Middleware<any, Record<string, any>>): any {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     return function (target: any, key?: string, descriptor?: PropertyDescriptor) {
         if (isClassDecorator(target, arguments)) {
@@ -18,7 +18,7 @@ export function Before(middleware: Router.Middleware<any, Record<string, any>>):
                 MetadataKey.ROUTE_BEFORE_MIDDLEWARES,
                 middlewares.concat({
                     isFactory: false,
-                    factoryOrHandler: middleware as Router.Middleware<any, Record<string, any>>,
+                    factoryOrHandler: middleware as Middleware<Record<string, any>>,
                 }),
                 target,
                 key as string,

@@ -1,10 +1,10 @@
 import { expect } from 'chai';
 
 import { Path, Params, Get, Query, Before, After, Controller } from '../../src';
-import * as supertest from 'supertest';
+import * as request from 'supertest';
 import { Sandbox } from '../resources/classes/sandbox';
-import * as Koa from 'koa';
-import * as Router from '@koa/router';
+import { Next, RouterContext } from '../../src/interfaces/router-context';
+
 import { integer, list, object } from '@bluejay/schema';
 import { StatusCode } from '@bluejay/status-code';
 
@@ -19,9 +19,7 @@ describe('Controller', () => {
             class UserSelfController extends Controller {
                 @Get('/')
                 @Params(object({ user_id: integer() }, { required: ['user_id'] }))
-                public async getItem(
-                    ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                ) {
+                public async getItem(ctx: RouterContext) {
                     ctx.status = StatusCode.OK;
                     ctx.body = { id: ctx.params.user_id };
                 }
@@ -31,9 +29,7 @@ describe('Controller', () => {
             class UserController extends Controller {
                 @Get('/')
                 @Query(object({ id__in: list(integer(), { minItems: 1 }) }))
-                public async batchGetItem(
-                    ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                ) {
+                public async batchGetItem(ctx: RouterContext) {
                     ctx.status = StatusCode.OK;
                     ctx.body = (ctx.query as any).id__in.map((id: number) => ({ id }));
                 }
@@ -51,14 +47,14 @@ describe('Controller', () => {
                 rootIdentifier: rootId,
             });
 
-            const usersRes = await supertest(sandbox.getApp())
+            const usersRes = await request(sandbox.getApp())
                 .get('/v1/users')
                 .query({ id__in: [1, 2, 3] })
                 .expect(StatusCode.OK);
 
             expect(usersRes.body).to.deep.equal([{ id: 1 }, { id: 2 }, { id: 3 }]);
 
-            const userByIdRes = await supertest(sandbox.getApp()).get('/v1/users/1').expect(StatusCode.OK);
+            const userByIdRes = await request(sandbox.getApp()).get('/v1/users/1').expect(StatusCode.OK);
 
             expect(userByIdRes.body).to.deep.equal({ id: 1 });
         });
@@ -70,11 +66,7 @@ describe('Controller', () => {
             const userId = Symbol('userId2');
             const userSelfId = Symbol('userSelfId2');
 
-            async function addToSteps(
-                ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                step: string,
-                next?: Koa.Next,
-            ) {
+            async function addToSteps(ctx: RouterContext, step: string, next?: Next) {
                 ctx.params.steps = ctx.params.steps || [];
                 ctx.params.steps.push(step);
                 if (next) {
@@ -83,185 +75,61 @@ describe('Controller', () => {
             }
 
             @Path('/v1/users/:user_id')
-            @Before(
-                (
-                    ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                    next: Koa.Next,
-                ) => addToSteps(ctx, 'userSelfBefore1', next),
-            )
-            @Before(
-                (
-                    ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                    next: Koa.Next,
-                ) => addToSteps(ctx, 'userSelfBefore2', next),
-            )
-            @After(
-                (
-                    ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                    next: Koa.Next,
-                ) => addToSteps(ctx, 'userSelfAfter1', next),
-            )
-            @After(
-                (
-                    ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                    next: Koa.Next,
-                ) => {
-                    addToSteps(ctx, 'userSelfAfter2', next);
-                    ctx.status = StatusCode.OK;
-                    ctx.body = ctx.params.steps;
-                },
-            )
+            @Before((ctx: RouterContext, next: Next) => addToSteps(ctx, 'userSelfBefore1', next))
+            @Before((ctx: RouterContext, next: Next) => addToSteps(ctx, 'userSelfBefore2', next))
+            @After((ctx: RouterContext, next: Next) => addToSteps(ctx, 'userSelfAfter1', next))
+            @After((ctx: RouterContext, next: Next) => {
+                addToSteps(ctx, 'userSelfAfter2', next);
+                ctx.status = StatusCode.OK;
+                ctx.body = ctx.params.steps;
+            })
             class UserSelfController extends Controller {
                 @Get('/')
-                @Before(
-                    (
-                        ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                        next: Koa.Next,
-                    ) => addToSteps(ctx, 'userSelfHandlerBefore1', next),
-                )
-                @Before(
-                    (
-                        ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                        next: Koa.Next,
-                    ) => addToSteps(ctx, 'userSelfHandlerBefore2', next),
-                )
-                @After(
-                    (
-                        ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                        next: Koa.Next,
-                    ) => addToSteps(ctx, 'userSelfHandlerAfter1', next),
-                )
-                @After(
-                    (
-                        ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                        next: Koa.Next,
-                    ) => addToSteps(ctx, 'userSelfHandlerAfter2', next),
-                )
-                public async get(
-                    ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                    next: Koa.Next,
-                ) {
+                @Before((ctx: RouterContext, next: Next) => addToSteps(ctx, 'userSelfHandlerBefore1', next))
+                @Before((ctx: RouterContext, next: Next) => addToSteps(ctx, 'userSelfHandlerBefore2', next))
+                @After((ctx: RouterContext, next: Next) => addToSteps(ctx, 'userSelfHandlerAfter1', next))
+                @After((ctx: RouterContext, next: Next) => addToSteps(ctx, 'userSelfHandlerAfter2', next))
+                public async get(ctx: RouterContext, next: Next) {
                     addToSteps(ctx, 'userSelfHandler', next);
                 }
             }
 
             @Path('/v1/users')
-            @Before(
-                (
-                    ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                    next: Koa.Next,
-                ) => addToSteps(ctx, 'userBefore1', next),
-            )
-            @Before(
-                (
-                    ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                    next: Koa.Next,
-                ) => addToSteps(ctx, 'userBefore2', next),
-            )
-            @After(
-                (
-                    ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                    next: Koa.Next,
-                ) => addToSteps(ctx, 'userAfter1', next),
-            )
-            @After(
-                (
-                    ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                    next: Koa.Next,
-                ) => {
-                    addToSteps(ctx, 'userAfter2', next);
-                    ctx.status = StatusCode.OK;
-                    ctx.body = ctx.params.steps;
-                },
-            )
+            @Before((ctx: RouterContext, next: Next) => addToSteps(ctx, 'userBefore1', next))
+            @Before((ctx: RouterContext, next: Next) => addToSteps(ctx, 'userBefore2', next))
+            @After((ctx: RouterContext, next: Next) => addToSteps(ctx, 'userAfter1', next))
+            @After((ctx: RouterContext, next: Next) => {
+                addToSteps(ctx, 'userAfter2', next);
+                ctx.status = StatusCode.OK;
+                ctx.body = ctx.params.steps;
+            })
             class UserController extends Controller {
                 @Get('/')
-                @Before(
-                    (
-                        ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                        next: Koa.Next,
-                    ) => addToSteps(ctx, 'userHandlerBefore1', next),
-                )
-                @Before(
-                    (
-                        ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                        next: Koa.Next,
-                    ) => addToSteps(ctx, 'userHandlerBefore2', next),
-                )
-                @After(
-                    (
-                        ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                        next: Koa.Next,
-                    ) => addToSteps(ctx, 'userHandlerAfter1', next),
-                )
-                @After(
-                    (
-                        ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                        next: Koa.Next,
-                    ) => addToSteps(ctx, 'userHandlerAfter2', next),
-                )
-                public async get(
-                    ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                    next: Koa.Next,
-                ) {
+                @Before((ctx: RouterContext, next: Next) => addToSteps(ctx, 'userHandlerBefore1', next))
+                @Before((ctx: RouterContext, next: Next) => addToSteps(ctx, 'userHandlerBefore2', next))
+                @After((ctx: RouterContext, next: Next) => addToSteps(ctx, 'userHandlerAfter1', next))
+                @After((ctx: RouterContext, next: Next) => addToSteps(ctx, 'userHandlerAfter2', next))
+                public async get(ctx: RouterContext, next: Next) {
                     await addToSteps(ctx, 'userHandler', next);
                 }
             }
 
             @Path('/v1')
-            @Before(
-                (
-                    ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                    next: Koa.Next,
-                ) => addToSteps(ctx, 'rootBefore1', next),
-            )
-            @Before(
-                (
-                    ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                    next: Koa.Next,
-                ) => addToSteps(ctx, 'rootBefore2', next),
-            )
-            @After(
-                (
-                    ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                    next: Koa.Next,
-                ) => addToSteps(ctx, 'rootAfter1', next),
-            )
-            @After((ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) => {
+            @Before((ctx: RouterContext, next: Next) => addToSteps(ctx, 'rootBefore1', next))
+            @Before((ctx: RouterContext, next: Next) => addToSteps(ctx, 'rootBefore2', next))
+            @After((ctx: RouterContext, next: Next) => addToSteps(ctx, 'rootAfter1', next))
+            @After((ctx: RouterContext) => {
                 addToSteps(ctx, 'rootAfter2');
                 ctx.status = StatusCode.OK;
                 ctx.body = ctx.params.steps;
             })
             class RootController extends Controller {
                 @Get('/')
-                @Before(
-                    (
-                        ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                        next: Koa.Next,
-                    ) => addToSteps(ctx, 'rootHandlerBefore1', next),
-                )
-                @Before(
-                    (
-                        ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                        next: Koa.Next,
-                    ) => addToSteps(ctx, 'rootHandlerBefore2', next),
-                )
-                @After(
-                    (
-                        ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                        next: Koa.Next,
-                    ) => addToSteps(ctx, 'rootHandlerAfter1', next),
-                )
-                @After(
-                    (
-                        ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                        next: Koa.Next,
-                    ) => addToSteps(ctx, 'rootHandlerAfter2', next),
-                )
-                public async get(
-                    ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                    next: Koa.Next,
-                ) {
+                @Before((ctx: RouterContext, next: Next) => addToSteps(ctx, 'rootHandlerBefore1', next))
+                @Before((ctx: RouterContext, next: Next) => addToSteps(ctx, 'rootHandlerBefore2', next))
+                @After((ctx: RouterContext, next: Next) => addToSteps(ctx, 'rootHandlerAfter1', next))
+                @After((ctx: RouterContext, next: Next) => addToSteps(ctx, 'rootHandlerAfter2', next))
+                public async get(ctx: RouterContext, next: Next) {
                     addToSteps(ctx, 'rootHandler', next);
                 }
             }
@@ -275,7 +143,7 @@ describe('Controller', () => {
                 rootIdentifier: rootId,
             });
 
-            const userSelfHandlerRes = await supertest(sandbox.getApp()).get('/v1/users/1').expect(StatusCode.OK);
+            const userSelfHandlerRes = await request(sandbox.getApp()).get('/v1/users/1').expect(StatusCode.OK);
 
             expect(userSelfHandlerRes.body).to.deep.equal([
                 'userSelfBefore1',
@@ -289,7 +157,7 @@ describe('Controller', () => {
                 'userSelfAfter2',
             ]);
 
-            const userHandlerRes = await supertest(sandbox.getApp()).get('/v1/users').expect(StatusCode.OK);
+            const userHandlerRes = await request(sandbox.getApp()).get('/v1/users').expect(StatusCode.OK);
 
             expect(userHandlerRes.body).to.deep.equal([
                 'userBefore1',
@@ -303,7 +171,7 @@ describe('Controller', () => {
                 'userAfter2',
             ]);
 
-            const rootHandlerRes = await supertest(sandbox.getApp()).get('/v1').expect(StatusCode.OK);
+            const rootHandlerRes = await request(sandbox.getApp()).get('/v1').expect(StatusCode.OK);
 
             expect(rootHandlerRes.body).to.deep.equal([
                 'rootBefore1',

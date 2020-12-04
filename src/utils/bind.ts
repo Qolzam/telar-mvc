@@ -3,6 +3,7 @@ import * as URL from '@bluejay/url';
 import { ensureSlashes } from '@bluejay/url';
 import * as Router from '@koa/router';
 import * as Koa from 'koa';
+import { Middleware, Next, RouterContext } from '../interfaces/router-context';
 import 'reflect-metadata';
 import { MetadataKey } from '../constants/metadata-key';
 import { IContainer } from '../interfaces/container';
@@ -22,8 +23,8 @@ function _bind(
     router: Router,
     container: IContainer,
     identifier: symbol,
-    _baseBeforeMiddlewares: Router.Middleware<any, Record<string, any>>[] = [],
-    _baseAfterMiddlewares: Router.Middleware<any, Record<string, any>>[] = [],
+    _baseBeforeMiddlewares: Middleware<any, Record<string, any>>[] = [],
+    _baseAfterMiddlewares: Middleware<any, Record<string, any>>[] = [],
     _basePath = '',
 ): Router {
     // Get controller object from container by symbol identifier
@@ -48,24 +49,24 @@ function _bind(
     _baseAfterMiddlewares = afterMiddlewares.reverse().concat(_baseAfterMiddlewares);
 
     for (const route of routes) {
-        const routeBeforeMiddlewares: Router.Middleware<any, Record<string, any>>[] = (
+        const routeBeforeMiddlewares: Middleware<any, Record<string, any>>[] = (
             Reflect.getMetadata(MetadataKey.ROUTE_BEFORE_MIDDLEWARES, controller, route.handlerName) || []
         ).map(
             (
                 item:
-                    | { isFactory: true; factoryOrHandler: () => Router.Middleware<any, Record<string, any>> }
-                    | { isFactory: false; factoryOrHandler: Router.Middleware<any, Record<string, any>> },
+                    | { isFactory: true; factoryOrHandler: () => Middleware<any, Record<string, any>> }
+                    | { isFactory: false; factoryOrHandler: Middleware<any, Record<string, any>> },
             ) => {
                 return item.isFactory ? item.factoryOrHandler.call(controller) : item.factoryOrHandler;
             },
         );
-        const routeAfterMiddlewares: Router.Middleware<any, Record<string, any>>[] = (
+        const routeAfterMiddlewares: Middleware<any, Record<string, any>>[] = (
             Reflect.getMetadata(MetadataKey.ROUTE_AFTER_MIDDLEWARES, controller, route.handlerName) || []
         ).map(
             (
                 item:
-                    | { isFactory: true; factoryOrHandler: () => Router.Middleware<any, Record<string, any>> }
-                    | { isFactory: false; factoryOrHandler: Router.Middleware<any, Record<string, any>> },
+                    | { isFactory: true; factoryOrHandler: () => Middleware<any, Record<string, any>> }
+                    | { isFactory: false; factoryOrHandler: Middleware<any, Record<string, any>> },
             ) => {
                 return item.isFactory ? item.factoryOrHandler.call(controller) : item.factoryOrHandler;
             },
@@ -80,10 +81,7 @@ function _bind(
             ..._baseAfterMiddlewares,
         ].map((handler) => {
             if (handler.length < 4) {
-                const fn = async function (
-                    ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                    next: Koa.Next,
-                ): Promise<void> {
+                const fn = async function (ctx: RouterContext, next: Next): Promise<void> {
                     await handler.call(controller, ctx, next);
                 };
 
@@ -98,7 +96,7 @@ function _bind(
         // Add route path with middlewares in the Koa Router
         router[route.method](
             ensureSlashes(URL.join(_basePath, route.path), { leading: true, trailing: false }),
-            ...handlers,
+            ...(handlers as Router.Middleware<any, Record<string, any>>[]),
         );
     }
 
@@ -117,6 +115,9 @@ export function bind(app: Koa, container: IContainer, controllersIdentifier: sym
     app.use(router.routes()).use(router.allowedMethods());
     controllersIdentifier.forEach((identifier) => {
         _bind(router, container, identifier);
+    });
+    router.use((ctx) => {
+        ctx;
     });
     return router;
 }

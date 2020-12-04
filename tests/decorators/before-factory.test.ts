@@ -1,5 +1,5 @@
-import * as Koa from 'koa';
-import * as Router from '@koa/router';
+import { Next, RouterContext } from '../../src/interfaces/router-context';
+
 
 import { Controller } from '../../src/classes/controller';
 import { Path } from '../../src/decorators/Path';
@@ -16,8 +16,8 @@ describe('@BeforeFactory()', () => {
         it('should register middleware', async () => {
             const middlewareFactory = function (this: TestController) {
                 return (
-                    ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                    next: Koa.Next,
+                    ctx: RouterContext,
+                    next: Next,
                 ) => {
                     ctx.req['testProperty'] = this.testProperty;
                     next();
@@ -34,7 +34,7 @@ describe('@BeforeFactory()', () => {
 
                 @Get('/')
                 private async test(
-                    ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
+                    ctx: RouterContext,
                 ) {
                     ctx.status = StatusCode.OK;
                     ctx.body = { testProperty: ctx.req['testProperty'] };
@@ -53,8 +53,8 @@ describe('@BeforeFactory()', () => {
         it('should register middleware', async () => {
             const middlewareFactory = function (this: TestController) {
                 return (
-                    ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                    next: Koa.Next,
+                    ctx: RouterContext,
+                    next: Next,
                 ) => {
                     ctx.req['testProperty'] = this.testProperty;
                     next();
@@ -71,7 +71,7 @@ describe('@BeforeFactory()', () => {
                 @Get('/')
                 @BeforeFactory(middlewareFactory)
                 private async test(
-                    ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
+                    ctx: RouterContext,
                 ) {
                     ctx.status = StatusCode.OK;
                     ctx.body = { testProperty: ctx.req['testProperty'] };

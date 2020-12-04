@@ -1,7 +1,7 @@
 import { IRestError } from '@bluejay/rest-errors';
 import { isJSONSchemaLike, TJSONSchema } from '@bluejay/schema';
 import { StatusCode } from '@bluejay/status-code';
-import * as Router from '@koa/router';
+import { Next, RouterContext } from '../interfaces/router-context';
 import { ValidateFunction } from 'ajv';
 import * as Koa from 'koa';
 import { Config } from '../config';
@@ -29,25 +29,20 @@ export function Body(options: TJSONBodyOptions | TJSONSchema) {
     return function (target: any, key: string, descriptor: PropertyDescriptor) {
         Reflect.defineMetadata(MetadataKey.ROUTE_BODY, jsonSchema, target, key);
 
-        Before(
-            async (
-                ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                next: Koa.Next,
-            ) => {
-                const isValid = getValidator()((ctx.request as Koa.Request & { body: any }).body);
-                if (isValid) {
-                    await next();
-                } else {
-                    const parsedErr = Config.get(
-                        'jsonBodyValidationErrorFactory',
-                        (<TJSONBodyOptions>options).validationErrorFactory,
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    )(getValidator().errors![0], (ctx.request as Koa.Request & { body: any }).body);
-                    const statusCode = (parsedErr as IRestError).statusCode || StatusCode.FORBIDDEN;
-                    ctx.status = statusCode;
-                    ctx.body = parsedErr;
-                }
-            },
-        )(target, key, descriptor);
+        Before(async (ctx: RouterContext, next: Next) => {
+            const isValid = getValidator()((ctx.request as Koa.Request & { body: any }).body);
+            if (isValid) {
+                await next();
+            } else {
+                const parsedErr = Config.get(
+                    'jsonBodyValidationErrorFactory',
+                    (<TJSONBodyOptions>options).validationErrorFactory,
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                )(getValidator().errors![0], (ctx.request as Koa.Request & { body: any }).body);
+                const statusCode = (parsedErr as IRestError).statusCode || StatusCode.FORBIDDEN;
+                ctx.status = statusCode;
+                ctx.body = parsedErr;
+            }
+        })(target, key, descriptor);
     };
 }

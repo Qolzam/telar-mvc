@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import * as Koa from 'koa';
-import * as Router from '@koa/router';
+import { Next, RouterContext } from '../../src/interfaces/router-context';
+
 
 import { Controller } from '../../src/classes/controller';
 import { Path } from '../../src/decorators/Path';
@@ -25,7 +25,7 @@ describe('@Query()', () => {
             @Get('/')
             @Query(options)
             private async test(
-                ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
+                ctx: RouterContext,
             ) {
                 ctx.status = StatusCode.OK;
                 ctx.body = ctx.request.query;

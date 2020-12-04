@@ -1,6 +1,5 @@
 import { expect } from 'chai';
-import * as Koa from 'koa';
-import * as Router from '@koa/router';
+import { Next, RouterContext } from '../../src/interfaces/router-context';
 
 import { Controller } from '../../src/classes/controller';
 import { Path } from '../../src/decorators/Path';
@@ -35,9 +34,7 @@ describe('@Params()', () => {
             @Params({
                 jsonSchema: requireProperties(object({ id: integer() }), ['id']),
             })
-            private async getById(
-                ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-            ) {
+            private async getById(ctx: RouterContext) {
                 ctx.status = StatusCode.OK;
                 ctx.body = ctx.params;
             }
@@ -64,9 +61,7 @@ describe('@Params()', () => {
                     jsonSchema: requireProperties(object({ id: integer() }), ['id']),
                     validationErrorFactory: () => new MyError(''),
                 })
-                private async getById(
-                    ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                ) {
+                private async getById(ctx: RouterContext) {
                     ctx.status = StatusCode.OK;
                     ctx.body = ctx.params;
                 }
@@ -90,9 +85,7 @@ describe('@Params()', () => {
         class TestController extends Controller {
             @Get('/:id')
             @Params(requireProperties(object({ id: integer() }), ['id']))
-            private async getById(
-                ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-            ) {
+            private async getById(ctx: RouterContext) {
                 ctx.status = StatusCode.OK;
                 ctx.body = ctx.params;
             }

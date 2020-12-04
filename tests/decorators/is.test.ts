@@ -1,5 +1,5 @@
-import * as Koa from 'koa';
-import * as Router from '@koa/router';
+import { Next, RouterContext } from '../../src/interfaces/router-context';
+
 
 import { Post } from '../../src/decorators/Post';
 import { Controller } from '../../src/classes/controller';
@@ -22,7 +22,7 @@ describe('@Is()', () => {
     class TestController extends Controller {
         @Post('/')
         @Is('application/json')
-        private async test(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
+        private async test(ctx: RouterContext) {
             ctx.status = StatusCode.CREATED;
             ctx.body = ctx.request.body;
         }

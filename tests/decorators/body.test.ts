@@ -1,6 +1,5 @@
 import { expect } from 'chai';
-import * as Koa from 'koa';
-import * as Router from '@koa/router';
+import { RouterContext } from '../../src/interfaces/router-context';
 
 import { Sandbox } from '../resources/classes/sandbox';
 import { Controller } from '../../src/classes/controller';
@@ -58,9 +57,7 @@ describe('@Body()', () => {
                     ['foo'],
                 ),
             })
-            private async test(
-                ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-            ) {
+            private async test(ctx: RouterContext) {
                 ctx.status = StatusCode.CREATED;
                 ctx.body = ctx.request.body;
             }
@@ -93,9 +90,7 @@ describe('@Body()', () => {
                     ),
                     validationErrorFactory: () => new MyError(''),
                 })
-                private async test(
-                    ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-                ) {
+                private async test(ctx: RouterContext) {
                     ctx.status = StatusCode.CREATED;
                     ctx.body = ctx.request.body;
                 }
@@ -131,9 +126,7 @@ describe('@Body()', () => {
                     ['foo'],
                 ),
             )
-            private async test(
-                ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-            ) {
+            private async test(ctx: RouterContext) {
                 ctx.status = StatusCode.CREATED;
                 ctx.body = ctx.request.body;
             }
@@ -160,9 +153,7 @@ describe('@Body()', () => {
                     requireProperties(object({ bar: string() }), ['bar']),
                 ]),
             )
-            private async test(
-                ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-            ) {
+            private async test(ctx: RouterContext) {
                 ctx.status = StatusCode.CREATED;
                 ctx.body = ctx.request.body;
             }

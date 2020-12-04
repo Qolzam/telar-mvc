@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { addAJVInitializer } from 'ajv-class-validator';
 import * as http from 'http';
 import { StatusCode } from '@bluejay/status-code';
 import { Container, decorate, injectable } from '@parisholley/inversify-async';
@@ -6,7 +7,12 @@ import * as Koa from 'koa';
 import { TConstructible } from '@bluejay/utils';
 import { IController } from '../../../src/interfaces/controller';
 import { bind, Controller } from '../../../src';
+import { Next } from '../../../src/interfaces/router-context';
+import Ajv from 'ajv';
 
+addAJVInitializer(() => {
+    return new Ajv({ allErrors: true });
+});
 decorate(injectable(), Controller);
 
 export type TSandboxConstructorOptions = {
@@ -39,7 +45,7 @@ export class Sandbox {
 
         bind(this.app, this.container, identifiers);
 
-        this.app.use(async (ctx: Koa.ParameterizedContext<Koa.DefaultState, Koa.DefaultContext>, next: Koa.Next) => {
+        this.app.use(async (ctx: Koa.ParameterizedContext<Koa.DefaultState, Koa.DefaultContext>, next: Next) => {
             try {
                 await next();
             } catch (err) {

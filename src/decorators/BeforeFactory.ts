@@ -1,12 +1,12 @@
 import { TConstructible } from '@bluejay/utils';
-import * as Router from '@koa/router';
 import { MetadataKey } from '../constants/metadata-key';
 import { IController } from '../interfaces/controller';
+import { Middleware } from '../interfaces/router-context';
 import { TMiddlewareDefinition } from '../types/middleware-definition';
 import { isClassDecorator } from '../utils/is-class-decorator';
 import { isPropertyDecorator } from '../utils/is-property-decorator';
 
-export function BeforeFactory(factory: () => Router.Middleware<any, Record<string, any>>): any {
+export function BeforeFactory(factory: () => Middleware<any, Record<string, any>>): any {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     return function (target: TConstructible<IController> | IController, key?: string, descriptor?: PropertyDescriptor) {
         if (isClassDecorator(target, arguments)) {

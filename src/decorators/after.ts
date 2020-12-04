@@ -1,12 +1,12 @@
 import { TConstructible } from '@bluejay/utils';
-import * as Router from '@koa/router';
 import { MetadataKey } from '../constants/metadata-key';
 import { IController } from '../interfaces/controller';
+import { Middleware } from '../interfaces/router-context';
 import { TMiddlewareDefinition } from '../types/middleware-definition';
 import { isClassDecorator } from '../utils/is-class-decorator';
 import { isPropertyDecorator } from '../utils/is-property-decorator';
 
-export function After(middleware: Router.Middleware<any, Record<string, any>>): any {
+export function After(middleware: Middleware<any, Record<string, any>>): any {
     return function (
         target: TConstructible<IController> | IController,
         key?: string,
@@ -25,7 +25,7 @@ export function After(middleware: Router.Middleware<any, Record<string, any>>): 
                 MetadataKey.ROUTE_AFTER_MIDDLEWARES,
                 middlewares.concat({
                     isFactory: false,
-                    factoryOrHandler: middleware as Router.Middleware<any, Record<string, any>>,
+                    factoryOrHandler: middleware as Middleware<any, Record<string, any>>,
                 }),
                 target,
                 key as string,

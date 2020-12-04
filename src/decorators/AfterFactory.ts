@@ -1,11 +1,10 @@
 import { TConstructible } from '@bluejay/utils';
-import * as Router from '@koa/router';
-
 import { MetadataKey } from '../constants/metadata-key';
 import { IController } from '../interfaces/controller';
+import { Middleware } from '../interfaces/router-context';
 import { isClassDecorator } from '../utils/is-class-decorator';
 
-export function AfterFactory(factory: (...args: any[]) => Router.Middleware<any, Record<string, any>>): any {
+export function AfterFactory(factory: (...args: any[]) => Middleware<any, Record<string, any>>): any {
     return function (target: TConstructible<IController>) {
         if (isClassDecorator(target, arguments)) {
             const newClass = class extends target {

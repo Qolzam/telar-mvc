@@ -175,11 +175,11 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 
   <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/'</span>)
   <span class="hljs-meta">@Before</span>(queryParser())
-  <span class="hljs-meta">@Before</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"><span class="hljs-keyword">this</span>: UsersController, ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>, next: Koa.Next</span>) </span>{
+  <span class="hljs-meta">@Before</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"><span class="hljs-keyword">this</span>: UsersController, ctx: RouterContext, next: Next</span>) </span>{
     <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">this</span>.foo); <span class="hljs-comment">// bar</span>
     next();
   })
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(ctx: RouterContext) {
 
   }
 }</code></pre>
@@ -190,22 +190,22 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 				<pre><code class="language-typescript"><span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
 
   <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/'</span>)
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(ctx: RouterContext) {
 
   }
 
   <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/:id'</span>)
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getById(ctx: RouterContext) {
 
   }
 
   <span class="hljs-meta">@Post</span>(<span class="hljs-string">'/'</span>)
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> add(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> add(ctx: RouterContext) {
 
   }
 
   <span class="hljs-meta">@Del</span>(<span class="hljs-string">'/:id'</span>)
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> removeById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> removeById(ctx: RouterContext) {
 
   }
 
@@ -220,7 +220,7 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 <span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Contoller {
   <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/:id'</span>)
   <span class="hljs-meta">@Params</span>(requireProperties(object({ id: integer() }), [<span class="hljs-string">'id'</span>]))
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getById(ctx: RouterContext) {
     <span class="hljs-keyword">const</span> { id } = req.params;
     <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> id); <span class="hljs-comment">// number, thanks to Ajv's "coerceTypes" option</span>
   }
@@ -237,7 +237,7 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
     jsonSchema: requireProperties(idParamSchema, [<span class="hljs-string">'id'</span>]),
     ajvFactory: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-keyword">new</span> Ajv({ coerceTypes: <span class="hljs-literal">true</span> })
   })
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getById(ctx: RouterContext) {
     <span class="hljs-keyword">const</span> { id } = req.params;
     <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> id); <span class="hljs-comment">// number</span>
   }
@@ -253,7 +253,7 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 <span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
   <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/'</span>)
   <span class="hljs-meta">@Query</span>(object({ active: <span class="hljs-built_in">boolean</span>() }))
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(ctx: RouterContext) {
     <span class="hljs-keyword">const</span> { active } = req.query;
     <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> active); <span class="hljs-comment">// boolean | undefined (since not required)</span>
   }
@@ -271,7 +271,7 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
     groups: { filters: [<span class="hljs-string">'active'</span>] }
   })
   <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/'</span>)
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(ctx: RouterContext) {
     <span class="hljs-keyword">const</span> { filters, token } = req.query;
     <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> token); <span class="hljs-comment">// string</span>
     <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> filters); <span class="hljs-comment">// object</span>
@@ -297,7 +297,7 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
     transform: queryTransformer
   })
   <span class="hljs-meta">@Get</span>(<span class="hljs-string">'/'</span>)
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> list(ctx: RouterContext) {
     <span class="hljs-keyword">const</span> { active } = req.query;
     <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> active); <span class="hljs-comment">// boolean</span>
     <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">typeof</span> req.query.isActive); <span class="hljs-comment">// undefined</span>
@@ -320,7 +320,7 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
 <span class="hljs-keyword">class</span> UsersController <span class="hljs-keyword">extends</span> Controller {
   <span class="hljs-meta">@Post</span>(<span class="hljs-string">'/'</span>)
   <span class="hljs-meta">@body</span>(requireProperties(userSchema, [<span class="hljs-string">'email'</span>, <span class="hljs-string">'password'</span>]))
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> add(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> add(ctx: RouterContext) {
     <span class="hljs-comment">// req.body is guaranteed to match the described schema</span>
   }
 }</code></pre>
@@ -333,7 +333,7 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
   <span class="hljs-meta">@Put</span>(<span class="hljs-string">'/:id/picture'</span>)
   <span class="hljs-meta">@Is</span>(<span class="hljs-string">'image/jpg'</span>)
   <span class="hljs-meta">@Before</span>(multer.single(<span class="hljs-string">'file'</span>)) <span class="hljs-comment">// Just an example, see https://www.npmjs.com/package/multer</span>
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> changePicture(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> changePicture(ctx: RouterContext) {
 
   }
 }</code></pre>
@@ -361,7 +361,7 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
     statusCode: StatusCode.OK,
     jsonSchema: omitProperties(userSchema, [<span class="hljs-string">'password'</span>])
   })
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getById(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getById(ctx: RouterContext) {
     <span class="hljs-keyword">const</span> { id } = req.params;
     <span class="hljs-keyword">const</span> user = <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.userService.findById(id);
     <span class="hljs-keyword">if</span> (user) {
@@ -381,7 +381,7 @@ bind(app, container, Identifiers.RootController); <span class="hljs-comment">// 
     statusCode: StatusCode.OK,
     contentType: <span class="hljs-string">'image/jpg'</span>
   })
-  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getPicture(ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>) {
+  <span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> getPicture(ctx: RouterContext) {
     getPictureStream(req.params.id).pipe(res);
   }
 }</code></pre>

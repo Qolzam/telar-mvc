@@ -13,11 +13,14 @@
     "noImplicitReturns": true,
     "suppressImplicitAnyIndexErrors": true,
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "inlineSourceMap": true,
     "outDir": "dist",
     "lib": [
-      "es2017"
+      "es2017",
+      "dom"
     ],
+    "typeRoots": ["node_modules/@types"],
     "types": [
       "node",
       "mocha",

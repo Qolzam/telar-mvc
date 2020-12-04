@@ -1,5 +1,4 @@
-import * as Koa from 'koa';
-import * as Router from '@koa/router';
+import { Next, RouterContext } from '../../src/interfaces/router-context';
 
 import * as supertest from 'supertest';
 import { Sandbox } from '../resources/classes/sandbox';
@@ -15,9 +14,7 @@ describe('@Head()', () => {
         @Path('/test')
         class TestController extends Controller {
             @Head('/')
-            private async test(
-                ctx: Koa.ParameterizedContext<any, Router.RouterParamContext<any, Record<string, any>>>,
-            ) {
+            private async test(ctx: RouterContext) {
                 ctx.status = StatusCode.NO_CONTENT;
             }
         }
