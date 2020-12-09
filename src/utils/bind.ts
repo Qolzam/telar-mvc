@@ -9,6 +9,9 @@ import { MetadataKey } from '../constants/metadata-key';
 import { IContainer } from '../interfaces/container';
 import { IController } from '../interfaces/controller';
 import { TRouteDescription } from '../types/route-description';
+import { processResultType, resultHandler } from './result-handler';
+import { jsonResult } from './action-results';
+import { StatusCode } from '@bluejay/status-code';
 
 /**
  * Bind controller to the router
@@ -72,11 +75,25 @@ function _bind(
             },
         );
 
+        // Wrapping action handler
+        const handler = async function (ctx: RouterContext, next: Next): Promise<void> {
+            try {
+                const actionResult: any = await route.handler.call(controller, ctx, next);
+                if (actionResult) {
+                    resultHandler(processResultType(actionResult), ctx);
+                }
+            } catch (error) {
+                // eslint-disable-next-line no-console
+                console.error('[ERROR] Internal server error on calling handler ', handler.name, error);
+                resultHandler(jsonResult(error, { status: StatusCode.INTERNAL_SERVER_ERROR }), ctx);
+            }
+        };
+
         // Combine handlers for the single route path
         const handlers = [
             ..._baseBeforeMiddlewares,
             ...routeBeforeMiddlewares.reverse(),
-            route.handler,
+            handler,
             ...routeAfterMiddlewares.reverse(),
             ..._baseAfterMiddlewares,
         ].map((handler) => {

@@ -9,7 +9,7 @@ export { TCustomResponseOptions } from './types/custom-response-options';
 export { bind } from './utils/bind';
 
 export { IController } from './interfaces/controller';
-export { Model, Middleware, RouterContext, Next } from './interfaces/router-context';
+export { Model, Middleware, RouterContext, Context, Next } from './interfaces/router-context';
 
 export { Controller } from './classes/controller';
 
@@ -33,3 +33,11 @@ export { Params } from './decorators/Params';
 export { Query } from './decorators/Query';
 
 export { Config } from './config';
+export { IActionResult } from './interfaces/i-action-result';
+export { ResultOptions } from './interfaces/result-options';
+export { ActionTypes } from './constants/action-types';
+export { ContentResult } from './classes/content-result';
+export { JsonResult } from './classes/json-result';
+export { RedirectResult } from './classes/redirect-result';
+
+export { jsonResult, contentResult, redirectResult } from './utils/action-results';

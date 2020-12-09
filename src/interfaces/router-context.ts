@@ -31,6 +31,11 @@ export type RouterContext<StateT = any, CustomT = Record<string, any>> = Koa.Par
     CustomT & RouterParamContext<StateT, CustomT>
 >;
 
+/**
+ * Router context with custom type
+ */
+export type Context<T> = RouterContext<any, T>;
+
 export type Middleware<StateT = any, CustomT = Record<string, any>> = Koa.Middleware<
     StateT,
     CustomT & RouterParamContext<StateT, CustomT>

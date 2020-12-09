@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { expect } from 'chai';
-import { RouterContext } from '../../src/interfaces/router-context';
+import { Context } from '../../src/interfaces/router-context';
 import { Sandbox } from '../resources/classes/sandbox';
 import { Controller } from '../../src/classes/controller';
 import { Path } from '../../src/decorators/Path';
@@ -13,6 +13,7 @@ import supertest = require('supertest');
 import { Before } from '../../src/decorators/Before';
 import bodyParser = require('koa-bodyparser');
 import { MyData1, MyData2 } from '../resources/classes/MyData1';
+import { jsonResult } from '../../src/utils/action-results';
 
 describe('@ActionModel()', () => {
     function doTest(sandbox: Sandbox) {
@@ -54,9 +55,13 @@ describe('@ActionModel()', () => {
         class TestController extends Controller {
             @Post('/')
             @ActionModel(MyData1)
-            private async test(ctx: RouterContext<any, MyData1>) {
-                ctx.status = StatusCode.CREATED;
-                ctx.body = { model: ctx.model, valid: ctx.model.validate(), errors: ctx.model.errors() };
+            private async test({ model }: Context<MyData1>) {
+                return jsonResult(
+                    { model: model, valid: model.validate(), errors: model.errors() },
+                    {
+                        status: StatusCode.CREATED,
+                    },
+                );
             }
         }
 
@@ -73,13 +78,15 @@ describe('@ActionModel()', () => {
             class TestController extends Controller {
                 @Post('/')
                 @ActionModel(MyData2)
-                private async test(ctx: RouterContext) {
-                    if (ctx.model.validate()) {
-                        ctx.status = StatusCode.CREATED;
-                        ctx.body = ctx.model;
+                private async test({ model }: Context<MyData2>) {
+                    if (model.validate()) {
+                        return jsonResult(model, {
+                            status: StatusCode.CREATED,
+                        });
                     } else {
-                        ctx.status = StatusCode.FORBIDDEN;
-                        ctx.body = ctx.model.errors();
+                        return jsonResult(model.errors(), {
+                            status: StatusCode.FORBIDDEN,
+                        });
                     }
                 }
             }

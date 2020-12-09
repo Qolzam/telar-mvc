@@ -4,7 +4,7 @@
  [![npm](https://img.shields.io/npm/dm/telar-mvc.svg?style=flat-square)](https://www.npmjs.com/package/telar-mvc)
 [![npm](https://img.shields.io/npm/l/telar-mvc.svg?style=flat-square)](https://www.npmjs.com/package/telar-mvc)
 
-Lightweight powerful implementation of MVC(Model-View-Controller) for Node servers. Inspired by [inversify-controller](https://github.com/bluebirds-blue-jay/inversify-controller).
+Lightweight powerful implementation of MVC(Model-View-Controller) for Node servers. Inspired and a fork from [inversify-controller](https://github.com/bluebirds-blue-jay/inversify-controller).
 
 ## Requirements
 
@@ -183,13 +183,64 @@ class UsersController extends Controller {
 }
 ```
 
+
+### Action results
+
+Just to make the code clean for proccessing http response,we provided some functions like `jsonResult` return json body, `contentResult` return string body, `redirectResult` redirect response. You also can return string/json type in the action function.
+
+```typescript
+import { jsonResult, contentResult, redirectResult } 'telar-mvc';
+
+class UsersController extends Contoller {
+  @Post('/:id')
+  public async action1(ctx: RouterContext) {
+    try {
+      return jsonResult({success: true})
+    } cache(error) {
+      return jsonResult(error, {status: 400})
+    }
+  }
+
+  @Post('/:id')
+  public async action1(ctx: RouterContext) {
+    try {
+      return contentResult('it was successful')
+    } cache(error) {
+      return contentResult('it was not successful', {status: 400})
+    }
+  }
+
+  @Post('/:id')
+  public async action1(ctx: RouterContext) {
+    try {
+      return redirectResult('/page/success')
+    } cache(error) {
+      return redirectResult('/page/not-success')
+    }
+  }
+
+  @Post('/:id')
+  public async action1(ctx: RouterContext) {
+    try {
+      return 'it was successful' // convert to content result
+    } cache(error) {
+      return {
+        body: 'it was not successful'
+        status: 400,
+        headers: []
+      } // response with in plain json is valid
+    }
+  }
+}
+```
+
 ### Class model validation
 
 You can use decorators for your class model`(from MVC)` to validate your request body. We use [ajv-class-validator](https://github.com/Qolzam/ajv-class-validator) to change conver json to object and validate. The model object is injected in the context.
 
 ```typescript
 
-import { ActionModel } 'telar-mvc';
+import { ActionModel, jsonResult } 'telar-mvc';
 import { MaxLength, Required } from 'ajv-class-validator';
 
 export class User {
@@ -208,12 +259,13 @@ export class User {
 class UsersController extends Contoller {
   @Get('/:id')
   @ActionModel(User) // <---- Should define to access model in `ctx: RouterContext`
-  public async save({ model }) {
+  public async save({ model }: Context<User>) {
     if (model.validate()) {
       db.save(model);
+      return jsonResult({success: true})
     } else {
       console.log(model.errors()); // output errors - if options can passed to AJV `{allErrors: true}` you will have the list of errors
-      ctx.status = 400
+      return jsonResult(error, {status: 400})
     }
   }
 }
