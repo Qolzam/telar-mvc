@@ -186,7 +186,7 @@ class UsersController extends Controller {
 
 ### Action results
 
-Just to make the code clean for proccessing http response,we provided some functions like `jsonResult` return json body, `contentResult` return string body, `redirectResult` redirect response. You also can return string/json type in the action function.
+To make the code clean for proccessing http response, we provided some functions like `jsonResult` return json body, `contentResult` return string body, `redirectResult` redirect response. You also can return string/json type in the action function following example below.
 
 ```typescript
 import { jsonResult, contentResult, redirectResult } 'telar-mvc';
