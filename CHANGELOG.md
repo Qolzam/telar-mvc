@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/Qolzam/telar-mvc/compare/v1.4.0...v1.4.1) (2020-12-09)
+
+
+### Bug Fixes
+
+* add body-parser ([e2e9ae1](https://github.com/Qolzam/telar-mvc/commit/e2e9ae127de0dff744495dccc9af5addfb887acc))
+
 # 1.0.0 (2020-12-09)
 
 
