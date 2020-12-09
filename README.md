@@ -12,7 +12,7 @@ Lightweight powerful implementation of MVC(Model-View-Controller) for Node serve
 - `typescript >= 2.4`
 
 ## Installation
-1. Install prerquire packages
+1. Install prerequire packages
 
 ```sh
 npm i koa @koa/router ajv reflect-metadata telar-mvc
