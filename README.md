@@ -238,6 +238,8 @@ class UsersController extends Contoller {
 
 You can use decorators for your class model`(from MVC)` to validate your request body. We use [ajv-class-validator](https://github.com/Qolzam/ajv-class-validator) to change conver json to object and validate. The model object is injected in the context.
 
+> Note: to use class model validation you need to add body parser middleware, if you are using for Koa you can install [koa-bodyparser](https://www.npmjs.com/package/koa-bodyparser)
+
 ```typescript
 
 import { ActionModel, jsonResult } 'telar-mvc';
