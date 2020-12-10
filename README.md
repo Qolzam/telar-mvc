@@ -24,7 +24,7 @@ npm i koa @koa/router ajv reflect-metadata telar-mvc
       npm i inversify
       ```
 
-3. Make sure to import `reflect-metadata` before using `ajv-class-validaitor`:
+3. Make sure to import `reflect-metadata` before using `telar-mvc`:
 
 ```
 import "reflect-metadata";
@@ -38,12 +38,9 @@ import "reflect-metadata";
 }
 ```
 
-## Note on JSON schemas
-
-We use [AJV](https://github.com/epoberezkin/ajv) internally for schema validation. Decorators that perform schema validation offer you to create your own AJV instance through the `ajvFactory` option. If you are to create your own instances through this option, we highly recommend to make sure you pass the same options we use along with yours, otherwise some assumptions from this documentation might not be true.
-
-Although you can use plain JSON schemas, we recommend the use of Bluejay's [schema](https://github.com/bluebirds-blue-jay/schema) module for easier schema manipulation. The examples below make use of this module, but be aware that you can use plain JSON schemas instead. 
-
+## New features
+ - [Class model validation](#class-model-validation) Validate your request model at ease using decorators with [AJV](https://github.com/ajv-validator/ajv).
+ - [Action results](#action-results) Return http response with action result and keep your code clean!
 ## Usage
 
 ### Creating a controller
