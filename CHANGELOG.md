@@ -1,3 +1,10 @@
+## [1.4.2](https://github.com/Qolzam/telar-mvc/compare/v1.4.1...v1.4.2) (2020-12-15)
+
+
+### Bug Fixes
+
+* export bindWithrouter ([32d5dd7](https://github.com/Qolzam/telar-mvc/commit/32d5dd70efe902680b64022de14703c119e4aa0b))
+
 ## [1.4.1](https://github.com/Qolzam/telar-mvc/compare/v1.4.0...v1.4.1) (2020-12-09)
 
 
