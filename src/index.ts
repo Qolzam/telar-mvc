@@ -6,7 +6,7 @@ export { TParamsOptions } from './types/params-options';
 export { TQueryOptions } from './types/query-options';
 export { TCustomResponseOptions } from './types/custom-response-options';
 
-export { bind } from './utils/bind';
+export { bind, bindWithRouter } from './utils/bind';
 
 export { IController } from './interfaces/controller';
 export { Model, Middleware, RouterContext, Context, Next } from './interfaces/router-context';
