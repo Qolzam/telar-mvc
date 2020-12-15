@@ -1,5 +1,5 @@
 {
-  "name": "telar-mvc",
+  "name": "@telar/mvc",
   "description": "Lightweight powerful implementation of MVC(Model-View-Controller) for Node servers.",
   "version": "0.0.0-development",
   "license": "MIT",

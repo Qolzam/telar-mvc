@@ -1,8 +1,8 @@
 # Telar MVC
 
-[![npm](https://img.shields.io/npm/v/telar-mvc.svg?style=flat-square)](https://www.npmjs.com/package/telar-mvc)
- [![npm](https://img.shields.io/npm/dm/telar-mvc.svg?style=flat-square)](https://www.npmjs.com/package/telar-mvc)
-[![npm](https://img.shields.io/npm/l/telar-mvc.svg?style=flat-square)](https://www.npmjs.com/package/telar-mvc)
+[![npm](https://img.shields.io/npm/v/@telar/mvc.svg?style=flat-square)](https://www.npmjs.com/package/@telar/mvc)
+ [![npm](https://img.shields.io/npm/dm/@telar/mvc.svg?style=flat-square)](https://www.npmjs.com/package/@telar/mvc)
+[![npm](https://img.shields.io/npm/l/@telar/mvc.svg?style=flat-square)](https://www.npmjs.com/package/@telar/mvc)
 
 Lightweight powerful implementation of MVC(Model-View-Controller) for Node servers. Inspired and a fork from [inversify-controller](https://github.com/bluebirds-blue-jay/inversify-controller).
 
@@ -15,7 +15,7 @@ Lightweight powerful implementation of MVC(Model-View-Controller) for Node serve
 1. Install prerequire packages
 
 ```sh
-npm i koa @koa/router ajv reflect-metadata telar-mvc
+npm i koa @koa/router ajv reflect-metadata @telar/mvc
 ````
 2. Install IoC container
    - e.g. Inversify Conainter
@@ -24,7 +24,7 @@ npm i koa @koa/router ajv reflect-metadata telar-mvc
       npm i inversify
       ```
 
-3. Make sure to import `reflect-metadata` before using `telar-mvc`:
+3. Make sure to import `reflect-metadata` before using `@telar/mvc`:
 
 ```
 import "reflect-metadata";
@@ -46,7 +46,7 @@ import "reflect-metadata";
 ### Creating a controller
 
 ```typescript
-import { Controller, path } from 'telar-mvc';
+import { Controller, path } from '@telar/mvc';
 
 @Path('/')
 class HomeController extends Controller {
@@ -59,7 +59,7 @@ class HomeController extends Controller {
 The `bind()` helper correlates your app, your container and your controllers.
 
 ```typescript
-import { bind, IController, Controller } from 'telar-mvc';
+import { bind, IController, Controller } from '@telar/mvc';
 import * as Koa from 'koa';
 import { container } from './inversify.config';
 import { HomeController, UserController, ProductController  } from './controllers';
@@ -94,7 +94,7 @@ bind(app, container, [identifiers.HomeController, identifiers.UserController, id
 This module encourages you to declare middlewares at the controller level (vs. at the app level). This gives you the same result as if you were using `app.use()`, but keeps everything in the same place.
 
 ```typescript
-import { before, after } from 'telar-mvc';
+import { before, after } from '@telar/mvc';
 import { bodyParser } from 'koa-bodyparser';
 import { errorHandler } from '../error-handler';
 
@@ -186,7 +186,7 @@ class UsersController extends Controller {
 To make the code clean for proccessing http response, we provided some functions like `jsonResult` return json body, `contentResult` return string body, `redirectResult` redirect response. You also can return string/json type in the action function following example below.
 
 ```typescript
-import { jsonResult, contentResult, redirectResult } 'telar-mvc';
+import { jsonResult, contentResult, redirectResult } '@telar/mvc';
 
 class UsersController extends Contoller {
   @Post('/:id')
@@ -239,7 +239,7 @@ You can use decorators for your class model`(from MVC)` to validate your request
 
 ```typescript
 
-import { ActionModel, jsonResult } 'telar-mvc';
+import { ActionModel, jsonResult } '@telar/mvc';
 import { MaxLength, Required } from 'ajv-class-validator';
 
 export class User {
