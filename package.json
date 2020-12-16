@@ -86,9 +86,9 @@
     "lodash.isplainobject": "^4.0.6"
   },
   "peerDependencies": {
-    "koa": "^2.13.0",
-    "@koa/router": "^10.0.0",
-    "ajv": ">=7.0.0-beta.7"
+    "koa": ">=2.13.0",
+    "@koa/router": ">=10.0.0",
+    "ajv": ">=7.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
