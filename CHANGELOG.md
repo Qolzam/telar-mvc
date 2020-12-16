@@ -1,3 +1,10 @@
+## [1.4.3](https://github.com/Qolzam/telar-mvc/compare/v1.4.2...v1.4.3) (2020-12-15)
+
+
+### Bug Fixes
+
+* change package name to @telar/mvc ([2571b28](https://github.com/Qolzam/telar-mvc/commit/2571b2853a2d2eed940ab68b51913e6cf3c89b13))
+
 ## [1.4.2](https://github.com/Qolzam/telar-mvc/compare/v1.4.1...v1.4.2) (2020-12-15)
 
 
