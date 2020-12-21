@@ -112,7 +112,7 @@ function _bind(
 
         // Add route path with middlewares in the Koa Router
         router[route.method](
-            ensureSlashes(URL.join(_basePath, route.path), { leading: true, trailing: false }),
+            ensureSlashes(URL.join(_basePath, route.path), { leading: true, trailing: false }) || '/',
             ...(handlers as Router.Middleware<any, Record<string, any>>[]),
         );
     }
