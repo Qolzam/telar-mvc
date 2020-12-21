@@ -1,3 +1,10 @@
+## [1.4.4](https://github.com/Qolzam/telar-mvc/compare/v1.4.3...v1.4.4) (2020-12-16)
+
+
+### Bug Fixes
+
+* fix peerDependencies versions ([6bebd62](https://github.com/Qolzam/telar-mvc/commit/6bebd62b8fb797e1e0560bf3410a1e4fe562d0d4))
+
 ## [1.4.3](https://github.com/Qolzam/telar-mvc/compare/v1.4.2...v1.4.3) (2020-12-15)
 
 
