@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/Qolzam/telar-mvc/compare/v1.4.5...v1.5.0) (2021-01-09)
+
+
+### Features
+
+* add view result ([73a7f67](https://github.com/Qolzam/telar-mvc/commit/73a7f67d6726427965a73a921e97d9eb0d7b615e))
+
 ## [1.4.5](https://github.com/Qolzam/telar-mvc/compare/v1.4.4...v1.4.5) (2020-12-21)
 
 
