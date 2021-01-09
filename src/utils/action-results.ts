@@ -1,6 +1,7 @@
 import { ContentResult } from '../classes/content-result';
 import { JsonResult } from '../classes/json-result';
 import { RedirectResult } from '../classes/redirect-result';
+import { ViewResult } from '../classes/view-result';
 import { ResultOptions } from '../interfaces/result-options';
 
 /**
@@ -37,4 +38,16 @@ export const contentResult = (data: string, options?: ResultOptions) => {
         return new ContentResult(data, options.status, options.headers);
     }
     return new ContentResult(data);
+};
+
+/**
+ * To make http response with a html content
+ * @param data HTML content
+ * @param options response options
+ */
+export const viewResult = (data: string, options?: ResultOptions) => {
+    if (options) {
+        return new ViewResult(data, options.status, options.headers);
+    }
+    return new ViewResult(data);
 };

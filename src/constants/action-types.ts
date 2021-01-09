@@ -1,6 +1,7 @@
 export enum ActionTypes {
-    Json,
-    Content,
-    File,
-    Redirect,
+    Json = 'Json',
+    View = 'View',
+    Content = 'Content',
+    File = 'File',
+    Redirect = 'Redirect',
 }

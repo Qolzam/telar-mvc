@@ -19,6 +19,14 @@ export const resultHandler = (result: IActionResult, ctx: RouterContext) => {
                 serHeaders(result.headers, ctx);
             }
             break;
+        case ActionTypes.View:
+            ctx.status = result.status || StatusCode.OK;
+            ctx.body = String(result.body);
+            ctx.set('content-type', 'text/html; charset=utf-8');
+            if (result.headers) {
+                serHeaders(result.headers, ctx);
+            }
+            break;
         case ActionTypes.Json:
             ctx.status = result.status || StatusCode.OK;
             ctx.body = result.body;
