@@ -1,3 +1,10 @@
+## [1.4.5](https://github.com/Qolzam/telar-mvc/compare/v1.4.4...v1.4.5) (2020-12-21)
+
+
+### Bug Fixes
+
+* check if ensureSlashes is empty and set slash for route ([cf8b775](https://github.com/Qolzam/telar-mvc/commit/cf8b7759abd9554a590af1817c503fc96a548fa5))
+
 ## [1.4.4](https://github.com/Qolzam/telar-mvc/compare/v1.4.3...v1.4.4) (2020-12-16)
 
 
